@@ -1,0 +1,31 @@
+{
+    "$schema": "../Schema.json",
+    "Name": "RolePermissions",
+    "AddAdditionalColumns": true,
+    "Columns": [
+        {"Name": "Role", "Datatype": "Integer", "IsRequired": true, "IsForeignKey": true, "ForeignName": "Id", "ForeignSchema": "Levendr", "ForeignTable": "Roles"},
+        {"Name": "Permission", "Datatype": "Integer", "IsRequired": true, "IsForeignKey": true, "ForeignName": "Id", "ForeignSchema": "Levendr", "ForeignTable": "Permissions"}
+    ],
+    "DefaultRows": [
+        {"Id": 1, "Role": 1, "Permission": 1},
+        {"Id": 2, "Role": 1, "Permission": 2},
+        {"Id": 3, "Role": 1, "Permission": 3},
+        {"Id": 4, "Role": 1, "Permission": 4},
+        {"Id": 5, "Role": 1, "Permission": 5},
+        {"Id": 6, "Role": 1, "Permission": 6},
+        {"Id": 7, "Role": 1, "Permission": 7},
+        {"Id": 8, "Role": 1, "Permission": 8},
+        {"Id": 9, "Role": 1, "Permission": 9},
+        {"Id": 10, "Role": 1, "Permission": 10},
+        {"Id": 11, "Role": 1, "Permission": 11},
+        {"Id": 12, "Role": 1, "Permission": 12},
+        {"Id": 13, "Role": 2, "Permission": 9},
+        {"Id": 14, "Role": 2, "Permission": 10},
+        {"Id": 15, "Role": 2, "Permission": 11},
+        {"Id": 16, "Role": 2, "Permission": 12},
+        {"Id": 17, "Role": 3, "Permission": 13},
+        {"Id": 18, "Role": 3, "Permission": 14},
+        {"Id": 19, "Role": 3, "Permission": 15},
+        {"Id": 20, "Role": 3, "Permission": 16}
+    ]
+}

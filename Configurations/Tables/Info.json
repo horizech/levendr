@@ -1,0 +1,18 @@
+{
+    "Info":
+    {
+        "Users": "Users",
+        "Roles": "Roles",
+        "UserRoles": "UserRoles",
+        "Permissions": "Permissions",
+        "RolePermissions": "RolePermissions",
+        "Settings": "Settings",
+        "MediaSources": "MediaSources",
+        "Media": "Media",
+        "Templates": "Templates",
+        "Categories": "Categories",
+        "Pages": "Pages",
+        "PageRoles": "PageRoles",
+        "Posts": "Posts"
+    }
+}

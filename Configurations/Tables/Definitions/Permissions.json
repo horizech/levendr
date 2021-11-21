@@ -1,0 +1,32 @@
+{
+    "$schema": "../Schema.json",
+    "Name": "Permissions",
+    "AddAdditionalColumns": true,
+    "Columns": [
+        {"Name": "Name", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true},
+        {"Name": "Description", "Datatype": "ShortText", "IsRequired": true}
+    ],
+    "DefaultRows": [
+        {"Id": 1, "Name": "CanCreateSchemas", "Description": "Create Schemas"},
+        {"Id": 2, "Name": "CanReadSchemas", "Description": "Read Schemas"},
+        {"Id": 3, "Name": "CanUpdateSchemas", "Description": "Update Schemas"},
+        {"Id": 4, "Name": "CanDeleteSchemas", "Description": "Delete Schemas"},
+        {"Id": 5, "Name": "CanCreateTables", "Description": "Create Tables"},
+        {"Id": 6, "Name": "CanReadTables", "Description": "Read Tables"},
+        {"Id": 7, "Name": "CanUpdateTables", "Description": "Update Tables"},
+        {"Id": 8, "Name": "CanDeleteTables", "Description": "Delete Tables"},
+        {"Id": 9, "Name": "CanCreateTablesData", "Description": "Create in Tables"},
+        {"Id": 10, "Name": "CanReadTablesData", "Description": "Read from Tables"},
+        {"Id": 11, "Name": "CanUpdateTablesData", "Description": "Update in Tables"},
+        {"Id": 12, "Name": "CanDeleteTablesData", "Description": "Delete from Tables"},
+        {"Id": 13, "Name": "CanReadOwnData", "Description": "Read User Data"},
+        {"Id": 14, "Name": "CanCreateOwnData", "Description": "Create User Data"},
+        {"Id": 15, "Name": "CanUpdateOwnData", "Description": "Update User Data"},
+        {"Id": 16, "Name": "CanDeleteOwnData", "Description": "Delete User Data"},
+        {"Id": 17, "Name": "CanReadTableDataUser", "Description": "Read from User Table"},
+        {"Id": 18, "Name": "CanCreateTableDataUser", "Description": "Create in User Table"},
+        {"Id": 19, "Name": "CanUpdateTableDataUser", "Description": "Update in User Table"},
+        {"Id": 20, "Name": "CanDeleteTableDataUser", "Description": "Delete from User Table"}
+        
+    ]
+}
