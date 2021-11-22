@@ -20,8 +20,11 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
     const [deleteSuccess, setDeleteSuccess] = React.useState(false);
     const [addSuccess, setAddSuccess] = React.useState(false);
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
+    const [selectOptionsList, setSelectOptionsList] = React.useState({
+        Role: [],
+        Permission: []
+    });
 
-    let selectOptionsList = [];
     const columns = [
         { Name: 'Id', value: 'Id' },
         { Name: 'Role', value: 'Role' },
@@ -31,12 +34,12 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
         { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
         { Name: 'LastUpdatedBy', value: 'LastUpdatedBy' }
     ]
-    const selectColumns = [
-        { Name: 'Role' },
-        { Name: 'Permission' }
-    ]
-    
 
+    const isSelectList =  {
+        Role: true,
+        Permission: true
+    };
+    
     const showCreateModal = () => {
         setCreateRolePermissionModalVisible(true);
     }
@@ -59,6 +62,19 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
     }
     const showEditModal = (row) => {
         setEditModalVisible(true);
+        console.log(selectOptionsList['Role']);
+        console.log(row['Role']);
+        console.log(selectOptionsList['Permission']);
+        console.log(row['Permission']);
+        if(row) {
+            if(selectOptionsList['Role'] && row['Role']) {
+                row['Role'] = selectOptionsList['Role'].filter(x => x.value == row['Role']);                             
+            }
+            if(selectOptionsList['Permission'] && row['Permission']) {
+                row['Permission'] = selectOptionsList['Permission'].filter(x => x.value == row['Permission']);                             
+            }
+        }
+        console.log(row);
         setCurrentRow(row);
     }
 
@@ -66,11 +82,13 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
         setDeleteModalVisible(true);
         setCurrentRow(row);
     }
-console.log(currentRow);
+    
+    console.log(currentRow);
     const handleOnEditComplete = (values) => {
         if (values) {
             values.Role = values.Role.value;
             values.Permission = values.Permission.value;
+            console.log(values);
             rolePermissionsService.updateRolePermissions(values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
@@ -117,32 +135,36 @@ console.log(currentRow);
         columns.map(column => {
 
 
-            if (column.Name == selectColumns[1].Name) {
+            if (column.Name === 'Permission') {
                 permissionsService.getPermissions().then(
                     result => {
                         if (result.Success) {
                             // console.log(result.Data);
-                            selectOptionsList[column.Name] = (
+                            let selectOptionsListUpdate = selectOptionsList;                            
+                            selectOptionsListUpdate[column.Name] = (
                                 result.Data.map(x => {
                                     return { label: x.Name, value: x.Id }
                                 }
                                 )
                             );
+                            setSelectOptionsList(selectOptionsListUpdate);
                         }
                     }
                 );
             }
-            else if (column.Name == selectColumns[0].Name) {
+            else if (column.Name ===  'Role') {
                 rolesService.getRoles().then(
                     result => {
                         if (result.Success) {
                             // console.log(result.Data);
-                            selectOptionsList[column.Name] = (
+                            let selectOptionsListUpdate = selectOptionsList;                            
+                            selectOptionsListUpdate[column.Name] = (
                                 result.Data.map(x => {
                                     return { label: x.Name, value: x.Id }
                                 }
                                 )
                             );
+                            setSelectOptionsList(selectOptionsListUpdate);
                         }
                     }
                 );
@@ -156,7 +178,8 @@ console.log(currentRow);
 
     React.useEffect(() => {
 
-       
+       console.log(selectOptionsList);
+
         rolePermissionsService.getRolePermissions().then(response => {
             if (response.Success) {
                 setRolePermissions(response.Data);
@@ -172,7 +195,7 @@ console.log(currentRow);
         setAddSuccess(false);
         setDeleteSuccess(false);
         setUpdateSuccess(false);
-    }, [match, loggedIn, deleteSuccess, addSuccess, updateSuccess]);
+    }, [match, loggedIn, deleteSuccess, addSuccess, updateSuccess, selectOptionsList]);
     return (
         <React.Fragment>
             <div align="right" style={{ marginBottom: "16px" }}>
@@ -231,8 +254,8 @@ console.log(currentRow);
                     </Table>
                     {isEditModalVisible &&
                         <CreateEditModal
-                            selectColumns={selectColumns}
-                            selectOptionsList={selectOptionsList}
+                            isSelectList={isSelectList}
+                            selectOptions={selectOptionsList}
                             columns={columns}
                             row={currentRow}
                             handleOnClose={handleOnEditComplete}
@@ -255,7 +278,7 @@ console.log(currentRow);
                 isCreateRolePermissionModalVisible && rolePermissions &&
 
                 <CreateEditModal
-                    selectColumns={selectColumns}
+                    isSelectList={isSelectList}
                     selectOptions={selectOptionsList}
                     columns={columns}
                     row={{}}

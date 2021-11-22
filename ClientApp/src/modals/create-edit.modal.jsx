@@ -5,7 +5,7 @@ import { Form, Field } from 'react-final-form';
 import { DynamicElementAdapter } from '../adapters';
 import { history, GetElementTypeFromDataType } from '../helpers';
 
-const CreateEditModal = ({ columns, row, label, mode, handleOnClose, selectColumns, selectOptions}) => {
+const CreateEditModal = ({ columns, row, label, mode, handleOnClose, isSelectList, selectOptions}) => {
     const [isVisible, setIsVisible] = useState(true);
     const [isJsonVisible, setJsonVisible] = React.useState(true);
     // const [columns, setColumns] = React.useState(null);
@@ -34,6 +34,7 @@ const CreateEditModal = ({ columns, row, label, mode, handleOnClose, selectColum
     }
     const getIsSelectColumn = (column) => {
         console.log(column);
+        const selectColumns = [];
         if(selectColumns && selectColumns.length) {
             const selectColumnSearch = selectColumns.filter(c => c.Name == column.Name);
             if(selectColumnSearch && selectColumnSearch.length) {
@@ -49,6 +50,9 @@ const CreateEditModal = ({ columns, row, label, mode, handleOnClose, selectColum
     }
   
     console.log(row);
+    console.log(isSelectList);
+    console.log(selectOptions);
+    
     return (
         <div>
             <Modal isOpen={isVisible} toggle={toggle} title={label}>
@@ -70,7 +74,7 @@ const CreateEditModal = ({ columns, row, label, mode, handleOnClose, selectColum
                                     <form name="form" className="row" id="createEditSettingForm" onSubmit={(e) => handleOnSubmit(values, e)}>
                                         {columns &&
                                             columns.filter(column => !getIsColumnReadOnly(column) || mode == 'edit').map(column => (
-                                                <Field isWorking={false} type="text" key={column.Name} name={column.Name} required="true" component={DynamicElementAdapter} selectOptions={selectOptions ? selectOptions[column.Name]: null} isSelect={getIsSelectColumn(column)} column={column} />
+                                                <Field isWorking={false} type="text" key={column.Name} name={column.Name} required="true" component={DynamicElementAdapter} selectOptions={selectOptions ? selectOptions[column.Name]: null} isSelect={isSelectList? isSelectList[column.Name]: false} column={column} />
                                             ))
                                         }
                                         {

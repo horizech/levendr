@@ -179,7 +179,7 @@ const PermissionsPage = ({ match, location, dispatch, loggedIn }) => {
                     </Table>
                     {isEditModalVisible &&
                         <CreateEditModal
-                            selectColumns={false}
+                            isSelectList={[]}
                             selectOptionsList={[]}
                             columns={columns}
                             row={currentRow}
@@ -203,8 +203,8 @@ const PermissionsPage = ({ match, location, dispatch, loggedIn }) => {
                 isCreatePermissionModalVisible && permissions &&
 
                 <CreateEditModal
-                    selectColumns={false}
-                    selectOptionsList={[]}
+                    isSelectList={[]}
+                    selectOptions={[]}
                     columns={columns}
                     row={{}}
                     handleOnClose={handleOnCreateComplete}
