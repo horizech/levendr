@@ -9,7 +9,7 @@ const CreateEditModal = ({ columns, row, label, mode, handleOnClose, selectColum
     const [isVisible, setIsVisible] = useState(true);
     const [isJsonVisible, setJsonVisible] = React.useState(true);
     // const [columns, setColumns] = React.useState(null);
-console.log(selectOptions);
+    console.log(selectOptions);
     const toggle = () => {
         const newIsVisible = !isVisible;
         setIsVisible(newIsVisible);
@@ -20,10 +20,12 @@ console.log(selectOptions);
   
  
     const handleOnSubmit = (values) => {
+        console.log(values);
         const newIsVisible = !isVisible;
         setIsVisible(newIsVisible);
         handleOnClose(values);
     }
+    
     const getIsColumnReadOnly = (column) => {
         switch (column.Name) {
             case "Id": case "CreatedOn": case "CreatedBy": case "LastUpdatedOn": case "LastUpdatedBy": return true;
@@ -31,13 +33,22 @@ console.log(selectOptions);
         }
     }
     const getIsSelectColumn = (column) => {
-        switch (column.Name) {
-            case selectColumns[0].Name : case selectColumns[1].Name : return true;
-            default: return false;
+        console.log(column);
+        if(selectColumns && selectColumns.length) {
+            const selectColumnSearch = selectColumns.filter(c => c.Name == column.Name);
+            if(selectColumnSearch && selectColumnSearch.length) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
         }
     }
   
-console.log(row);
+    console.log(row);
     return (
         <div>
             <Modal isOpen={isVisible} toggle={toggle} title={label}>
@@ -59,7 +70,7 @@ console.log(row);
                                     <form name="form" className="row" id="createEditSettingForm" onSubmit={(e) => handleOnSubmit(values, e)}>
                                         {columns &&
                                             columns.filter(column => !getIsColumnReadOnly(column) || mode == 'edit').map(column => (
-                                                <Field isWorking={false} type="text" key={column.Name} name={column.Name} required="true" component={DynamicElementAdapter} selectOptions={selectOptions[column.Name]} isSelect={getIsSelectColumn(column)} column={column} />
+                                                <Field isWorking={false} type="text" key={column.Name} name={column.Name} required="true" component={DynamicElementAdapter} selectOptions={selectOptions ? selectOptions[column.Name]: null} isSelect={getIsSelectColumn(column)} column={column} />
                                             ))
                                         }
                                         {
