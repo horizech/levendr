@@ -67,15 +67,16 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
         console.log(selectOptionsList['Permission']);
         console.log(row['Permission']);
         if(row) {
-            if(selectOptionsList['Role'] && row['Role']) {
-                row['Role'] = selectOptionsList['Role'].filter(x => x.value == row['Role']);                             
+            let editRow = JSON.parse(JSON.stringify(row));
+            if(selectOptionsList['Role'] && editRow['Role']) {
+                editRow['Role'] = selectOptionsList['Role'].filter(x => x.value == editRow['Role'])[0];                             
             }
-            if(selectOptionsList['Permission'] && row['Permission']) {
-                row['Permission'] = selectOptionsList['Permission'].filter(x => x.value == row['Permission']);                             
+            if(selectOptionsList['Permission'] && editRow['Permission']) {
+                editRow['Permission'] = selectOptionsList['Permission'].filter(x => x.value == editRow['Permission'])[0];                             
             }
+            console.log(editRow);
+            setCurrentRow(editRow);
         }
-        console.log(row);
-        setCurrentRow(row);
     }
 
     const showDeleteConfirmationModal = (row) => {
