@@ -22,7 +22,7 @@ class UserApiProvider {
         localStorage.removeItem('user');
     }
 
-    static getAll() {
+    static getAllUsers() {
         const requestOptions = {
             method: 'GET',
             headers: authHeader()
@@ -31,7 +31,7 @@ class UserApiProvider {
         return fetch(config.apiUrl + '/users', requestOptions).then(handleResponse, handleError);
     }
 
-    static getById(id) {
+    static getUserById(id) {
         const requestOptions = {
             method: 'GET',
             headers: authHeader()
@@ -40,7 +40,7 @@ class UserApiProvider {
         return fetch(config.apiUrl + '/users/' + id, requestOptions).then(handleResponse, handleError);
     }
 
-    static register(user) {
+    static registerUser(user) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -50,7 +50,7 @@ class UserApiProvider {
         return fetch(config.apiUrl + '/users/register', requestOptions).then(handleResponse, handleError);
     }
 
-    static update(user) {
+    static updateUser(user) {
         const requestOptions = {
             method: 'PUT',
             headers: { ...authHeader(), 'Content-Type': 'application/json' },
@@ -61,7 +61,7 @@ class UserApiProvider {
     }
 
     // prefixed function name with underscore because delete is a reserved word in javascript
-    static delete(id) {
+    static deleteUser(id) {
         const requestOptions = {
             method: 'DELETE',
             headers: authHeader()

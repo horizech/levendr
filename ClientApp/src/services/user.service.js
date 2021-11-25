@@ -3,11 +3,11 @@ import { UserApiProvider } from '../api_providers';
 export const userService = {
     login,
     logout,
-    register,
-    getAll,
-    getById,
-    update,
-    delete: _delete
+    registerUser,
+    getAllUsers,
+    getUserById,
+    updateUser,
+    deleteUser
 };
 
 function login(Username, Password) {
@@ -18,23 +18,23 @@ function logout() {
     return UserApiProvider.logout();
 }
 
-function getAll() {
-    return UserApiProvider.getAll();
+function getAllUsers() {
+    return UserApiProvider.getAllUsers();
 }
 
-function getById(id) {
-    return UserApiProvider.getById(id);
+function getUserById(id) {
+    return UserApiProvider.getUserById(id);
 }
 
-function register(user) {
-    return UserApiProvider.register(user);
+function registerUser(user) {
+    return UserApiProvider.registerUser(user);
 }
 
-function update(user) {
-    return UserApiProvider.update(user);
+function updateUser(user) {
+    return UserApiProvider.updateUser(user);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-    return UserApiProvider.delete(id)
+function deleteUser(id) {
+    return UserApiProvider.deleteUser(id)
 }

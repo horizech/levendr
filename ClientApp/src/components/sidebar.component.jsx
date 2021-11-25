@@ -145,6 +145,8 @@ return (
           <Menu iconShape="square">
             <MenuItem>Levendr</MenuItem>
             {/* {renderMenu()} */}
+            <MenuItem onClick={() => gotoPath('/user')}>Current User</MenuItem>
+            <MenuItem onClick={() => gotoPath('/users')}>Users</MenuItem>
             <MenuItem onClick={() => gotoPath('/settings')}>{'Settings'}</MenuItem>
             <MenuItem onClick={() => gotoPath('/permissions')}>Permissions</MenuItem>
             <MenuItem onClick={() => gotoPath('/roles')}>Roles</MenuItem>

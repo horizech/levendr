@@ -15,3 +15,5 @@ export * from './settings.page';
 export * from './permissions.page';
 export * from './roles.page';
 export * from './role-permissions.page';
+export * from './users.page';
+export * from './user.page';
