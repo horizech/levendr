@@ -6,7 +6,9 @@ import { Sidebar } from './sidebar.component';
 import '../styles/Layout.css';
 
 export const Layout = ({children}) => {
-  const displayName = Layout.name;
+  // const displayName = Layout.name;
+  const screenHeight = window.innerHeight;
+  const navbarOffset = 76;
 
   return (
     <div>
@@ -14,31 +16,11 @@ export const Layout = ({children}) => {
         <Sidebar />
         <div style={{width: "100%"}}>
           <NavMenu />
-          <Container>
+          <Container className='layout-container' style={{height: screenHeight - navbarOffset}}>
             {children}
           </Container>        
         </div>
       </div>
     </div>
   );
-
 }
-// export class Layout extends Component {
-//   static displayName = Layout.name;
-
-//   render () {
-//     return (
-//       <div>
-//         <div className="layout">
-//           <Sidebar />
-//           <div style={{width: "100%"}}>
-//             <NavMenu />
-//             <Container>
-//               {this.props.children}
-//             </Container>        
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-// }

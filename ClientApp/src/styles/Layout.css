@@ -1,9 +1,13 @@
-.layout{
+.layout {
   height: 100vh;
   display: flex;
   flex-direction: row;
 }
 
-.main-container{
+.main-container {
   flex: 1 1 auto;
+}
+
+.layout-container {
+  overflow: scroll;
 }
