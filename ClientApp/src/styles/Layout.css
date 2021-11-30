@@ -9,5 +9,5 @@
 }
 
 .layout-container {
-  overflow: scroll;
+  overflow: auto;
 }
