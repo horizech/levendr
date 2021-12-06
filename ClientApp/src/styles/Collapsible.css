@@ -1,30 +1,56 @@
 @keyframes opening {
-    from {
-      height: 0;
-    }
-    to {
-      height: auto; /* your line height here */
-    }
+  from {
+    height: 0;
+  }
+  to {
+    height: auto; /* your line height here */
+  }
+}
+
+@keyframes collapsing {
+  from {
+    height: auto;
+  }
+  to {
+    height: 0; /* your line height here */
+  }
+}
+
+.collapsible-body {
+  max-height: 0;
+  padding: 0px;
+  overflow: hidden;
+  transition: max-height 0.7s ease-out;
+}
+
+.collapsible-header {
+  cursor: pointer;
+}
+
+.collapsible-header:hover {
+  background-color: #cfcfcf;
+}
+
+.collapsible-arrow {
+  transform: rotate(0);
+  transition: transform 0.2s ease-out;
+}
+
+.collapsible-arrow-open {
+  transform: rotate(0.25turn);
+  transition: transform 0.2s ease-in;
 }
 
 .open {
-    animation-duration: 1s;
-    animation-name: opening;
-    transition: height 1s;
+  /* animation-duration: 1s;
+  animation-name: opening; */
+  max-height: 500px;
+  transition: max-height 1.25s ease-in;
+}
+.card-header {
+  border-bottom: 0px solid rgba(0, 0, 0, 0.125);
 }
 
-
-@keyframes collapsing {
-    from {
-      height: auto;
-    }
-    to {
-      height: 0; /* your line height here */
-    }
-}
-
-.collapsed {
-    animation-duration: 1s;
-    animation-name: collapsing;
-    transition: height 1s;
+element.style {
+  height: auto;
 }

@@ -5,7 +5,7 @@ import { Sidebar } from './sidebar.component';
 
 import '../styles/Collapsible.css';
 
-export const Collapsible = ({title, subTitle, icon, defaultOpen, children}) => {
+export const Collapsible = ({title, subTitle, icon, defaultOpen, style, children}) => {
   
   const [isOpen, setOpen] = React.useState(defaultOpen || false);
 
@@ -15,25 +15,28 @@ export const Collapsible = ({title, subTitle, icon, defaultOpen, children}) => {
 
   return (
     <React.Fragment>
-      <Card>
-        <CardHeader onClick={toggle}>
+      <Card style={style}>
+        <CardHeader className={'collapsible-header'} onClick={toggle}>
           <div style={{display: 'flex', alignItems: 'center'}}>
-            <div style={{marginRight: '16px'}}>
-              {icon}
-            </div>
+            {
+              icon &&
+            <i style={{marginRight: '16px'}} className={"fas fa-" + icon}>
+            </i>
+            }
             <div style={{flex: '1'}}>
               <CardTitle>{title}</CardTitle>
               <CardSubtitle className="mb-2 text-muted">{subTitle}</CardSubtitle>        
             </div>
-            <div style={{marginLeft: '16px'}}>
-              {icon}
+            <div style={{marginLeft: '16px', display: 'inline-block'}}>
+            <span style={{display: "inline-block"}}>
+              <i style={{marginRight: '16px'}} className={"collapsible-arrow fas fa-chevron-right" + (isOpen? ' collapsible-arrow-open': '')} ></i>
+            </span>
             </div>
           </div>
         </CardHeader>        
-          <CardBody className={isOpen? 'open': 'collapsed'}>
+          <CardBody className={'collapsible-body' + (isOpen? ' open': '')}>
             <CardText>
-            {
-              isOpen &&
+            {              
               children
             }
           </CardText>
