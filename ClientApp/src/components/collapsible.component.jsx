@@ -15,8 +15,8 @@ export const Collapsible = ({title, subTitle, icon, defaultOpen, style, children
 
   return (
     <React.Fragment>
-      <Card style={style}>
-        <CardHeader className={'collapsible-header'} onClick={toggle}>
+      <Card style={style} className="collapsible-card border-0">
+        <CardHeader className={'collapsible-header' + (isOpen? ' collapsible-header-open': '')} onClick={toggle}>
           <div style={{display: 'flex', alignItems: 'center'}}>
             {
               icon &&
@@ -34,13 +34,11 @@ export const Collapsible = ({title, subTitle, icon, defaultOpen, style, children
             </div>
           </div>
         </CardHeader>        
-          <CardBody className={'collapsible-body' + (isOpen? ' open': '')}>
-            <CardText>
+            <CardText className={'collapsible-body' + (isOpen? ' collapsible-body-open': '')}>
             {              
               children
             }
           </CardText>
-          </CardBody>
         </Card>      
     </React.Fragment>
   );

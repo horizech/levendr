@@ -23,7 +23,7 @@ const UserPage = ({ user, loggedIn }) => {
 
     return (
         <React.Fragment>
-            <Collapsible style={{marginTop: "32px"}} icon="user" title="User Info" subTitle="">
+            <Collapsible style={{marginTop: "32px"}} icon="user" title="User Info" subTitle="" defaultOpen={true}>
                 <ListGroup variant="flush">
                     <ListGroupItem>
                         <div className="row">
