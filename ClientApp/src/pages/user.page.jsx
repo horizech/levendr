@@ -8,6 +8,7 @@ import {
     CardTitle, CardText, Button, CardHeader,
     CardFooter, Row, Col
 } from "reactstrap";
+import { Collapsible } from '../components';
 
 const UserPage = ({ user, loggedIn }) => {
 
@@ -22,7 +23,9 @@ const UserPage = ({ user, loggedIn }) => {
 
     return (
         <React.Fragment>
-
+            <Collapsible icon="hello" title="test" subTitle="Sub Text">
+                <p>Hello world! How are you?</p>
+            </Collapsible>
             <Card style={{
                 marginTop: '1rem',
                 marginBottom: '1rem',

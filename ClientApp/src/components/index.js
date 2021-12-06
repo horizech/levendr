@@ -11,3 +11,4 @@ export * from './user-guarded-route.component';
 export * from './table-columns.component';
 export * from './add-table-column.component';
 export * from './loading.component';
+export * from './collapsible.component';

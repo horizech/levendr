@@ -1,0 +1,30 @@
+@keyframes opening {
+    from {
+      height: 0;
+    }
+    to {
+      height: auto; /* your line height here */
+    }
+}
+
+.open {
+    animation-duration: 1s;
+    animation-name: opening;
+    transition: height 1s;
+}
+
+
+@keyframes collapsing {
+    from {
+      height: auto;
+    }
+    to {
+      height: 0; /* your line height here */
+    }
+}
+
+.collapsed {
+    animation-duration: 1s;
+    animation-name: collapsing;
+    transition: height 1s;
+}
