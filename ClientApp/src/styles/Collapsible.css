@@ -16,15 +16,19 @@
   }
 }
 
+.collapsible-header {
+  font-weight: 400;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
 .collapsible-body {
+  font-size: 0.8em;
+  font-weight: 400;
   max-height: 0;
   padding: 0px;
   overflow: hidden;
   transition: max-height 0.7s ease-out;
-}
-
-.collapsible-header {
-  cursor: pointer;
 }
 
 .collapsible-header:hover {
@@ -41,10 +45,14 @@
   transition: transform 0.2s ease-in;
 }
 
+.list-group-item {
+  padding: 8px !important;
+}
+
 .open {
   /* animation-duration: 1s;
   animation-name: opening; */
-  max-height: 500px;
+  max-height: 2000px;
   transition: max-height 1.25s ease-in;
 }
 .card-header {
