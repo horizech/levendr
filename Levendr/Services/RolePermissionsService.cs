@@ -27,7 +27,7 @@ namespace Levendr.Services
             string tableJson = FileSystem.ReadFile(tablePath);
             TableDefinition table = FileSystem.ReadJsonString<TableDefinition>(tableJson);
 
-            List<ColumnInfo> columnDefinitions = await ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseDriver().GetTableColumns(Schemas.Levendr, TableNames.Roles.ToString());
+            List<ColumnInfo> columnDefinitions = await ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseDriver().GetTableColumns(Schemas.Levendr, TableNames.RolePermissions.ToString());
 
             List<Dictionary<string, object>> result = await QueryDesigner
                 .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissions.ToString())
