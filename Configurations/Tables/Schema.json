@@ -98,24 +98,42 @@
                 "additionalProperties": true
             }
         },
-        "IncludeTables": {
+        "AddForeignTables": {
             "type": "array",
-            "description": "?: List of tables to include with the result (foreign key must exist)",
+            "description": "?: List of tables to include with the result",
             "items": {
                 "type": "object",
                 "description": "?: Table",
                 "additionalProperties": false,
                 "required": [
-                    "Table", "Key"
+                    "Name", "ForeignColumns"
                 ],
                 "properties": {
-                    "Table": {
+                    "Name": {
                         "type": "string",
                         "description": "M: Column Name"
                     },
-                    "Key": {
-                        "type": "string",
-                        "description": "M: Column Name"
+                    "ForeignColumns": {
+                        "type": "array",
+                        "description": "?: List of tables to include with the result",
+                        "items": {
+                            "type": "object",
+                            "description": "?: Table",
+                            "additionalProperties": false,
+                            "required": [
+                                "ForeignName", "OutputName"
+                            ],
+                            "properties": {
+                                "ForeignName": {
+                                    "type": "string",
+                                    "description": "M: Foreign Column Name"
+                                },
+                                "OutputName": {
+                                    "type": "string",
+                                    "description": "M: Change Foreign Column Name in Output"
+                                }
+                            }
+                        }
                     }
                 }
             }

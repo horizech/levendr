@@ -8,6 +8,7 @@ using Levendr.Models;
 using Levendr.Helpers;
 using Levendr.Constants;
 using Levendr.Enums;
+using Levendr.Mappings;
 
 using Microsoft.Extensions.Configuration;
 
@@ -22,8 +23,17 @@ namespace Levendr.Services
 
         public async Task<APIResult> GetRoles()
         {
+            string tablePath = FileSystem.GetPathInConfigurations("Tables/Definitions/" + TableNames.Roles.ToString() + ".json");
+            string tableJson = FileSystem.ReadFile(tablePath);
+            TableDefinition table = FileSystem.ReadJsonString<TableDefinition>(tableJson);
+
+
+            List<ColumnInfo> columnDefinitions = await ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseDriver().GetTableColumns(Schemas.Levendr, TableNames.Roles.ToString());
+
             List<Dictionary<string, object>> result = await QueryDesigner
                 .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Roles.ToString())
+                .AddColumnDefinitions(columnDefinitions)
+                .AddForeignTables(table.ForeignTables)
                 .RunSelectQuery();
 
             return new APIResult()
