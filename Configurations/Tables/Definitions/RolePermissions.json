@@ -27,5 +27,19 @@
         {"Id": 18, "Role": 3, "Permission": 14},
         {"Id": 19, "Role": 3, "Permission": 15},
         {"Id": 20, "Role": 3, "Permission": 16}
+    ],
+    "AddForeignTables": [
+        {
+            "Name": "Role", 
+            "ForeignColumns": [
+                {"ForeignName": "Name", "OutputName": "RoleName"}
+            ]
+        },
+        {
+            "Name": "Permission", 
+            "ForeignColumns": [
+                {"ForeignName": "Name", "OutputName": "PermissionName"}
+            ]
+        }      
     ]
 }
