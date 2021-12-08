@@ -13,7 +13,7 @@ using Levendr.Enums;
 using Levendr.Helpers;
 using Levendr.Constants;
 using Levendr.Exceptions;
-
+using Levendr.Mappings;
 
 namespace Levendr.Databases.Postgresql
 {
@@ -528,11 +528,11 @@ namespace Levendr.Databases.Postgresql
             {
                 if ((query.Conditions?.Count ?? 0) > 0)
                 {
-                    return await GetRowsByConditions(query.SchemaName, query.TableName, query.Conditions);
+                    return await GetRowsByConditions(query.SchemaName, query.TableName, query.Conditions, query.AddForeignTables);
                 }
                 else
                 {
-                    return await GetRows(query.SchemaName, query.TableName);
+                    return await GetRows(query.SchemaName, query.TableName, query.AddForeignTables);
                 }
             }
             else if (query.Action == QueryAction.InsertRows)
@@ -779,17 +779,18 @@ namespace Levendr.Databases.Postgresql
         // }
 
 
-        public async Task<List<Dictionary<string, object>>> GetRows(string schema, string table)
+        public async Task<List<Dictionary<string, object>>> GetRows(string schema, string table, List<AddForeignTables> AddForeignTables = null)
         {
             QueryDesigner designer = QueryDesigner
                 .CreateDesigner(schema, table, QueryAction.SelectRows)
+                .AddForeignTables(AddForeignTables)
                 .OrderBy("Id");
 
             List<Dictionary<string, object>> result = (await designer.ExecuteQuery<Dictionary<string, object>>()).ToList();
             return result;
         }
 
-        public async Task<List<Dictionary<string, object>>> GetRowsByConditions(string schema, string table, List<QuerySearchItem> parameters)
+        public async Task<List<Dictionary<string, object>>> GetRowsByConditions(string schema, string table, List<QuerySearchItem> parameters, List<AddForeignTables> AddForeignTables = null)
         {
             List<ColumnInfo> columns = await GetTableColumns(schema, table);
 
@@ -806,6 +807,7 @@ namespace Levendr.Databases.Postgresql
             QueryDesigner designer = QueryDesigner
                 .CreateDesigner(schema, table, QueryAction.SelectRows)
                 .SetConditions(parameters)
+                .AddForeignTables(AddForeignTables)
                 .OrderBy("Id");
             // .OrderDescendingBy("TableName")
             // .Limit(5)

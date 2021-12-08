@@ -11,14 +11,12 @@ using Levendr.Enums;
 
 namespace Levendr.Mappings
 {
-    public class TableIncluded
+    public class AddForeignTables
     {
+        [JsonPropertyName("Name")]
+        public string Name { get; set; }
 
-        [JsonPropertyName("Table")]
-        public string Table { get; set; }
-
-        [JsonPropertyName("Key")]
-        public string Key { get; set; }
-
+        [JsonPropertyName("ForeignColumns")]
+        public List<AddForeignTableColumns> ForeignColumns { get; set; }
     }
 }

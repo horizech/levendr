@@ -22,6 +22,7 @@ namespace Levendr.Models
         public List<QuerySearchItem> Conditions { get; set; }
         public List<ColumnInfo> ColumnsDefinitions { get; set; }
         public Dictionary<string, string> SelectedOutputColumns { get; set; }
+        public List<AddForeignTables> AddForeignTables {get; set;}
         public int Limit { get; set; }
         public int Offset { get; set; }
         public string OrderBy { get; set; }

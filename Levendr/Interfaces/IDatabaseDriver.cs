@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Levendr.Models;
+using Levendr.Mappings;
 using Levendr.Enums;
 using Levendr.Helpers;
 
@@ -35,9 +36,9 @@ namespace Levendr.Interfaces
         Task<List<int>> InsertRow(string schema, string table, Dictionary<string, object> parameters, List<ColumnInfo> columns);
         Task<List<int>> InsertRows(string schema, string table, List<Dictionary<string, object>> parameters);
 
-        Task<List<Dictionary<string, object>>> GetRows(string schema, string table);
+        Task<List<Dictionary<string, object>>> GetRows(string schema, string table, List<AddForeignTables> AddForeignTables = null);
 
-        Task<List<Dictionary<string, object>>> GetRowsByConditions(string schema, string table, List<QuerySearchItem> parameters);
+        Task<List<Dictionary<string, object>>> GetRowsByConditions(string schema, string table, List<QuerySearchItem> parameters, List<AddForeignTables> AddForeignTables = null);
 
         Task<bool> UpdateRows(string schema, string table, Dictionary<string, object> data, List<QuerySearchItem> parameters);
 

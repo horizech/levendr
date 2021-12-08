@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 using Levendr.Models;
 using Levendr.Mappings;
@@ -171,6 +172,19 @@ namespace Levendr.Helpers
             return this;
         }
 
+
+        public QueryDesigner AddColumnDefinitions(List<ColumnInfo> columnInfos)
+        {
+            this.query.ColumnsDefinitions = columnInfos;
+            return this;
+        }
+
+        public QueryDesigner AddForeignTables(List<AddForeignTables> addForeignTables)
+        {
+            this.query.AddForeignTables = addForeignTables;
+            return this;
+        }
+
         public QueryDesigner WhereEquals(string name, object value, bool caseSensitive = false)
         {
             this.query.Conditions ??= new List<QuerySearchItem>();
@@ -301,11 +315,11 @@ namespace Levendr.Helpers
 
                 if ((this.query.Conditions?.Count ?? 0) > 0)
                 {
-                    return await driver.GetRowsByConditions(this.query.SchemaName, this.query.TableName, this.query.Conditions);
+                    return await driver.GetRowsByConditions(this.query.SchemaName, this.query.TableName, this.query.Conditions, this.query.AddForeignTables);
                 }
                 else
                 {
-                    return await driver.GetRows(this.query.SchemaName, this.query.TableName);
+                    return await driver.GetRows(this.query.SchemaName, this.query.TableName, this.query.AddForeignTables);
                 }
             }
             else if (this.query.Action == QueryAction.InsertRows)
@@ -330,20 +344,32 @@ namespace Levendr.Helpers
         {
             if ((this.query.Conditions?.Count ?? 0) > 0)
             {
-                return await ServiceManager
-                    .Instance
-                    .GetService<DatabaseService>()
-                    .GetDatabaseDriver()
-                    .GetRowsByConditions(this.query.SchemaName, this.query.TableName, this.query.Conditions);
+                if((this.query.ColumnsDefinitions?.Count ?? 0) < 1) {
+                    this.AddColumnDefinitions(await ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseDriver().GetTableColumns(this.query.SchemaName, this.query.TableName));
+                }
+
+                this.query.Conditions = this.query.Conditions.Select( parameter => {
+                    parameter.Value = ServiceManager
+                            .Instance
+                            .GetService<DatabaseService>()
+                            .GetDatabaseDriver()
+                            .DataType
+                            .DeserializeValue(this.query.ColumnsDefinitions.Find(c => c.Name.ToLower().Equals(parameter.Name.ToString().ToLower())).Datatype, parameter.Value);
+                    return parameter;                
+                }).ToList();
+
+                OrderBy("Id");
+            // .OrderDescendingBy("TableName")
+            // .Limit(5)
+            // .Offset(5);
+
             }
-            else
-            {
-                return await ServiceManager
-                    .Instance
-                    .GetService<DatabaseService>()
-                    .GetDatabaseDriver()
-                    .GetRows(this.query.SchemaName, this.query.TableName);
-            }
+
+            SelectAction(QueryAction.SelectRows);
+            
+            List<Dictionary<string, object>> result = (await ExecuteQuery<Dictionary<string, object>>()).ToList();
+            return result;
+            
         }
 
         public async Task<List<int>> RunInsertQuery()

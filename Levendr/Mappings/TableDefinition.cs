@@ -26,8 +26,8 @@ namespace Levendr.Mappings
         [JsonPropertyName("DefaultRows")]
         public List<Dictionary<string, object>> DefaultRows { get; set; }
 
-        [JsonPropertyName("IncludeTables")]
-        public List<TableIncluded> IncludeTables { get; set; }
+        [JsonPropertyName("AddForeignTables")]
+        public List<AddForeignTables> ForeignTables { get; set; }
 
     }
 }
