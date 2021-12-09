@@ -7,6 +7,7 @@ import { DialogModal } from '../modals'
 import { ButtonIcon } from './button-icon.component';
 import { Table } from 'reactstrap';
 import { Loading } from './loading.component';
+import { LevendrTable } from '.';
 
 const TableRecords = ({table, tableColumns, loadingCurrentTableRows, currentTableRows, dispatch, deletedRowSuccess, deletingRow}) => {
     const [currentTable, setCurrentTable] = React.useState(null);
@@ -92,38 +93,26 @@ const TableRecords = ({table, tableColumns, loadingCurrentTableRows, currentTabl
             {   
                 (loadingCurrentTableRows === null && deletingRow === null && currentTableRows) &&          
                 <div>
-                    <Table responsive bordered striped size="sm">
-                        <thead>
-                            <tr key={'header'}>
-                                <th key={'header_#'} scope="col"></th>
-                                {
-                                    Object.keys(currentTableRows[0]).map(key => (
-                                        <th key={'header_' + key} scope="col">{key}</th>
-                                    ))
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentTableRows &&
-                                currentTableRows.map((row, i) => (
-                                    <tr key={'row_' + (i + 1)}>
+                    <LevendrTable headers={Object.keys(currentTableRows[0])}>
+                        {currentTableRows &&
+                            currentTableRows.map((row, i) => (
+                                <tr key={'row_' + (i + 1)}>
 
-                                        <td key={'data_' + i + '_#'} scope="row">
-                                            <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)}/>
-                                                <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)}/>
-                                            </div>
-                                        </td>
-                                        {
-                                            Object.keys(currentTableRows[0]).map(key => (
-                                                <td key={'data_' + i + key} >{row[key] != null ? '' + row[key]: ''}</td>
-                                            ))
-                                        }
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </Table>
+                                    <td key={'data_' + i + '_#'} scope="row">
+                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                            <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)}/>
+                                            <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)}/>
+                                        </div>
+                                    </td>
+                                    {
+                                        Object.keys(currentTableRows[0]).map(key => (
+                                            <td key={'data_' + i + key} >{row[key] != null ? '' + row[key]: ''}</td>
+                                        ))
+                                    }
+                                </tr>
+                            ))
+                        }
+                    </LevendrTable>                    
                     {isEditModalVisible &&
                         <CreateEditTableRecordModal
                             key={table}

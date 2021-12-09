@@ -1,0 +1,27 @@
+.levendr-table table {
+    background-color: grey;
+}
+
+.levendr-table table thead {
+    background-color: pink;
+}
+
+.levendr-table table thead tr{
+    background-color: rgb(167, 31, 54);
+}
+
+.levendr-table table thead tr th{
+    background-color: rgb(51, 0, 9);
+}
+
+.levendr-table table tbody{
+    background-color: green;
+}
+
+.levendr-table table tbody tr{
+    background-color: rgb(0, 75, 0);
+}
+
+.levendr-table table tbody td{
+    background-color: rgb(0, 34, 0);
+}
