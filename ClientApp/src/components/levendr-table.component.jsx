@@ -13,7 +13,7 @@ import '../styles/LevendrTable.css'
 export const LevendrTable = ({headers, children}) => {
     return (
         <div className="levendr-table">
-            <Table responsive bordered striped size="sm">
+            <Table responsive size="sm">
                 <thead>
                     <tr key={'levendr_table_header'}>
                         <th key={'levendr_table_header_#'} scope="col"></th>

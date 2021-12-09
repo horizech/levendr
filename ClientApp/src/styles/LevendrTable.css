@@ -1,9 +1,26 @@
 .levendr-table table {
     /* background-color: grey; */
+    
+    display: table;
+    /* border-collapse: separate; */
+    /* box-sizing: border-box; */
+    /* text-indent: initial; */
+    border-spacing: 8px;
+    border-color: transparent;
+    background-color: transparent;
+    /* border-collapse: collapse; */
+
+    border-collapse: separate; 
+    border-spacing: 0 1em;
+    
 }
 
 .levendr-table table thead {
     /* background-color: pink; */
+    display: table-header-group;
+    vertical-align: middle;
+    border-color: inherit;
+    border-collapse: collapse;
 }
 
 .levendr-table table thead tr{
@@ -12,6 +29,7 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: .1rem;
+    border-collapse: collapse;
 }
 
 .levendr-table table thead tr th{
@@ -20,21 +38,38 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: .1rem;
+    /* padding: 0.75rem; */
+}
+
+.levendr-table table tbody tr th:first-child, .levendr-table table tbody tr td:first-child {
+    margin-left: 32px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+}
+
+.levendr-table table tbody tr th:last-child, .levendr-table table tbody tr td:last-child {
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
 }
 
 .levendr-table table tbody{
-    /* background-color: green; */
+    display: table-row-group;
+    vertical-align: middle;
 }
 
 .levendr-table table tbody tr{
-    border-radius: 7px;
+ 
+    /* border-radius: 500px; */
     overflow: hidden;
-    -webkit-transition: .3s all ease;
-    -o-transition: .3s all ease;
     transition: .3s all ease;
+    padding: 0.9rem;
+    margin-left: 32px;
+
 }
 
 .levendr-table table tbody td{
     background: #fff;
     border: none;
+    padding: 0.75rem;
+
 }
