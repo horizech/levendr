@@ -1,0 +1,33 @@
+{
+    "$schema": "../Schema.json",
+    "Name": "InsertionSettings",
+    "AddAdditionalColumns": true,
+    "Columns": [
+        {"Name": "Action", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true},
+        {"Name": "Column", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true},
+        {"Name": "Condition", "Datatype": "ShortText", "IsUnique": true, "IsRequired": false},
+        {"Name": "Value", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true}
+    ],
+    "DefaultRows": [
+        {"Id": 1, "Action": "Permissions.AddPermission", "Column": "CreatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 2, "Action": "Permissions.AddPermission", "Column": "CreatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 3, "Action": "Permissions.UpdatePermission", "Column": "LastUpdatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 4, "Action": "Permissions.UpdatePermission", "Column": "LastUpdatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 5, "Action": "RolePermissions.AddRolePermission", "Column": "CreatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 6, "Action": "RolePermissions.AddRolePermission", "Column": "CreatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 7, "Action": "RolePermissions.UpdateRolePermission", "Column": "LastUpdatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 8, "Action": "RolePermissions.UpdateRolePermission", "Column": "LastUpdatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 9, "Action": "Roles.AddRole", "Column": "CreatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 10, "Action": "Roles.AddRole", "Column": "CreatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 11, "Action": "Roles.UpdateRole", "Column": "LastUpdatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 12, "Action": "Roles.UpdateRole", "Column": "LastUpdatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 13, "Action": "Settings.AddSetting", "Column": "CreatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 14, "Action": "Settings.AddSetting", "Column": "CreatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 15, "Action": "Settings.UpdateSetting", "Column": "LastUpdatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 16, "Action": "Settings.UpdateSetting", "Column": "LastUpdatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 17, "Action": "Table.InsertRows", "Column": "CreatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 18, "Action": "Table.InsertRows", "Column": "CreatedOn", "Condition": null, "Value": "CurrentDateTime"},
+        {"Id": 19, "Action": "Table.UpdateRows", "Column": "LastUpdatedBy", "Condition": null, "Value": "CurrentUserId"},
+        {"Id": 20, "Action": "Table.UpdateRows", "Column": "LastUpdatedOn", "Condition": null, "Value": "CurrentDateTime"}
+    ]
+}
