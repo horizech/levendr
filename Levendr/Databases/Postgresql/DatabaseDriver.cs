@@ -682,8 +682,10 @@ namespace Levendr.Databases.Postgresql
                 }));
             });
 
-            Task.WaitAll(insertRowsTasks.ToArray());
-            rowIds.Sort();
+            lock(insertRowsTasks) {
+                Task.WaitAll(insertRowsTasks.ToArray());
+                rowIds.Sort();
+            }
 
             if(errors.Count > 0) {
                 throw new LevendrErrorCodeException(string.Join("\n", errors));
