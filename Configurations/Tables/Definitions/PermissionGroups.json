@@ -1,0 +1,24 @@
+{
+    "$schema": "../Schema.json",
+    "Name": "PermissionGroups",
+    "AddAdditionalColumns": true,
+    "Columns": [
+        {"Name": "Name", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true},
+        {"Name": "Description", "Datatype": "ShortText", "IsRequired": true},
+        {"Name": "IsSystem", "Datatype": "Boolean", "IsRequired": true}
+    ],
+    "DefaultRows": [
+        {"Id": 1, "Name": "LevendrReadWrite", "Description": "Levendr ReadWrite", "IsSystem": true},
+        {"Id": 2, "Name": "PermissionsReadWrite", "Description": "Permissions ReadWrite", "IsSystem": true},
+        {"Id": 3, "Name": "RolePermissionsReadWrite", "Description": "RolePermissions ReadWrite", "IsSystem": true},
+        {"Id": 4, "Name": "RolesReadWrite", "Description": "Roles ReadWrite", "IsSystem": true},
+        {"Id": 5, "Name": "SettingsReadWrite", "Description": "Settings ReadWrite", "IsSystem": true},
+        {"Id": 6, "Name": "TableReadWrite", "Description": "Table ReadWrite", "IsSystem": true},
+        {"Id": 7, "Name": "LevendrReadOnly", "Description": "Levendr ReadOnly", "IsSystem": true},
+        {"Id": 8, "Name": "PermissionsReadOnly", "Description": "Permissions ReadOnly", "IsSystem": true},
+        {"Id": 9, "Name": "RolePermissionsReadOnly", "Description": "RolePermissions ReadOnly", "IsSystem": true},
+        {"Id": 10, "Name": "RolesReadOnly", "Description": "Roles ReadOnly", "IsSystem": true},
+        {"Id": 11, "Name": "SettingsReadOnly", "Description": "Settings ReadOnly", "IsSystem": true},
+        {"Id": 12, "Name": "TableReadOnly", "Description": "Table ReadOnly", "IsSystem": true}
+    ]
+}
