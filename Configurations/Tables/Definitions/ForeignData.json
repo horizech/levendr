@@ -11,7 +11,7 @@
     ],
     "DefaultRows": [
         {"Id": 1, "Schema": "Levendr", "Table": "Roles", "Column": "CreatedBy", "ForeignName": "Username", "OutputName": "CreatedByName"},
-        {"Id": 1, "Schema": "Levendr", "Table": "Roles", "Column": "CreatedBy", "ForeignName": "Email", "OutputName": "CreatedByEmail"},
-        {"Id": 1, "Schema": "Levendr", "Table": "Roles", "Column": "LastUpdatedBy", "ForeignName": "Username", "OutputName": "LastUpdatedByName"}
+        {"Id": 2, "Schema": "Levendr", "Table": "Roles", "Column": "CreatedBy", "ForeignName": "Email", "OutputName": "CreatedByEmail"},
+        {"Id": 3, "Schema": "Levendr", "Table": "Roles", "Column": "LastUpdatedBy", "ForeignName": "Username", "OutputName": "LastUpdatedByName"}
     ]
 }

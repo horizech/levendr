@@ -3,10 +3,10 @@
     "Name": "InsertionSettings",
     "AddAdditionalColumns": true,
     "Columns": [
-        {"Name": "Action", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true},
-        {"Name": "Column", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true},
-        {"Name": "Condition", "Datatype": "ShortText", "IsUnique": true, "IsRequired": false},
-        {"Name": "Value", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true}
+        {"Name": "Action", "Datatype": "ShortText", "IsRequired": true},
+        {"Name": "Column", "Datatype": "ShortText", "IsRequired": true},
+        {"Name": "Condition", "Datatype": "ShortText", "IsRequired": false},
+        {"Name": "Value", "Datatype": "ShortText", "IsRequired": true}
     ],
     "DefaultRows": [
         {"Id": 1, "Action": "Permissions.AddPermission", "Column": "CreatedBy", "Condition": null, "Value": "CurrentUserId"},
