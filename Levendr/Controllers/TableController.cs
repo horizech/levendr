@@ -149,7 +149,7 @@ namespace Levendr.Controllers
 
         }
         
-        [HttpGet("DeleteColumn")]
+        [HttpDelete("DeleteColumn")]
         public async Task<APIResult> DeleteColumn(string table, string column)
         {
             try{
