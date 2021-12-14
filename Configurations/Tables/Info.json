@@ -6,6 +6,7 @@
         "UserRoles": "UserRoles",
         "Permissions": "Permissions",
         "RolePermissions": "RolePermissions",
+        "ForeignData": "ForeignData",
         "Settings": "Settings",
         "MediaSources": "MediaSources",
         "Media": "Media",
