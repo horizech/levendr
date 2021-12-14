@@ -25,10 +25,11 @@ namespace Levendr.Filters
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var currentAction = context.HttpContext.Request.RouteValues["action"];
-            var currentController = context.HttpContext.Request.RouteValues["controller"];
+            var action = context.HttpContext.Request.RouteValues["action"];
+            var controller = context.HttpContext.Request.RouteValues["controller"];
+            var method = context.HttpContext.Request.Method;
             
-            string permission = currentController + "." + currentAction;
+            string permission = string.Format("{0}.{1}.{2}",controller, action, method);
 
             var hasClaim = context.HttpContext.User.Claims.Any(c => 
                 c.Type == ClaimTypes.Authentication &&
