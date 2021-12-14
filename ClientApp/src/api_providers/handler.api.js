@@ -10,14 +10,27 @@ function handleResponse(response) {
             }
         } else {
             // return error message from response body
-            response.text().then(text => reject(text));
+            if(response.status == 403) {
+                let error = { Success: false, ErrorCode: "AUTH001", Data: null, Message: "Unauthorized!" };
+                
+                // To catch in next .catch, use reject
+                return reject(error);
+
+                // To catch in next .then, use resolve
+                return resolve(error);
+            }
+            // console.log(response.status);
+            // response.text().then(text => {
+            //     console.log(text);
+            //     reject(text);            
+            // });
         }
     });
 }
 
 function handleError(error) {
-    console.error(error);
-    return Promise.reject({ Success: false, ErrorCode: "NW001", Data: null, Message: "A network error occured!" });
+    // Convert it into a resolve so can be caught by .then()
+    return Promise.resolve(error);
 }
 
 export { handleResponse, handleError };
