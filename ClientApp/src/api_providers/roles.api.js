@@ -50,7 +50,7 @@ class RolesApiProvider {
             body: JSON.stringify(body)
         };
     
-        return fetch(`${config.apiUrl}/api/Roles/UpdateRole?name=${name}`, requestOptions).then(handleResponse);
+        return fetch(`${config.apiUrl}/api/Roles/UpdateRole?name=${name}`, requestOptions).then(handleResponse, handleError).catch(handleError);
     }
 
     static async deleteRoles(rows) {
