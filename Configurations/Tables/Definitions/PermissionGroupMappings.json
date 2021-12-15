@@ -1,0 +1,72 @@
+{
+    "$schema": "../Schema.json",
+    "Name": "PermissionGroupMappings",
+    "AddAdditionalColumns": true,
+    "Columns": [
+        {"Name": "PermissionGroup", "Datatype": "Integer", "IsRequired": true, "IsForeignKey": true, "ForeignName": "Id", "ForeignSchema": "Levendr", "ForeignTable": "PermissionGroups"},
+        {"Name": "Permission", "Datatype": "Integer", "IsRequired": true, "IsForeignKey": true, "ForeignName": "Id", "ForeignSchema": "Levendr", "ForeignTable": "Permissions"}
+    ],
+    "DefaultRows": [
+        {"Id": 1, "PermissionGroup": 1, "Permission": 1},
+        {"Id": 2, "PermissionGroup": 1, "Permission": 2},
+        
+        {"Id": 3, "PermissionGroup": 2, "Permission": 3},
+        {"Id": 4, "PermissionGroup": 2, "Permission": 4},
+        {"Id": 5, "PermissionGroup": 2, "Permission": 5},
+        {"Id": 6, "PermissionGroup": 2, "Permission": 6},
+
+        {"Id": 7, "PermissionGroup": 3, "Permission": 7},
+        {"Id": 8, "PermissionGroup": 3, "Permission": 8},
+        {"Id": 9, "PermissionGroup": 3, "Permission": 9},
+        {"Id": 10, "PermissionGroup": 3, "Permission": 10},
+        
+        {"Id": 11, "PermissionGroup": 4, "Permission": 11},
+        {"Id": 12, "PermissionGroup": 4, "Permission": 12},
+        {"Id": 13, "PermissionGroup": 4, "Permission": 13},
+        {"Id": 14, "PermissionGroup": 4, "Permission": 14},
+        
+        {"Id": 15, "PermissionGroup": 5, "Permission": 15},
+        {"Id": 16, "PermissionGroup": 5, "Permission": 16},
+        {"Id": 17, "PermissionGroup": 5, "Permission": 17},
+        {"Id": 18, "PermissionGroup": 5, "Permission": 18},
+
+        {"Id": 19, "PermissionGroup": 6, "Permission": 19},
+        {"Id": 20, "PermissionGroup": 6, "Permission": 20},
+        {"Id": 21, "PermissionGroup": 6, "Permission": 21},
+        {"Id": 22, "PermissionGroup": 6, "Permission": 22},
+
+        {"Id": 23, "PermissionGroup": 7, "Permission": 23},
+        {"Id": 24, "PermissionGroup": 7, "Permission": 24},
+        {"Id": 25, "PermissionGroup": 7, "Permission": 25},
+        {"Id": 26, "PermissionGroup": 7, "Permission": 26},
+        {"Id": 27, "PermissionGroup": 7, "Permission": 27},
+
+        {"Id": 28, "PermissionGroup": 8, "Permission": 28},
+        {"Id": 29, "PermissionGroup": 8, "Permission": 29},
+        {"Id": 30, "PermissionGroup": 8, "Permission": 30},
+        {"Id": 31, "PermissionGroup": 8, "Permission": 31},
+        {"Id": 32, "PermissionGroup": 8, "Permission": 32},
+        {"Id": 33, "PermissionGroup": 8, "Permission": 33},
+        {"Id": 34, "PermissionGroup": 8, "Permission": 34},
+        {"Id": 35, "PermissionGroup": 8, "Permission": 35},
+        {"Id": 36, "PermissionGroup": 8, "Permission": 36},
+        {"Id": 37, "PermissionGroup": 8, "Permission": 37},
+        {"Id": 38, "PermissionGroup": 8, "Permission": 38},
+
+        {"Id": 39, "PermissionGroup": 9, "Permission": 1},
+        {"Id": 40, "PermissionGroup": 9, "Permission": 2},
+        {"Id": 41, "PermissionGroup": 10, "Permission": 3},
+        {"Id": 42, "PermissionGroup": 11, "Permission": 7},
+        {"Id": 43, "PermissionGroup": 12, "Permission": 11},
+        {"Id": 44, "PermissionGroup": 13, "Permission": 15},
+        {"Id": 45, "PermissionGroup": 14, "Permission": 19},
+        {"Id": 46, "PermissionGroup": 15, "Permission": 23},
+        {"Id": 47, "PermissionGroup": 15, "Permission": 24},
+        {"Id": 48, "PermissionGroup": 16, "Permission": 29},
+        {"Id": 49, "PermissionGroup": 16, "Permission": 30},
+        {"Id": 50, "PermissionGroup": 16, "Permission": 31},
+        {"Id": 51, "PermissionGroup": 16, "Permission": 34},
+        {"Id": 52, "PermissionGroup": 16, "Permission": 35}
+
+    ]
+}
