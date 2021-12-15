@@ -659,33 +659,43 @@ namespace Levendr.Databases.Postgresql
             // }
                 
 
-            data.ForEach(row =>
+            lock(data)
             {
-                // List<int> rows = await InsertRow(schema, table, row, columns);
-                // if((rows?.Count ?? 0) > 0) {
-                //     rowIds.AddRange(rows.ToList());
-                // }
-                
-                // List<int> rows = await InsertRow(schema, table, row, columns);
-                // if((rows?.Count ?? 0) > 0) {
-                //     rowIds.AddRange(rows.ToList());
-                // }
-                insertRowsTasks.Add(Task.Run(async () =>
+                data.ForEach(row =>
                 {
-                    try{
-                        IEnumerable<int> rows = await InsertRow(schema, table, row, columns);
-                        rowIds.AddRange(rows.ToList());
+                    // List<int> rows = await InsertRow(schema, table, row, columns);
+                    // if((rows?.Count ?? 0) > 0) {
+                    //     rowIds.AddRange(rows.ToList());
+                    // }
+                    
+                    // List<int> rows = await InsertRow(schema, table, row, columns);
+                    // if((rows?.Count ?? 0) > 0) {
+                    //     rowIds.AddRange(rows.ToList());
+                    // }
+                    lock(insertRowsTasks)
+                    {
+                        insertRowsTasks.Add(Task.Run(async () =>
+                        {
+                            try{
+                                IEnumerable<int> rows = await InsertRow(schema, table, row, columns);
+                                rowIds.AddRange(rows.ToList());
+                            }
+                            catch(Exception e) {
+                                errors.Add(e.Message);
+                            }
+                        }));
                     }
-                    catch(Exception e) {
-                        errors.Add(e.Message);
-                    }
-                }));
-            });
+                });
 
-            lock(insertRowsTasks) {
-                Task.WaitAll(insertRowsTasks.ToArray());
-                rowIds.Sort();
-            }
+                lock(insertRowsTasks) {
+                    Task.WaitAll(insertRowsTasks.ToArray());
+                    lock(rowIds)
+                    {
+                        rowIds.Sort();
+                    }
+                }
+            } 
+
 
             if(errors.Count > 0) {
                 throw new LevendrErrorCodeException(string.Join("\n", errors));
