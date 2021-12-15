@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,6 +30,28 @@ namespace Levendr.Controllers
         public async Task<APIResult> IsInitialized()
         {
             return await ServiceManager.Instance.GetService<LevendrService>().IsInitialized();
+        }
+
+        [HttpGet("GetAllActions")]
+        public APIResult GetAllActions()
+        {
+            Assembly asm =  Assembly.GetEntryAssembly(); //.GetCallingAssembly() ;// Assembly.GetAssembly(typeof(MyWebDll.MvcApplication));
+
+            var controlleractionlist1 = asm.GetTypes();
+                
+            var controlleractionlist = controlleractionlist1
+                .Where(type=> typeof(Microsoft.AspNetCore.Mvc.ControllerBase).IsAssignableFrom(type))
+                .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public))
+                .Where(m => !m.GetCustomAttributes(typeof( System.Runtime.CompilerServices.CompilerGeneratedAttribute), true).Any())
+                .Select(x => new {Controller = string.Join("", x.DeclaringType.Name.Split("Controller")), Action = x.Name, ReturnType = x.ReturnType.Name, Attributes = String.Join(",", x.GetCustomAttributes().Select(a => a.GetType().Name.Replace("Attribute",""))) })
+                .OrderBy(x=>x.Controller).ThenBy(x => x.Action).ToList();
+
+            return new APIResult
+            {
+                Data = controlleractionlist,
+                Success = true,
+                Message = "Actions loaded successfully!"
+            };
         }
 
         [HttpPost("Initialize")]
