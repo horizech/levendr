@@ -14,6 +14,7 @@ using Levendr.Constants;
 using Levendr.Helpers;
 using Levendr.Interfaces;
 using Levendr.Exceptions;
+using Levendr.Filters;
 
 namespace Levendr.Controllers
 {
@@ -28,6 +29,7 @@ namespace Levendr.Controllers
             _logger = logger;
         }
 
+        [LevendrAuthorized]
         [HttpGet("GetRoles")]
         public async Task<APIResult> GetRoles()
         {
@@ -35,6 +37,7 @@ namespace Levendr.Controllers
 
         }
 
+        [LevendrAuthorized]
         [HttpPost("AddRole")]
         public async Task<APIResult> AddRole(Dictionary<string, object> data)
         {
@@ -94,6 +97,7 @@ namespace Levendr.Controllers
             }
         }
 
+        [LevendrAuthorized]
         [HttpPut("UpdateRole")]
         public async Task<APIResult> UpdateRole(string name, Dictionary<string, object> data)
         {
@@ -150,6 +154,7 @@ namespace Levendr.Controllers
             }
         }
 
+        [LevendrAuthorized]
         [HttpDelete("DeleteRole")]
         public async Task<APIResult> DeleteRole(string name)
         {
