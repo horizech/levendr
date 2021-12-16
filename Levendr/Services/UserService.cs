@@ -354,9 +354,16 @@ namespace Levendr.Services
                 {
                     if ((userRoles[0]["Role"]?.ToString().Length ?? 0) > 0)
                     {
-                        List<Dictionary<string, object>> rolePermissions = await QueryDesigner
-                            .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissions.ToString())
+                        List<Dictionary<string, object>> permissionGroups = await QueryDesigner
+                            .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissionGroupMappings.ToString())
                             .WhereEquals("Role", userRoles[0]["Role"])
+                            .RunSelectQuery();
+                        
+                        List<int> permissionGroupIds = permissionGroups.Select( x => Int32.Parse(x["PermissionGroup"].ToString())).ToList();
+
+                        List<Dictionary<string, object>> rolePermissions = await QueryDesigner
+                            .CreateDesigner(schema: Schemas.Levendr, table: TableNames.PermissionGroupMappings.ToString())
+                            .WhereIncludes("PermissionGroup", permissionGroupIds)
                             .RunSelectQuery();
 
                         if ((rolePermissions?.Count ?? 0) > 0)
