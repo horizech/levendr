@@ -1,0 +1,41 @@
+// $levendr-platinum: #ebe8e7;
+// $levendr-tango-pink: #ea7186;
+// $levendr-orange-yellow: #f2c76e;
+// $levendr-toolbox: #7a77b9;
+// $levendr-bright-lavendr: #bd9dea;
+
+
+// $levendr-dark : #734f97;
+// $levendr-bright : #bf94e6;
+// $levendr-light : #dda0de;
+
+
+// $body-bg: #000;
+// $body-color: #111;
+
+// $theme-colors: (
+//   "primary": $levendr-toolbox,
+//   "danger": $levendr-bright-lavendr
+// );
+
+
+
+@import "./levendr-variables.scss";
+
+// Option A: Include all of Bootstrap
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+// Option B: Include parts of Bootstrap
+
+// // Required
+// @import "node_modules/bootstrap/scss/functions";
+// @import "node_modules/bootstrap/scss/variables";
+// @import "node_modules/bootstrap/scss/mixins";
+
+// // Optional
+// @import "node_modules/bootstrap/scss/reboot";
+// @import "node_modules/bootstrap/scss/type";
+// @import "node_modules/bootstrap/scss/images";
+// @import "node_modules/bootstrap/scss/code";
+// @import "node_modules/bootstrap/scss/grid";

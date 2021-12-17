@@ -8,7 +8,7 @@ import { ButtonIcon } from './button-icon.component';
 import { Table } from 'reactstrap';
 import { Loading } from './loading.component';
 
-import '../styles/LevendrTable.css'
+import '../styles/LevendrTable.scss'
 
 export const LevendrTable = ({headers, children}) => {
     return (

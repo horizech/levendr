@@ -1,3 +1,5 @@
+@import "../themes/levendr-variables.scss";
+
 .levendr-table table {
     /* background-color: grey; */
     
@@ -38,6 +40,7 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: .1rem;
+    color: $primary;
     /* padding: 0.75rem; */
 }
 
@@ -57,7 +60,7 @@
     vertical-align: middle;
 }
 
-.levendr-table table tbody tr{
+.levendr-table table tbody tr {
  
     /* border-radius: 500px; */
     overflow: hidden;
@@ -67,7 +70,13 @@
 
 }
 
-.levendr-table table tbody td{
+.levendr-table table tbody tr:hover td {
+    border-color: $primary;
+    background-color: $info;
+    color: white;
+}
+
+.levendr-table table tbody td {
     background: #fff;
     border: none;
     padding: 0.75rem;

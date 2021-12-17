@@ -15,7 +15,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
-import './styles/App.css';
+import './styles/App.scss';
 
 
 const MySwal = withReactContent(Swal)

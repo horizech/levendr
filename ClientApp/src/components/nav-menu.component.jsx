@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 
-import "../styles/NavMenu.css";
+import "../styles/NavMenu.scss";
 
 const NavMenu = ({loggedIn}) => {
   const displayName = NavMenu.name;
@@ -25,8 +25,8 @@ const NavMenu = ({loggedIn}) => {
       {
         loggedIn &&
         <Navbar
-          className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
-          light
+          className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3 bg-primary levendr-navbar"
+          dark
         >
           <Container>
             <NavbarBrand tag={Link} to="/">

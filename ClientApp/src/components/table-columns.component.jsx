@@ -6,6 +6,7 @@ import { DialogModal } from '../modals'
 import { ButtonIcon } from './button-icon.component';
 import { Table } from 'reactstrap';
 import { isColumnPredefined } from '../helpers';
+import { LevendrTable } from '.';
 
 const TableColumns = ({ dispatch, deletedColumnSuccess, deletingColumn, addedColumnSuccess, addingColumn, loadingCurrentTable, 
     currentTableColumns, table, loadingPredefinedColumns, predefinedColumns }) => {
@@ -85,43 +86,33 @@ const TableColumns = ({ dispatch, deletedColumnSuccess, deletingColumn, addedCol
             const keys = Object.keys(currentTableColumns.columns[0]);
             return (
                 <React.Fragment>
-                    <Table responsive bordered striped size="sm">
-                        <thead>
-                            <tr key={'header'}>
-                                <th key={'header_#'} scope="col"></th>
-                                {
-                                    keys.map(key => (
-                                        <th key={'header_' + key} scope="col">{key}</th>
-                                    ))
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentTableColumns.columns &&
-                                currentTableColumns.columns.map((column, i) => (
-                                    <tr key={'col_' + (i + 1)}>
+                    <LevendrTable headers={keys}>
+                        {currentTableColumns.columns &&
+                            currentTableColumns.columns.map((column, i) => (
+                                <tr key={'col_' + (i + 1)}>
 
-                                        <td key={'data_' + i + '_#'} scope="row">
-                                            <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                {/* <ButtonIcon icon="edit" color="#007bff" onClick={() => this.showEditModal(row)}/> */}
-                                                {
-                                                    <ButtonIcon disabled={isColumnPredefined(column)} icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(column)}/>
-                                                }
-                                            </div>
-                                        </td>
-                                        {
-                                            keys.map(key => (
+                                    <td key={'data_' + i + '_#'} scope="row">
+                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                            {/* <ButtonIcon icon="edit" color="#007bff" onClick={() => this.showEditModal(row)}/> */}
+                                            {
+                                                <ButtonIcon disabled={isColumnPredefined(column)} icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(column)}/>
+                                            }
+                                        </div>
+                                    </td>
+                                    {
+                                        keys.map(key => (
 
-                                                <td key={'data_' + i + key} >{column[key] != null? '' + column[key]: ''}</td>
+                                            <td key={'data_' + i + key} >{column[key] != null? '' + column[key]: ''}</td>
 
 
-                                            ))
-                                        }
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </Table>
+                                        ))
+                                    }
+                                </tr>
+                            ))
+                        }
+                    </LevendrTable>                    
+                    
+
                     {isDeleteModalVisible &&
 
                         <DialogModal
