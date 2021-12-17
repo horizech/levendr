@@ -14,6 +14,19 @@ class LevendrApiProvider {
                 return result;
             });
     }
+
+    static async initialize(userInfo) {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userInfo)
+        };
+        return fetch(config.apiUrl + '/api/levendr/initialize', requestOptions)
+            .then(handleResponse, handleError)
+            .then(result => {
+                return result;
+            });
+    }
 }
 
 export { LevendrApiProvider };

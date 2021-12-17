@@ -5,54 +5,49 @@ import { tablesActions } from '../actions';
 import { Table } from 'reactstrap';
 import { ButtonIcon } from '../components/button-icon.component';
 import { history } from '../helpers';
-import { Loading, Page, User } from '../components';
+import { Loading, Page, PermissionGroups } from '../components';
 import { CreateEditModal } from '../modals';
-import { userService } from '../services';
+import { permissionGroupsService } from '../services';
 import { DialogModal } from '../modals'
-const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
+const PermissionGroupsPage = ({ match, location, dispatch, loggedIn }) => {
 
-    const [loadingSettingColumns, setLoadingSettingColumns] = React.useState(true);
-    const [isCreateSettingModalVisible, setCreateSettingModalVisible] = React.useState(false);
+    const [permissionGroups, setPermissionGroups] = React.useState(null);
+    const [loadingPermissionGroupColumns, setLoadingPermissionGroupColumns] = React.useState(true);
+    const [isCreatePermissionGroupModalVisible, setCreatePermissionGroupModalVisible] = React.useState(false);
     const [currentRow, setCurrentRow] = React.useState(null);
     const [isDeleteModalVisible, setDeleteModalVisible] = React.useState(false);
     const [isEditModalVisible, setEditModalVisible] = React.useState(false);
     const [deleteSuccess, setDeleteSuccess] = React.useState(false);
     const [addSuccess, setAddSuccess] = React.useState(false);
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
-    const [users, setUsers] = React.useState([user]);
-    
+
     const columns = [
-        { Name: 'Id', value: 'Id' },
-        { Name: 'Username', value: 'Username' },
-        { Name: 'Email', value: 'Email' },
-        { Name: 'Fullname', value: 'Fullname' },
-        //{ Name: 'Token', value: 'Token' },
-        //{ Name: 'Role', value: 'Role' },
-        //{ Name: 'Permissions', value: 'Permissions' },
-        { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' }
+        { Name: 'Id', value: 'Id', Datatype: 'Integer' },
+        { Name: 'Name', value: 'Name', Datatype: 'ShortText' },
+        { Name: 'Description', value: 'Description', Datatype: 'ShortText' },
+        { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean' },
+        { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime' },
+        { Name: 'CreatedBy', value: 'CreatedBy', Datatype: 'ShortText' },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', Datatype: 'DateTime' },
+        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', Datatype: 'ShortText' }
     ]
 
-    const displayedColumns = columns.map( x => x.Name);
-    
     const showCreateModal = () => {
-        setCreateSettingModalVisible(true);
+        setCreatePermissionGroupModalVisible(true);
     }
+
     const handleOnCreateComplete = (values) => {
         if (values) {
-            userService.registerUser(values).then(response => {
-
+            permissionGroupsService.addPermissionGroup(values).then(response => {
                 if (response.Success) {
                     setAddSuccess(true);
-
                 }
                 else {
-
                     setAddSuccess(false);
                 }
             });
         }
-        setCreateSettingModalVisible(false);
+        setCreatePermissionGroupModalVisible(false);
     }
     const showEditModal = (row) => {
         setEditModalVisible(true);
@@ -66,7 +61,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
 
     const handleOnEditComplete = (values) => {
         if (values) {
-            userService.updateUser(currentRow.Key, values).then(response => {
+            permissionGroupsService.updatePermissionGroup(currentRow.Name, values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
                 }
@@ -80,7 +75,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
 
     const handleOnDeleteComplete = (result) => {
         if (result === true) {
-            userService.deleteUser(currentRow).then(response => {
+            permissionGroupsService.deletePermissionGroup(currentRow).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
                 }
@@ -108,20 +103,17 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
         },
     ];
 
-    
     React.useEffect(() => {
 
-        // userService.getAllUsers().then( response => {
-        //     console.log(response);
-        //     if(response && response.Success) {
-        //         setUser(response.Data);        
-        //     }
-        //     else {
-        //         setUser(null);
-        //     }
-        // })       
-        // setUser(null);
-        setLoadingSettingColumns(false);
+        permissionGroupsService.getPermissionGroups().then(response => {
+            if (response.Success) {
+                setPermissionGroups(response.Data);
+            }
+            else {
+                setPermissionGroups(null);
+            }
+        })
+        setLoadingPermissionGroupColumns(false);
         if (!loggedIn) {
             history.push('/');
         }
@@ -133,14 +125,14 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     return (
         <React.Fragment>
             <div align="right" style={{ marginBottom: "16px" }}>
-                <button className="btn btn-primary" onClick={showCreateModal}>Create a new User</button>
+                <button className="btn btn-primary" onClick={showCreateModal}>Create a new permission</button>
             </div>
             {
-                (loadingSettingColumns) &&
+                (loadingPermissionGroupColumns) &&
                 <Loading></Loading>
             }
             {
-                (!loadingSettingColumns && (!users || users.length == 0)) &&
+                (!loadingPermissionGroupColumns && (!permissionGroups || permissionGroups["length"] == 0)) &&
                 <div className="row">
                     <div className="col-sm-1 col-md-3"></div>
                     <div align="center" className="col-sm-10 col-md-6 col-md-offset-3" style={{ "marginTop": "25vh" }}>
@@ -151,25 +143,23 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                 </div>
             }
             {
-                (!loadingSettingColumns && users && users.length > 0) &&
+                (!loadingPermissionGroupColumns && permissionGroups && permissionGroups["length"] != 0) &&
                 <div>
 
                     <Table responsive bordered striped size="sm">
                         <thead>
                             <tr key={'header'}>
                                 <th key={'header_#'} scope="col"></th>
-                                {displayedColumns &&
-                                    displayedColumns.map(key => (
+                                {permissionGroups &&
+                                    Object.keys(permissionGroups[0]).map(key => (
                                         <th key={'header_' + key} scope="col">{key}</th>
-                                    ))                                    
+                                    ))
                                 }
-                                <th key={'header_Role'} scope="col">Role</th>
-
                             </tr>
                         </thead>
                         <tbody>
-                            {users &&
-                                users.map((row, i) => (
+                            {permissionGroups &&
+                                permissionGroups.map((row, i) => (
                                     <tr key={'row_' + (i + 1)}>
 
                                         <td key={'data_' + i + '_#'} scope="row">
@@ -177,15 +167,12 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                                                 <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)} />
                                                 <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)} />
                                             </div>
-                                        </td>                                        
+                                        </td>
                                         {
-                                            displayedColumns.map(key => (
+                                            Object.keys(permissionGroups[0]).map(key => (
                                                 <td key={'data_' + i + key} >{row[key] != null ? '' + row[key] : ''}</td>
-                                            ))                                            
+                                            ))
                                         }
-                                        <td key={'data_' + i + 'Role'} >{row['Role'] != null ? row['Role']['Name'] : ''}</td>
-
-                                        
                                     </tr>
                                 ))
                             }
@@ -193,6 +180,8 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                     </Table>
                     {isEditModalVisible &&
                         <CreateEditModal
+                            isSelectList={[]}
+                            selectOptionsList={[]}
                             columns={columns}
                             row={currentRow}
                             handleOnClose={handleOnEditComplete}
@@ -212,8 +201,11 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                 </div>
             }
             {
-                isCreateSettingModalVisible &&
+                isCreatePermissionGroupModalVisible && permissionGroups &&
+
                 <CreateEditModal
+                    isSelectList={[]}
+                    selectOptions={[]}
                     columns={columns}
                     row={{}}
                     handleOnClose={handleOnCreateComplete}
@@ -226,12 +218,11 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
 }
 
 function mapStateToProps(state) {
-    const { loggedIn, user } = state.authentication;
+    const { loggedIn } = state.authentication;
     return {
         loggedIn,
-        user
     };
 }
 
-const connectedUser = connect(mapStateToProps)(UsersPage);
-export { connectedUser as UsersPage };
+const connectedPermissionGroups = connect(mapStateToProps)(PermissionGroupsPage);
+export { connectedPermissionGroups as PermissionGroupsPage };

@@ -7,7 +7,7 @@ import { alertActions } from './actions';
 import { toastActions } from './actions';
 // import { PrivateRoute } from './components';
 
-import { StartPage, TableDesignPage, TableDataPage, PageCreatorPage, HomePage, LoginPage, InitializePage, CounterPage, AdminPage, FetchDataPage, LogoutPage, TableCreatePage, designTablePage, SettingsPage, PermissionsPage, RolesPage, RolePermissionsPage, UsersPage, UserPage } from './pages';
+import { StartPage, TableDesignPage, TableDataPage, PageCreatorPage, HomePage, LoginPage, InitializePage, CounterPage, AdminPage, FetchDataPage, LogoutPage, TableCreatePage, designTablePage, SettingsPage, PermissionsPage, RolesPage, RolePermissionsPage, UsersPage, UserPage, PermissionGroupsPage, PermissionGroupMappingsPage, RolePermissionGroupMappingsPage } from './pages';
 
 import { Layout, UserGuardedRoute } from './components';
 import toast, { Toaster } from 'react-hot-toast';
@@ -99,6 +99,10 @@ class App extends React.Component {
                         <UserGuardedRoute path='/role-permissions' component={RolePermissionsPage} />
                         <UserGuardedRoute path='/users' component={UsersPage} />
                         <UserGuardedRoute path='/user' component={UserPage} />
+                        <UserGuardedRoute path='/permission-groups' component={PermissionGroupsPage} />
+                        <UserGuardedRoute path='/role-permission-group-mappings' component={RolePermissionGroupMappingsPage} />
+                        <UserGuardedRoute path='/permission-group-mappings' component={PermissionGroupMappingsPage} />
+                        
                         
                     </Layout>
                 </Router>

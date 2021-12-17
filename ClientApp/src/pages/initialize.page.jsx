@@ -30,11 +30,11 @@ class InitializePage extends Page {
         if(isInitialized === undefined){
             history.push('/start');
         }
-        else if(isInitialized === true){
+        else if(isInitialized === true && !loggedIn){
             history.push('/login');
         }
         
-        if(loggedIn && this.props.location.pathname === '/initialize'){
+        if(loggedIn && isInitialized === true && this.props.location.pathname === '/initialize'){
             history.push('/');
             return <p>Going to home...</p>
         }
@@ -42,7 +42,7 @@ class InitializePage extends Page {
 
     componentDidUpdate(prevProps) {
         const { isInitialized, loggedIn } = this.props;
-        console.log(this.props);
+        // console.log(this.props);
 
         if(isInitialized === undefined){
             history.push('/start');
@@ -75,7 +75,7 @@ class InitializePage extends Page {
 
     render() {
         const { checkingStatus, initializing } = this.props;
-        console.log(this.props);
+        // console.log(this.props);
 
         if(checkingStatus){
             return (

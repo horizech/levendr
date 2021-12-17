@@ -17,3 +17,6 @@ export * from './roles.page';
 export * from './role-permissions.page';
 export * from './users.page';
 export * from './user.page';
+export * from './permission-groups.page';
+export * from './role-permission-group-mappings.page';
+export * from './permission-group-mappings.page';

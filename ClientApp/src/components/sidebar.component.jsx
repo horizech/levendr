@@ -151,6 +151,10 @@ return (
             <MenuItem onClick={() => gotoPath('/permissions')}>Permissions</MenuItem>
             <MenuItem onClick={() => gotoPath('/roles')}>Roles</MenuItem>
             <MenuItem onClick={() => gotoPath('/role-permissions')}>Role Permissions</MenuItem>
+            <MenuItem onClick={() => gotoPath('/permission-groups')}>Permission Groups</MenuItem>
+            <MenuItem onClick={() => gotoPath('/permission-group-mappings')}>Permission Group Mappings</MenuItem>
+            <MenuItem onClick={() => gotoPath('/role-permission-group-mappings')}>Role Permission Group Mappings</MenuItem>
+            
             
             {contents}
             <SubMenu onOpenChange={(open) => {setSubMenu(open, 'Components')}} open={subMenuActive === 'Components'} title="Components">

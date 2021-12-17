@@ -28,7 +28,7 @@ const CreateEditModal = ({ columns, row, label, mode, handleOnClose, isSelectLis
     
     const getIsColumnReadOnly = (column) => {
         switch (column.Name) {
-            case "Id": case "CreatedOn": case "CreatedBy": case "LastUpdatedOn": case "LastUpdatedBy": return true;
+            case "Id" :case "CreatedOn": case "CreatedBy": case "LastUpdatedOn": case "LastUpdatedBy": return true;
             default: return false;
         }
     }
@@ -74,7 +74,7 @@ const CreateEditModal = ({ columns, row, label, mode, handleOnClose, isSelectLis
                                     <form name="form" className="row" id="createEditSettingForm" onSubmit={(e) => handleOnSubmit(values, e)}>
                                         {columns &&
                                             columns.filter(column => !getIsColumnReadOnly(column) || mode == 'edit').map(column => (
-                                                <Field isWorking={false} type="text" key={column.Name} name={column.Name} required="true" component={DynamicElementAdapter} selectOptions={selectOptions ? selectOptions[column.Name]: null} isSelect={isSelectList? isSelectList[column.Name]: false} column={column} />
+                                                <Field isWorking={false} type={GetElementTypeFromDataType(column.Datatype)} key={column.Name} name={column.Name} required="true" component={DynamicElementAdapter} selectOptions={selectOptions ? selectOptions[column.Name]: null} isSelect={isSelectList? isSelectList[column.Name]: false} column={column} />
                                             ))
                                         }
                                         {

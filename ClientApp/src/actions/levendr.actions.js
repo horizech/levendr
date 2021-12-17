@@ -2,6 +2,7 @@ import { levendrConstants } from '../constants';
 import { levendrService } from '../services';
 import { alertActions } from './';
 import { history } from '../helpers';
+import { toastActions } from './toast.actions';
 
 export const levendrActions = {
     checkInitialized,
@@ -49,7 +50,33 @@ function checkInitialized() {
 function initialize(username, email, password) {
     return dispatch => {
         dispatch(request());
-
+        let userInfo={
+            "Username": username,
+            "Email": email,
+            "Password": password
+          }
+          levendrService.initialize(userInfo)
+          .then(
+              result => {
+                  if(result.Success) {
+                      
+                      dispatch(success());
+                      // history.push(link);
+                      dispatch(toastActions.success('Levendr Initilized'));
+                      // dispatch(getTableRows(table));
+                      return 'Levendr Initilized';    
+                  }
+                  else {
+                      dispatch(failure(result.Message));
+                      dispatch(alertActions.error(result.Message));
+                      return result.Message;                        
+                  }
+              },
+              error => {
+                  dispatch(failure(error.toString()));
+                  dispatch(alertActions.error(error.toString()));
+              }
+          );
         dispatch(success({ Success: true, Message: "Success!" }));
         // dispatch(success({ Success: false, Message: "Error!" }));
 
