@@ -10,6 +10,7 @@ namespace Levendr.Enums
         PermissionGroups,
         PermissionGroupMappings,
         RolePermissionGroupMappings,
+        InsertionOverrides,
         Settings,
         MediaSources,
         Media,
