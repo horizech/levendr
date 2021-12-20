@@ -5,7 +5,6 @@
         "Roles": "Roles",
         "UserRoles": "UserRoles",
         "Permissions": "Permissions",
-        "RolePermissions": "RolePermissions",
         "PermissionGroups": "PermissionGroups",
         "PermissionGroupMappings": "PermissionGroupMappings",
         "RolePermissionGroupMappings": "RolePermissionGroupMappings",
