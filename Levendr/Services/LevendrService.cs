@@ -147,6 +147,9 @@ namespace Levendr.Services
                                     .InsertRows(Schemas.Levendr, TableNames.Users.ToString(), users);
 
                             }
+                            // Setval
+                            await QueryDesigner.CreateCustomQueryDesigner($"SELECT setval('\"{Schemas.Levendr}\".\"{table.Name}_Id_seq\"'::regclass, (SELECT MAX(\"Id\") FROM \"{Schemas.Levendr}\".\"{table.Name}\"))", null)
+                            .ExecuteNonQuery();
                         }
                     };
                 }
