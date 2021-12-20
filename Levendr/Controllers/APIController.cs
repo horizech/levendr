@@ -12,6 +12,7 @@ using Levendr.Models;
 using Levendr.Enums;
 using Levendr.Constants;
 using Levendr.Helpers;
+using Levendr.Filters;
 
 namespace Levendr.Controllers
 {
@@ -38,6 +39,7 @@ namespace Levendr.Controllers
         }
 
 #nullable enable
+        [LevendrAuthorized]
         [HttpGet("{table}")]
         [Authorize]
         public async Task<APIResult> GetRows(string table, [FromQuery] int? limit, [FromQuery] int? offset, [FromQuery] string? orderBy, [FromQuery] string? orderDescendingBy, [FromQuery] string? groupBy)
@@ -56,30 +58,22 @@ namespace Levendr.Controllers
                 GroupBy = groupBy
             };
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanReadTablesData") || permissions.Contains("CanReadTableData" + table))
-            {
-                return await ServiceManager.Instance.GetService<APIService>().GetRows(Schemas.Application, table, selectSettings);
-            }
-            else if (permissions.Contains("CanReadOwnData"))
-            {
-                List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
-                    new QuerySearchItem(){
-                        Name = "CreatedBy",
-                        CaseSensitive = false,
-                        Condition = Enums.ColumnCondition.Equal,
-                        Value = Users.GetUserId(User)
-                    }
-                };
-                return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters, selectSettings);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to read data!");
-            }
+            // If user only data access
+            // List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
+            //     new QuerySearchItem(){
+            //         Name = "CreatedBy",
+            //         CaseSensitive = false,
+            //         Condition = Enums.ColumnCondition.Equal,
+            //         Value = Users.GetUserId(User)
+            //     }
+            // };
+            // return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters, selectSettings);
+            
+            return await ServiceManager.Instance.GetService<APIService>().GetRows(Schemas.Application, table, selectSettings);            
         }
 #nullable disable
 
+        [LevendrAuthorized]
         [HttpGet("{table}/{id}")]
         [Authorize]
         public async Task<APIResult> GetRow(string table, int id)
@@ -94,43 +88,37 @@ namespace Levendr.Controllers
                 return APIResult.GetSimpleFailureResult("Id is not valid!");
             }
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanReadTablesData") || permissions.Contains("CanReadTableData" + table))
-            {
-                List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
-                    new QuerySearchItem(){
-                        Name = "Id",
-                        CaseSensitive = false,
-                        Condition = Enums.ColumnCondition.Equal,
-                        Value = id
-                    }
-                };
-                return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters);
-            }
-            else if (permissions.Contains("CanReadOwnData"))
-            {
-                List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
-                    new QuerySearchItem(){
-                        Name = "CreatedBy",
-                        CaseSensitive = false,
-                        Condition = Enums.ColumnCondition.Equal,
-                        Value = Users.GetUserId(User)
-                    },
-                    new QuerySearchItem(){
-                        Name = "Id",
-                        CaseSensitive = false,
-                        Condition = Enums.ColumnCondition.Equal,
-                        Value = id
-                    }
-                };
-                return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to read data!");
-            }
+            // If user only data access 
+            // List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
+            //     new QuerySearchItem(){
+            //         Name = "CreatedBy",
+            //         CaseSensitive = false,
+            //         Condition = Enums.ColumnCondition.Equal,
+            //         Value = Users.GetUserId(User)
+            //     },
+            //     new QuerySearchItem(){
+            //         Name = "Id",
+            //         CaseSensitive = false,
+            //         Condition = Enums.ColumnCondition.Equal,
+            //         Value = id
+            //     }
+            // };
+            // return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters);
+            
+            List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
+                new QuerySearchItem(){
+                    Name = "Id",
+                    CaseSensitive = false,
+                    Condition = Enums.ColumnCondition.Equal,
+                    Value = id
+                }
+            };
+            
+            
+            return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters);            
         }
 
+        [LevendrAuthorized]
         [HttpPost("{table}")]
         public async Task<APIResult> InsertRow(string table, Dictionary<string, object> data)
         {
@@ -156,18 +144,10 @@ namespace Levendr.Controllers
 
             Columns.AppendCreatedInfo(data, Users.GetUserId(User));
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanCreateTablesData") || permissions.Contains("CanCreateTableData" + table) || permissions.Contains("CanCreateOwnData"))
-            {
-                return await ServiceManager.Instance.GetService<APIService>().InsertRow(Schemas.Application, table, data);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to write data!");
-            }
-
+            return await ServiceManager.Instance.GetService<APIService>().InsertRow(Schemas.Application, table, data);
         }
 
+        [LevendrAuthorized]
         [HttpPut("{table}/{id}")]
         public async Task<APIResult> UpdateRow(string table, int id, Dictionary<string, object> data)
         {
@@ -207,32 +187,24 @@ namespace Levendr.Controllers
 
             Columns.AppendUpdatedInfo(request.Data, Users.GetUserId(User));
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanUpdateTablesData") || permissions.Contains("CanUpdateTableData" + table))
-            {
-                return await ServiceManager.Instance.GetService<APIService>().UpdateRow(Schemas.Application, table, request.Data, request.Parameters);
-            }
-            else if (permissions.Contains("CanUpdateOwnData"))
-            {
-                request.Parameters.Add(
-                    new QuerySearchItem()
-                    {
-                        Name = "CreatedBy",
-                        CaseSensitive = false,
-                        Condition = Enums.ColumnCondition.Equal,
-                        Value = Users.GetUserId(User)
-                    }
-                );
+            // If user only data access
+            // request.Parameters.Add(
+            //     new QuerySearchItem()
+            //     {
+            //         Name = "CreatedBy",
+            //         CaseSensitive = false,
+            //         Condition = Enums.ColumnCondition.Equal,
+            //         Value = Users.GetUserId(User)
+            //     }
+            // );
 
-                return await ServiceManager.Instance.GetService<APIService>().UpdateRow(Schemas.Application, table, request.Data, request.Parameters);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to update data!");
-            }
+            // return await ServiceManager.Instance.GetService<APIService>().UpdateRow(Schemas.Application, table, request.Data, request.Parameters);
+            
+            return await ServiceManager.Instance.GetService<APIService>().UpdateRow(Schemas.Application, table, request.Data, request.Parameters);
         }
 
 
+        [LevendrAuthorized]
         [HttpDelete("{table}/{id}")]
         public async Task<APIResult> DeleteRow(string table, int id)
         {
@@ -256,29 +228,20 @@ namespace Levendr.Controllers
                     }
             };
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanDeleteTablesData") || permissions.Contains("CanUpdateTableData" + table))
-            {
-                return await ServiceManager.Instance.GetService<APIService>().DeleteRow(Schemas.Application, table, parameters);
-            }
-            else if (permissions.Contains("CanDeleteOwnData"))
-            {
-                parameters.Add(
-                    new QuerySearchItem()
-                    {
-                        Name = "CreatedBy",
-                        CaseSensitive = false,
-                        Condition = Enums.ColumnCondition.Equal,
-                        Value = Users.GetUserId(User)
-                    }
-                );
+            // if user only data access
+            // parameters.Add(
+            //     new QuerySearchItem()
+            //     {
+            //         Name = "CreatedBy",
+            //         CaseSensitive = false,
+            //         Condition = Enums.ColumnCondition.Equal,
+            //         Value = Users.GetUserId(User)
+            //     }
+            // );
 
-                return await ServiceManager.Instance.GetService<APIService>().DeleteRow(Schemas.Application, table, parameters);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to delete data!");
-            }
+            // return await ServiceManager.Instance.GetService<APIService>().DeleteRow(Schemas.Application, table, parameters);
+            
+            return await ServiceManager.Instance.GetService<APIService>().DeleteRow(Schemas.Application, table, parameters);            
         }
     }
 }

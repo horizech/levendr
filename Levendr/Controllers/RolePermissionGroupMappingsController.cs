@@ -63,31 +63,23 @@ namespace Levendr.Controllers
 
                 Columns.AppendCreatedInfo(data, Users.GetUserId(User));
 
-                List<string> permissions = Permissions.GetUserPermissions(User);
-                if (permissions.Contains("CanCreateTablesData"))
-                {                    
-                    try
-                    {
-                        APIResult result = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().AddRolePermissionGroupMapping(data);
-                        return result; 
-                    }
-                    catch (Exception e)
-                    {
-                        IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                        ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                        if(errorCode == ErrorCode.DB520) {
-                            // It's a null value column constraint violation
-                            return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                        }
-                        else {
-                            return APIResult.GetSimpleFailureResult(e.Message);
-                        }
-                    }                
-                }
-                else
+                try
                 {
-                    return APIResult.GetSimpleFailureResult("Not allowed to write data!");
+                    APIResult result = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().AddRolePermissionGroupMapping(data);
+                    return result; 
                 }
+                catch (Exception e)
+                {
+                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
+                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
+                    if(errorCode == ErrorCode.DB520) {
+                        // It's a null value column constraint violation
+                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
+                    }
+                    else {
+                        return APIResult.GetSimpleFailureResult(e.Message);
+                    }
+                } 
             }
             catch(LevendrErrorCodeException e) {
                 return APIResult.GetSimpleFailureResult(e.Message);
@@ -120,31 +112,23 @@ namespace Levendr.Controllers
 
                 Columns.AppendUpdatedInfo(data, Users.GetUserId(User));
 
-                List<string> permissions = Permissions.GetUserPermissions(User);
-                if (permissions.Contains("CanUpdateTablesData"))
-                {                    
-                    try
-                    {
-                        APIResult result = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().UpdateRolePermissionGroupMapping(key, data);
-                        return result; 
-                    }
-                    catch (Exception e)
-                    {
-                        IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                        ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                        if(errorCode == ErrorCode.DB520) {
-                            // It's a null value column constraint violation
-                            return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                        }
-                        else {
-                            return APIResult.GetSimpleFailureResult(e.Message);
-                        }
-                    }                
-                }
-                else
+                try
                 {
-                    return APIResult.GetSimpleFailureResult("Not allowed to write data!");
+                    APIResult result = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().UpdateRolePermissionGroupMapping(key, data);
+                    return result; 
                 }
+                catch (Exception e)
+                {
+                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
+                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
+                    if(errorCode == ErrorCode.DB520) {
+                        // It's a null value column constraint violation
+                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
+                    }
+                    else {
+                        return APIResult.GetSimpleFailureResult(e.Message);
+                    }
+                }  
             }
             catch(LevendrErrorCodeException e) {
                 return APIResult.GetSimpleFailureResult(e.Message);
@@ -159,31 +143,23 @@ namespace Levendr.Controllers
         public async Task<APIResult> DeleteRolePermissionGroupMapping(string key)
         {
             try{
-                List<string> permissions = Permissions.GetUserPermissions(User);
-                if (permissions.Contains("CanDeleteTablesData"))
-                {                    
-                    try
-                    {
-                        APIResult result = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().DeleteRolePermissionGroupMapping(key);
-                        return result; 
-                    }
-                    catch (Exception e)
-                    {
-                        IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                        ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                        if(errorCode == ErrorCode.DB520) {
-                            // It's a null value column constraint violation
-                            return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                        }
-                        else {
-                            return APIResult.GetSimpleFailureResult(e.Message);
-                        }
-                    }                
-                }
-                else
+                try
                 {
-                    return APIResult.GetSimpleFailureResult("Not allowed to delete data!");
+                    APIResult result = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().DeleteRolePermissionGroupMapping(key);
+                    return result; 
                 }
+                catch (Exception e)
+                {
+                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
+                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
+                    if(errorCode == ErrorCode.DB520) {
+                        // It's a null value column constraint violation
+                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
+                    }
+                    else {
+                        return APIResult.GetSimpleFailureResult(e.Message);
+                    }
+                }  
             }
             catch(LevendrErrorCodeException e) {
                 return APIResult.GetSimpleFailureResult(e.Message);

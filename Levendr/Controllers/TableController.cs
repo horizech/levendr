@@ -14,6 +14,7 @@ using Levendr.Constants;
 using Levendr.Helpers;
 using Levendr.Exceptions;
 using Levendr.Interfaces;
+using Levendr.Filters;
 
 namespace Levendr.Controllers
 {
@@ -28,6 +29,7 @@ namespace Levendr.Controllers
             _logger = logger;
         }
 
+        [LevendrAuthorized]
         [HttpPost("CreateTable")]
         [Authorize]
         public async Task<APIResult> CreateTable(string table, List<ColumnInfo> columns)
@@ -58,17 +60,10 @@ namespace Levendr.Controllers
                 }
             }
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanCreateTables"))
-            {
-                return await ServiceManager.Instance.GetService<TableService>().CreateTable(Schemas.Application, table, columns);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to create tables!");
-            }
+            return await ServiceManager.Instance.GetService<TableService>().CreateTable(Schemas.Application, table, columns);            
         }
 
+        [LevendrAuthorized]
         [HttpGet("GetTablesList")]
         [Authorize]
         public async Task<APIResult> GetTablesList()
@@ -76,6 +71,7 @@ namespace Levendr.Controllers
             return await ServiceManager.Instance.GetService<TableService>().GetTablesList(Schemas.Application);
         }
 
+        [LevendrAuthorized]
         [HttpGet("GetTableColumns")]
         [Authorize]
         public async Task<APIResult> GetTableColumns(string table)
@@ -84,6 +80,7 @@ namespace Levendr.Controllers
         }
 
 
+        [LevendrAuthorized]
         [HttpGet("GetPredefinedColumns")]
         [Authorize]
         public APIResult GetPredefinedColumns()
@@ -91,6 +88,7 @@ namespace Levendr.Controllers
             return ServiceManager.Instance.GetService<TableService>().GetPredefinedColumns();
         }
 
+        [LevendrAuthorized]
         [HttpPost("AddColumn")]
         public async Task<APIResult> AddColumn(string table, ColumnInfo columnInfo)
         {
@@ -111,33 +109,23 @@ namespace Levendr.Controllers
                     return APIResult.GetSimpleFailureResult("Cannot delete predefined column!");
                 }
                 
-                List<string> permissions = Permissions.GetUserPermissions(User);
-                if (permissions.Contains("CanCreateTables"))
+                Task<APIResult> createTask = ServiceManager.Instance.GetService<TableService>().AddColumn(Schemas.Application, table, columnInfo);
+                try
                 {
-                    Task<APIResult> createTask = ServiceManager.Instance.GetService<TableService>().AddColumn(Schemas.Application, table, columnInfo);
-                    try
-                    {
-                        APIResult result = await createTask;
-                        return result; 
-                    }
-                    catch (Exception e)
-                    {
-                        IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                        ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                        if(errorCode == ErrorCode.DB520) {
-                            // It's a null value column constraint violation
-                            return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                        }
-                        else {
-                            return APIResult.GetSimpleFailureResult(e.Message);
-                        }
-                    }
-
-                
+                    APIResult result = await createTask;
+                    return result; 
                 }
-                else
+                catch (Exception e)
                 {
-                    return APIResult.GetSimpleFailureResult("Not allowed to delete column!");
+                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
+                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
+                    if(errorCode == ErrorCode.DB520) {
+                        // It's a null value column constraint violation
+                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
+                    }
+                    else {
+                        return APIResult.GetSimpleFailureResult(e.Message);
+                    }
                 }
             }
             catch(LevendrErrorCodeException e) {
@@ -149,6 +137,7 @@ namespace Levendr.Controllers
 
         }
         
+        [LevendrAuthorized]
         [HttpDelete("DeleteColumn")]
         public async Task<APIResult> DeleteColumn(string table, string column)
         {
@@ -169,33 +158,23 @@ namespace Levendr.Controllers
                     return APIResult.GetSimpleFailureResult("Cannot delete predefined column!");
                 }
                 
-                List<string> permissions = Permissions.GetUserPermissions(User);
-                if (permissions.Contains("CanCreateTables"))
+                Task<APIResult> createTask = ServiceManager.Instance.GetService<TableService>().DeleteColumn(Schemas.Application, table, column);
+                try
                 {
-                    Task<APIResult> createTask = ServiceManager.Instance.GetService<TableService>().DeleteColumn(Schemas.Application, table, column);
-                    try
-                    {
-                        APIResult result = await createTask;
-                        return result; 
-                    }
-                    catch (Exception e)
-                    {
-                        IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                        ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                        if(errorCode == ErrorCode.DB520) {
-                            // It's a null value column constraint violation
-                            return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                        }
-                        else {
-                            return APIResult.GetSimpleFailureResult(e.Message);
-                        }
-                    }
-
-                
+                    APIResult result = await createTask;
+                    return result; 
                 }
-                else
+                catch (Exception e)
                 {
-                    return APIResult.GetSimpleFailureResult("Not allowed to delete column!");
+                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
+                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
+                    if(errorCode == ErrorCode.DB520) {
+                        // It's a null value column constraint violation
+                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
+                    }
+                    else {
+                        return APIResult.GetSimpleFailureResult(e.Message);
+                    }
                 }
             }
             catch(LevendrErrorCodeException e) {
@@ -207,6 +186,7 @@ namespace Levendr.Controllers
 
         }
         
+        [LevendrAuthorized]
         [HttpPost("InsertRows")]
         public async Task<APIResult> InsertRows(string table, List<Dictionary<string, object>> data)
         {
@@ -249,38 +229,25 @@ namespace Levendr.Controllers
 
                 }
 
-                List<string> permissions = Permissions.GetUserPermissions(User);
-                if (permissions.Contains("CanCreateTablesData") || permissions.Contains("CanCreateTableData" + table))
+                Task<APIResult> insertTask = ServiceManager.Instance.GetService<TableService>().InsertRows(Schemas.Application, table, data);
+                try
                 {
-                    Task<APIResult> insertTask = ServiceManager.Instance.GetService<TableService>().InsertRows(Schemas.Application, table, data);
-                    try
-                    {
-                        APIResult result = await insertTask;
-                        return result; 
+                    APIResult result = await insertTask;
+                    return result; 
+                }
+                catch (Exception e)
+                {
+                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
+                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
+                    if(errorCode == ErrorCode.DB520) {
+                        // It's a null value column constraint violation
+                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
                     }
-                    catch (Exception e)
-                    {
-                        IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                        ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                        if(errorCode == ErrorCode.DB520) {
-                            // It's a null value column constraint violation
-                            return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                        }
-                        else {
-                            return APIResult.GetSimpleFailureResult(e.Message);
-                        }
+                    else {
+                        return APIResult.GetSimpleFailureResult(e.Message);
                     }
+                }
 
-                
-                }
-                else if (permissions.Contains("CanCreateOwnData"))
-                {
-                    return await ServiceManager.Instance.GetService<TableService>().InsertRows(Schemas.Application, table, data);
-                }
-                else
-                {
-                    return APIResult.GetSimpleFailureResult("Not allowed to write data!");
-                }
             }
             catch(LevendrErrorCodeException e) {
                 return APIResult.GetSimpleFailureResult(e.Message);
@@ -291,6 +258,7 @@ namespace Levendr.Controllers
 
         }
 
+        [LevendrAuthorized]
         [HttpGet("GetRows")]
         [Authorize]
         public async Task<APIResult> GetRows(string table)
@@ -300,29 +268,21 @@ namespace Levendr.Controllers
                 return APIResult.GetSimpleFailureResult("Table is not valid!");
             }
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanReadTablesData") || permissions.Contains("CanReadTableData" + table))
-            {
-                return await ServiceManager.Instance.GetService<TableService>().GetRows(Schemas.Application, table);
-            }
-            else if (permissions.Contains("CanReadOwnData"))
-            {
-                List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
-                    new QuerySearchItem(){
-                        Name = "CreatedBy",
-                        CaseSensitive = false,
-                        Condition = Enums.ColumnCondition.Equal,
-                        Value = Users.GetUserId(User)
-                    }
-                };
-                return await ServiceManager.Instance.GetService<TableService>().GetRowsByConditions(Schemas.Application, table, UserParameters);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to read data!");
-            }
+            // If user only data access
+            // List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
+            //     new QuerySearchItem(){
+            //         Name = "CreatedBy",
+            //         CaseSensitive = false,
+            //         Condition = Enums.ColumnCondition.Equal,
+            //         Value = Users.GetUserId(User)
+            //     }
+            // };
+            // return await ServiceManager.Instance.GetService<TableService>().GetRowsByConditions(Schemas.Application, table, UserParameters);
+            
+            return await ServiceManager.Instance.GetService<TableService>().GetRows(Schemas.Application, table);            
         }
 
+        [LevendrAuthorized]
         [HttpPost("GetRowsByConditions")]
         public async Task<APIResult> GetRowsByConditions(string table, List<QuerySearchItem> parameters)
         {
@@ -331,47 +291,39 @@ namespace Levendr.Controllers
                 return APIResult.GetSimpleFailureResult("Table is not valid!");
             }
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanReadTablesData") || permissions.Contains("CanReadTableData" + table))
-            {
-                return await ServiceManager.Instance.GetService<TableService>().GetRowsByConditions(Schemas.Application, table, parameters);
-            }
-            else if (permissions.Contains("CanReadOwnData"))
-            {
-                bool doesUserParamExist = false;
+            // If user only data access
+            // bool doesUserParamExist = false;
 
-                for (int i = 0; i < parameters.Count; i++)
-                {
-                    if (parameters[i].Name.ToLower().Equals("createdby"))
-                    {
-                        parameters[i].Name = "CreatedBy";
-                        parameters[i].Value = Users.GetUserId(User);
-                        parameters[i].CaseSensitive = false;
-                        parameters[i].Condition = Enums.ColumnCondition.Equal;
-                        doesUserParamExist = true;
-                    }
-                }
+            // for (int i = 0; i < parameters.Count; i++)
+            // {
+            //     if (parameters[i].Name.ToLower().Equals("createdby"))
+            //     {
+            //         parameters[i].Name = "CreatedBy";
+            //         parameters[i].Value = Users.GetUserId(User);
+            //         parameters[i].CaseSensitive = false;
+            //         parameters[i].Condition = Enums.ColumnCondition.Equal;
+            //         doesUserParamExist = true;
+            //     }
+            // }
 
-                if (!doesUserParamExist)
-                {
-                    parameters.Add(
-                        new QuerySearchItem()
-                        {
-                            Name = "CreatedBy",
-                            CaseSensitive = false,
-                            Condition = Enums.ColumnCondition.Equal,
-                            Value = Users.GetUserId(User)
-                        }
-                    );
-                }
-                return await ServiceManager.Instance.GetService<TableService>().GetRowsByConditions(Schemas.Application, table, parameters);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to read data!");
-            }
+            // if (!doesUserParamExist)
+            // {
+            //     parameters.Add(
+            //         new QuerySearchItem()
+            //         {
+            //             Name = "CreatedBy",
+            //             CaseSensitive = false,
+            //             Condition = Enums.ColumnCondition.Equal,
+            //             Value = Users.GetUserId(User)
+            //         }
+            //     );
+            // }
+            // return await ServiceManager.Instance.GetService<TableService>().GetRowsByConditions(Schemas.Application, table, parameters);
+            
+            return await ServiceManager.Instance.GetService<TableService>().GetRowsByConditions(Schemas.Application, table, parameters);            
         }
 
+        [LevendrAuthorized]
         [HttpPut("UpdateRows")]
         public async Task<APIResult> UpdateRows(string table, UpdateRequest request)
         {
@@ -402,51 +354,41 @@ namespace Levendr.Controllers
                 request.Parameters = new List<QuerySearchItem>();
             }
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanUpdateTablesData") || permissions.Contains("CanUpdateTableData" + table))
-            {
-                return await ServiceManager.Instance.GetService<TableService>().UpdateRows(Schemas.Application, table, request.Data, request.Parameters);
-            }
-            else if (permissions.Contains("CanUpdateOwnData"))
-            {
+            // If user only read access
+            // bool doesUserParamExist = false;
 
+            // for (int i = 0; i < request.Parameters.Count; i++)
+            // {
+            //     if (request.Parameters[i].Name.ToLower().Equals("createdby"))
+            //     {
+            //         request.Parameters[i].Name = "CreatedBy";
+            //         request.Parameters[i].Value = Users.GetUserId(User);
+            //         request.Parameters[i].CaseSensitive = false;
+            //         request.Parameters[i].Condition = Enums.ColumnCondition.Equal;
+            //         doesUserParamExist = true;
+            //     }
+            // }
 
-                bool doesUserParamExist = false;
+            // if (!doesUserParamExist)
+            // {
+            //     request.Parameters.Add(
+            //         new QuerySearchItem()
+            //         {
+            //             Name = "CreatedBy",
+            //             CaseSensitive = false,
+            //             Condition = Enums.ColumnCondition.Equal,
+            //             Value = Users.GetUserId(User)
+            //         }
+            //     );
+            // }
 
-                for (int i = 0; i < request.Parameters.Count; i++)
-                {
-                    if (request.Parameters[i].Name.ToLower().Equals("createdby"))
-                    {
-                        request.Parameters[i].Name = "CreatedBy";
-                        request.Parameters[i].Value = Users.GetUserId(User);
-                        request.Parameters[i].CaseSensitive = false;
-                        request.Parameters[i].Condition = Enums.ColumnCondition.Equal;
-                        doesUserParamExist = true;
-                    }
-                }
-
-                if (!doesUserParamExist)
-                {
-                    request.Parameters.Add(
-                        new QuerySearchItem()
-                        {
-                            Name = "CreatedBy",
-                            CaseSensitive = false,
-                            Condition = Enums.ColumnCondition.Equal,
-                            Value = Users.GetUserId(User)
-                        }
-                    );
-                }
-
-                return await ServiceManager.Instance.GetService<TableService>().UpdateRows(Schemas.Application, table, request.Data, request.Parameters);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to update data!");
-            }
+            // return await ServiceManager.Instance.GetService<TableService>().UpdateRows(Schemas.Application, table, request.Data, request.Parameters);
+            
+            return await ServiceManager.Instance.GetService<TableService>().UpdateRows(Schemas.Application, table, request.Data, request.Parameters);            
         }
 
 
+        [LevendrAuthorized]
         [HttpDelete("DeleteRows")]
         public async Task<APIResult> DeleteRows(string table, List<QuerySearchItem> parameters)
         {
@@ -455,45 +397,36 @@ namespace Levendr.Controllers
                 return APIResult.GetSimpleFailureResult("Table is not valid!");
             }
 
-            List<string> permissions = Permissions.GetUserPermissions(User);
-            if (permissions.Contains("CanDeleteTablesData") || permissions.Contains("CanUpdateTableData" + table))
-            {
-                return await ServiceManager.Instance.GetService<TableService>().DeleteRows(Schemas.Application, table, parameters);
-            }
-            else if (permissions.Contains("CanDeleteOwnData"))
-            {
-                bool doesUserParamExist = false;
+            // If user only read access
+            // bool doesUserParamExist = false;
 
-                for (int i = 0; i < parameters.Count; i++)
-                {
-                    if (parameters[i].Name.ToLower().Equals("createdby"))
-                    {
-                        parameters[i].Name = "CreatedBy";
-                        parameters[i].Value = Users.GetUserId(User);
-                        parameters[i].CaseSensitive = false;
-                        parameters[i].Condition = Enums.ColumnCondition.Equal;
-                        doesUserParamExist = true;
-                    }
-                }
+            // for (int i = 0; i < parameters.Count; i++)
+            // {
+            //     if (parameters[i].Name.ToLower().Equals("createdby"))
+            //     {
+            //         parameters[i].Name = "CreatedBy";
+            //         parameters[i].Value = Users.GetUserId(User);
+            //         parameters[i].CaseSensitive = false;
+            //         parameters[i].Condition = Enums.ColumnCondition.Equal;
+            //         doesUserParamExist = true;
+            //     }
+            // }
 
-                if (!doesUserParamExist)
-                {
-                    parameters.Add(
-                        new QuerySearchItem()
-                        {
-                            Name = "CreatedBy",
-                            CaseSensitive = false,
-                            Condition = Enums.ColumnCondition.Equal,
-                            Value = Users.GetUserId(User)
-                        }
-                    );
-                }
-                return await ServiceManager.Instance.GetService<TableService>().DeleteRows(Schemas.Application, table, parameters);
-            }
-            else
-            {
-                return APIResult.GetSimpleFailureResult("Not allowed to delete data!");
-            }
+            // if (!doesUserParamExist)
+            // {
+            //     parameters.Add(
+            //         new QuerySearchItem()
+            //         {
+            //             Name = "CreatedBy",
+            //             CaseSensitive = false,
+            //             Condition = Enums.ColumnCondition.Equal,
+            //             Value = Users.GetUserId(User)
+            //         }
+            //     );
+            // }
+            // return await ServiceManager.Instance.GetService<TableService>().DeleteRows(Schemas.Application, table, parameters);
+            
+            return await ServiceManager.Instance.GetService<TableService>().DeleteRows(Schemas.Application, table, parameters);            
         }
     }
 }
