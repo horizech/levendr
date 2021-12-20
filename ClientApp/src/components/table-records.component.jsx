@@ -100,7 +100,7 @@ const TableRecords = ({table, tableColumns, loadingCurrentTableRows, currentTabl
 
                                     <td key={'data_' + i + '_#'} scope="row">
                                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                                            <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)}/>
+                                            <ButtonIcon icon="edit" color="#7a77b9" onClick={() => showEditModal(row)}/>
                                             <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)}/>
                                         </div>
                                     </td>
