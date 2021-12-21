@@ -617,7 +617,6 @@ namespace Levendr.Databases.Postgresql
 
                 try
                 {
-                    List<Task> insertRowsTasks = new List<Task>();
                     IEnumerable<int> rows = await conn.QueryAsync<int>(query, data);
                     return rows.ToList();
 
@@ -649,58 +648,82 @@ namespace Levendr.Databases.Postgresql
                 return null;
             }
 
+            List<string> columnNames = columns.Select(x => x.Name).ToList();
+
+            string query = String.Format(
+                "INSERT INTO \"{0}\".\"{1}\" ({2})\nVALUES \n\t",
+                schema,
+                table,
+                string.Join(", ", data[0].Select(x => string.Format("\"{0}\"", x.Key)))
+            );
+            
+            Dictionary<string, object> valuesDictionary = new();
+            List<string> paramsList = new();
+            
             List<int> rowIds = new List<int>();
-            List<Task> insertRowsTasks = new List<Task>();
-            List<string> errors = new List<string>();
-
-            // List<int> rows = await InsertRow(schema, table, data[0], columns);
-            // if((rows?.Count ?? 0) > 0) {
-            //     rowIds.AddRange(rows.ToList());
-            // }
-                
-
-            lock(data)
+            
+            for(int i = 0; i < data.Count; i++)
             {
-                data.ForEach(row =>
+                // Fix any JSON like objects
+                Dictionary<string, object> row = data[i]
+                .ToDictionary(
+                    x => x.Key,
+                    x =>
+                        ServiceManager
+                        .Instance
+                        .GetService<DatabaseService>()
+                        .GetDatabaseDriver()
+                        .DataType
+                        .DeserializeValue(columns.Find(c => c.Name.ToLower().Equals(x.Key.ToString().ToLower())).Datatype, x.Value)
+                );
+
+                // Remove any wrong case key
+                columnNames.ForEach(column =>
                 {
-                    // List<int> rows = await InsertRow(schema, table, row, columns);
-                    // if((rows?.Count ?? 0) > 0) {
-                    //     rowIds.AddRange(rows.ToList());
-                    // }
-                    
-                    // List<int> rows = await InsertRow(schema, table, row, columns);
-                    // if((rows?.Count ?? 0) > 0) {
-                    //     rowIds.AddRange(rows.ToList());
-                    // }
-                    lock(insertRowsTasks)
+                    row.Keys.ToList().ForEach(key =>
                     {
-                        insertRowsTasks.Add(Task.Run(async () =>
+                        if (column.ToLower().Equals(key.ToLower()) && !column.Equals(key))
                         {
-                            try{
-                                IEnumerable<int> rows = await InsertRow(schema, table, row, columns);
-                                rowIds.AddRange(rows.ToList());
-                            }
-                            catch(Exception e) {
-                                errors.Add(e.Message);
-                            }
-                        }));
-                    }
+                            object value = row[key];
+                            row.Remove(key);
+                            row.Add(column, value);
+                        }
+                    });
                 });
 
-                lock(insertRowsTasks) {
-                    Task.WaitAll(insertRowsTasks.ToArray());
-                    lock(rowIds)
-                    {
-                        rowIds.Sort();
-                    }
-                }
-            } 
-
-
-            if(errors.Count > 0) {
-                throw new LevendrErrorCodeException(string.Join("\n", errors));
+                // Updated params
+                paramsList.Add($"({string.Join(", ", row.Select(x => "@" + x.Key + (i + 1)))})");
+                
+                // Updated values
+                Dictionary<string, object> rowValuesDictionary = ((Dictionary<string, object>)row).ToDictionary( x => (x.Key + (i+1)), x => x.Value);
+                valuesDictionary = valuesDictionary.Concat(rowValuesDictionary).ToDictionary(x => x.Key, x => x.Value);                
             }
-            return rowIds;
+
+            List<int> result = new List<int>();
+            using (var conn = new NpgsqlConnection(Connection.GetDatabaseConnectionString()))
+            {
+                query = query + $"{String.Join(",\n\t", paramsList)}\nRETURNING \"Id\";";
+
+                ServiceManager.Instance.GetService<LogService>().Print("Running query:\n" + query, LoggingLevel.Info);
+
+                try
+                {
+                    IEnumerable<int> rows = await conn.QueryAsync<int>(query, valuesDictionary);
+                    return rows.ToList();
+
+                }
+                catch (Exception e)
+                {
+                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
+                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
+                    if(errorCode == ErrorCode.DB520) {
+                        // It's a null value column constraint violation
+                        handler.ThrowLevendrExceptionWithCustomMessage(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
+                    }
+                    ServiceManager.Instance.GetService<LogService>().Print("Database Error: " + e.Message, LoggingLevel.Errors);
+                    return null;
+                }
+            }
         }
 
         // public List<Dictionary<string, object>> GetRows(string schema, string table)
