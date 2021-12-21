@@ -174,11 +174,11 @@ class TablesApiProvider {
         headers['Content-Type'] = 'application/json' ;
 
         const requestOptions = {
-            method: 'GET',
+            method: 'DELETE',
             headers: headers
         };
         
-        return fetch(`${config.apiUrl}/api/Table/deletecolumn?table=${table}&column=${column}`, requestOptions).then(handleResponse);
+        return fetch(`${config.apiUrl}/api/Table/DeleteColumn?table=${table}&column=${column}`, requestOptions).then(handleResponse);
     }
    
 }
