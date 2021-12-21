@@ -16,14 +16,16 @@
         {"Id": 6, "Name": "RolePermissionGroupMappingsReadWrite", "Description": "RolePermissionGroupMappings ReadWrite", "IsSystem": true},        
         {"Id": 7, "Name": "SettingsReadWrite", "Description": "Settings ReadWrite", "IsSystem": true},
         {"Id": 8, "Name": "TableReadWrite", "Description": "Table ReadWrite", "IsSystem": true},
+        {"Id": 9, "Name": "APIReadWrite", "Description": "API ReadWrite", "IsSystem": true},
 
-        {"Id": 9, "Name": "LevendrReadOnly", "Description": "Levendr ReadOnly", "IsSystem": true},
-        {"Id": 10, "Name": "PermissionsReadOnly", "Description": "Permissions ReadOnly", "IsSystem": true},
-        {"Id": 11, "Name": "PermissionGroupsReadOnly", "Description": "PermissionGroups ReadOnly", "IsSystem": true},
-        {"Id": 12, "Name": "RolesReadOnly", "Description": "Roles ReadOnly", "IsSystem": true},
-        {"Id": 13, "Name": "PermissionGroupMappingsReadOnly", "Description": "PermissionGroupMappings ReadOnly", "IsSystem": true},
-        {"Id": 14, "Name": "RolePermissionGroupMappingsReadOnly", "Description": "RolePermissionGroupMappings ReadOnly", "IsSystem": true},        
-        {"Id": 15, "Name": "SettingsReadOnly", "Description": "Settings ReadOnly", "IsSystem": true},
-        {"Id": 16, "Name": "TableReadOnly", "Description": "Table ReadOnly", "IsSystem": true}
+        {"Id": 10, "Name": "LevendrReadOnly", "Description": "Levendr ReadOnly", "IsSystem": true},
+        {"Id": 11, "Name": "PermissionsReadOnly", "Description": "Permissions ReadOnly", "IsSystem": true},
+        {"Id": 12, "Name": "PermissionGroupsReadOnly", "Description": "PermissionGroups ReadOnly", "IsSystem": true},
+        {"Id": 13, "Name": "RolesReadOnly", "Description": "Roles ReadOnly", "IsSystem": true},
+        {"Id": 14, "Name": "PermissionGroupMappingsReadOnly", "Description": "PermissionGroupMappings ReadOnly", "IsSystem": true},
+        {"Id": 15, "Name": "RolePermissionGroupMappingsReadOnly", "Description": "RolePermissionGroupMappings ReadOnly", "IsSystem": true},        
+        {"Id": 16, "Name": "SettingsReadOnly", "Description": "Settings ReadOnly", "IsSystem": true},
+        {"Id": 17, "Name": "TableReadOnly", "Description": "Table ReadOnly", "IsSystem": true},
+        {"Id": 18, "Name": "APIReadOnly", "Description": "API ReadOnly", "IsSystem": true}
     ]
 }

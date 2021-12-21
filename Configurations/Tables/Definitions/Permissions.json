@@ -52,6 +52,12 @@
         {"Id": 35, "Name": "Table.GetRowsByConditions.GET", "Description": "Table.GetRowsByConditions.GET", "IsSystem": true},
         {"Id": 36, "Name": "Table.InsertRows.POST", "Description": "Table.InsertRows.POST", "IsSystem": true},
         {"Id": 37, "Name": "Table.UpdateRows.PUT", "Description": "Table.UpdateRows.PUT", "IsSystem": true},
-        {"Id": 38, "Name": "Table.DeleteRows.DELETE", "Description": "Table.DeleteRows.DELETE", "IsSystem": true}
+        {"Id": 38, "Name": "Table.DeleteRows.DELETE", "Description": "Table.DeleteRows.DELETE", "IsSystem": true},
+
+        {"Id": 39, "Name": "API.GetRows.GET", "Description": "API.GetRows.GET", "IsSystem": true},
+        {"Id": 40, "Name": "API.GetRow.GET", "Description": "API.GetRow.GET", "IsSystem": true},
+        {"Id": 41, "Name": "API.InsertRow.POST", "Description": "API.InsertRow.POST", "IsSystem": true},
+        {"Id": 42, "Name": "API.UpdateRow.PUT", "Description": "API.UpdateRow.PUT", "IsSystem": true},
+        {"Id": 43, "Name": "API.DeleteRow.DELETE", "Description": "API.DeleteRow.DELETE", "IsSystem": true}
     ]
 }
