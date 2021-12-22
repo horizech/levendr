@@ -826,9 +826,47 @@ namespace Levendr.Databases.Postgresql
             {
                 return false;
             }
-
+            
             List<string> columnNames = columns.Select(x => x.Name).ToList();
+            
+            // Check if any parameter is not part of table columns
+            foreach (QuerySearchItem item in parameters)
+            {
+                if (!columns.Any(x => x.Name.ToLower().Equals(item.Name.ToLower())))
+                {
+                    return false;
+                }
+            }
 
+            // Fix any JSON like objects in data
+            data = data
+            .ToDictionary(
+                x => x.Key,
+                x =>
+                    ServiceManager
+                    .Instance
+                    .GetService<DatabaseService>()
+                    .GetDatabaseDriver()
+                    .DataType
+                    .DeserializeValue(columns.Find(c => c.Name.ToLower().Equals(x.Key.ToString().ToLower())).Datatype, x.Value)
+            );
+
+            // Fix any JSON like objects in parameters
+            if((parameters?.Count ?? 0) > 0)
+            {
+                for(int i = 0; i < parameters.Count; i++)
+                {    
+                    parameters[i].Value = 
+                        ServiceManager
+                        .Instance
+                        .GetService<DatabaseService>()
+                        .GetDatabaseDriver()
+                        .DataType
+                        .DeserializeValue(columns.Find(c => c.Name.ToLower().Equals(parameters[i].Name.ToString().ToLower())).Datatype, parameters[i].Value);
+                }            
+            }            
+
+            // Remove any wrong case key
             columnNames.ForEach(column =>
             {
                 data.Keys.ToList().ForEach(key =>
@@ -841,84 +879,14 @@ namespace Levendr.Databases.Postgresql
                     }
                 });
             });
+            
+            List<int> rowIds = (await QueryDesigner.CreateDesigner(schema, table, QueryAction.UpdateRows)
+            .AddRow(data)
+            .AddColumnDefinitions(columns)
+            .SetConditions(parameters)
+            .ExecuteQuery<int>()).ToList();
 
-
-
-            using (var conn = new NpgsqlConnection(Connection.GetDatabaseConnectionString()))
-            {
-                List<string> valuesList = data.Select(x => String.Format("\t\"{0}\" = @{0}Value", x.Key)).ToList();
-
-                string query = String.Format(
-                    "UPDATE \"{0}\".\"{1}\"\r\nSET\r\n{2}",
-                    schema,
-                    table,
-                    string.Join(",\r\n", valuesList)
-                );
-
-                if ((parameters?.Count ?? 0) > 0)
-                {
-                    foreach (QuerySearchItem item in parameters)
-                    {
-                        if (columns.Count(x => x.Name.ToLower().Equals(item.Name.ToLower())) < 1)
-                        {
-                            return false;
-                        }
-                    }
-
-                    query = query + String.Format(
-                        "\r\nWHERE {2};",
-                        schema,
-                        table,
-                        // Use this when NpgsqlParameterCollection properly gets implemented
-                        // string.Join(" AND ", parameters.Select(x => ServiceManager.Instance.GetService<DatabaseService>().GetQueryHelper().GetColumnConditionItem(columns.Find(c => c.Name.ToLower().Equals(x.Name.ToLower())).Datatype, x)))
-                        string.Join(" AND ", parameters.Select(x => ServiceManager.Instance.GetService<DatabaseService>().GetQueryHelper().ApplyColumnConditionWithoutParam(columns.Find(c => c.Name.ToLower().Equals(x.Name.ToLower())).Datatype, x)))
-                    );
-                }
-                else
-                {
-                    query = query = ";";
-                }
-                ServiceManager.Instance.GetService<LogService>().Print("Running query:\n" + query, LoggingLevel.Info);
-
-                data = data.ToDictionary(
-                    x => x.Key,
-                    x =>
-                        ServiceManager
-                        .Instance
-                        .GetService<DatabaseService>()
-                        .GetDatabaseDriver()
-                        .DataType
-                        .DeserializeValue(columns.Find(c => c.Name.ToLower().Equals(x.Key.ToString().ToLower())).Datatype, x.Value)
-                );
-
-                Dictionary<string, object> param = parameters.ToDictionary(
-                    x => x.Name,
-                    x =>
-                        ServiceManager
-                        .Instance
-                        .GetService<DatabaseService>()
-                        .GetDatabaseDriver()
-                        .DataType
-                        .DeserializeValue(columns.Find(c => c.Name.ToLower().Equals(x.Name.ToString().ToLower())).Datatype, x.Value)
-                );
-
-
-                data.Keys.ToList().ForEach(key =>
-                {
-                    param.Add(key + "Value", data[key]);
-                });
-
-                try
-                {
-                    int rows = await conn.ExecuteAsync(query, param); //.ToDictionary<string, object>(kvp => kvp.Key, kvp => kvp.Value).ToList(); //.ToList();
-                    return rows > 0;
-                }
-                catch (Exception e)
-                {
-                    ServiceManager.Instance.GetService<LogService>().Print("Database Error: " + e.Message, LoggingLevel.Errors);
-                    return false;
-                }
-            }
+            return rowIds.Count > 0;            
         }
 
         public async Task<bool> DeleteRows(string schema, string table, List<QuerySearchItem> parameters)
