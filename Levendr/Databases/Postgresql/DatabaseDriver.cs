@@ -647,25 +647,13 @@ namespace Levendr.Databases.Postgresql
             {
                 return null;
             }
-
+            
             List<string> columnNames = columns.Select(x => x.Name).ToList();
-
-            string query = String.Format(
-                "INSERT INTO \"{0}\".\"{1}\" ({2})\nVALUES \n\t",
-                schema,
-                table,
-                string.Join(", ", data[0].Select(x => string.Format("\"{0}\"", x.Key)))
-            );
-            
-            Dictionary<string, object> valuesDictionary = new();
-            List<string> paramsList = new();
-            
-            List<int> rowIds = new List<int>();
             
             for(int i = 0; i < data.Count; i++)
             {
                 // Fix any JSON like objects
-                Dictionary<string, object> row = data[i]
+                data[i] = data[i]
                 .ToDictionary(
                     x => x.Key,
                     x =>
@@ -680,50 +668,24 @@ namespace Levendr.Databases.Postgresql
                 // Remove any wrong case key
                 columnNames.ForEach(column =>
                 {
-                    row.Keys.ToList().ForEach(key =>
+                    data[i].Keys.ToList().ForEach(key =>
                     {
                         if (column.ToLower().Equals(key.ToLower()) && !column.Equals(key))
                         {
-                            object value = row[key];
-                            row.Remove(key);
-                            row.Add(column, value);
+                            object value = data[i][key];
+                            data[i].Remove(key);
+                            data[i].Add(column, value);
                         }
                     });
                 });
-
-                // Updated params
-                paramsList.Add($"({string.Join(", ", row.Select(x => "@" + x.Key + (i + 1)))})");
-                
-                // Updated values
-                Dictionary<string, object> rowValuesDictionary = ((Dictionary<string, object>)row).ToDictionary( x => (x.Key + (i+1)), x => x.Value);
-                valuesDictionary = valuesDictionary.Concat(rowValuesDictionary).ToDictionary(x => x.Key, x => x.Value);                
             }
+            
+            List<int> rowIds = (await QueryDesigner.CreateDesigner(schema, table, QueryAction.InsertRows)
+            .SetRows(data)
+            .AddColumnDefinitions(columns)
+            .ExecuteQuery<int>()).ToList();
 
-            List<int> result = new List<int>();
-            using (var conn = new NpgsqlConnection(Connection.GetDatabaseConnectionString()))
-            {
-                query = query + $"{String.Join(",\n\t", paramsList)}\nRETURNING \"Id\";";
-
-                ServiceManager.Instance.GetService<LogService>().Print("Running query:\n" + query, LoggingLevel.Info);
-
-                try
-                {
-                    IEnumerable<int> rows = await conn.QueryAsync<int>(query, valuesDictionary);
-                    return rows.ToList();
-
-                }
-                catch (Exception e)
-                {
-                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                    if(errorCode == ErrorCode.DB520) {
-                        // It's a null value column constraint violation
-                        handler.ThrowLevendrExceptionWithCustomMessage(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                    }
-                    ServiceManager.Instance.GetService<LogService>().Print("Database Error: " + e.Message, LoggingLevel.Errors);
-                    return null;
-                }
-            }
+            return rowIds;
         }
 
         // public List<Dictionary<string, object>> GetRows(string schema, string table)
