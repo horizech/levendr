@@ -148,8 +148,11 @@ namespace Levendr.Services
 
                             }
                             // Setval
-                            await QueryDesigner.CreateCustomQueryDesigner($"SELECT setval('\"{Schemas.Levendr}\".\"{table.Name}_Id_seq\"'::regclass, (SELECT MAX(\"Id\") FROM \"{Schemas.Levendr}\".\"{table.Name}\"))", null)
-                            .ExecuteNonQuery();
+                            await ServiceManager
+                                .Instance
+                                .GetService<DatabaseService>()
+                                .GetDatabaseDriver()
+                                .SetValWithMaxId(Schemas.Levendr, table.Name);
                         }
                     };
                 }

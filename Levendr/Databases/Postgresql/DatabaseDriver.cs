@@ -57,6 +57,26 @@ namespace Levendr.Databases.Postgresql
             }
         }
 
+        public async Task<bool> SetValWithMaxId(string schema, string table)
+        {
+            if (Connection is null)
+            {
+                return false;
+            }
+            
+            try
+            {
+                await QueryDesigner.CreateCustomQueryDesigner($"SELECT setval('\"{schema}\".\"{table}_Id_seq\"'::regclass, (SELECT MAX(\"Id\") FROM \"{schema}\".\"{table}\"))", null)
+                .ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                ServiceManager.Instance.GetService<LogService>().Print("Database Error: " + e.Message, LoggingLevel.Errors);
+                return false;
+            }
+        }
+
         public async Task<List<string>> GetTablesList(string schema)
         {
             // Three methods to get the job done

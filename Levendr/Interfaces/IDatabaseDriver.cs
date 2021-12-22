@@ -16,6 +16,7 @@ namespace Levendr.Interfaces
         IDatabaseConnection Connection { get; set; }
 
         Task<bool> SetSessionReplicationRole (string role);
+        Task<bool> SetValWithMaxId(string schema, string table);
         Task<List<string>> GetTablesList(string schema);
 
         Task<bool> CreateSchema(string schema);
