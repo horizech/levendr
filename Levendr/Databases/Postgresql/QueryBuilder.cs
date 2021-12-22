@@ -298,109 +298,38 @@ namespace Levendr.Databases.Postgresql
             // query.ColumnsDefinitions
             string queryString = "";
             
-            if (query.Action == QueryAction.SelectRows)
+            List<string> valuesList = query.Rows.First().Select(x => String.Format("\t\"{0}\" = @{0}Value", x.Key)).ToList();
+
+            queryString = String.Format(
+                "UPDATE \"{0}\".\"{1}\"\r\nSET\r\n{2}",
+                query.SchemaName,
+                query.TableName,
+                string.Join(",\r\n", valuesList)
+            );
+
+            if ((query.Conditions?.Count ?? 0) > 0)
             {
-                queryString += "\n" + GetTabsByLevel(level) + "FROM";
-                queryString += string.Format("{0}\"{1}\".\"{2}\" \"{3}\"", "\n" + GetTabsByLevel(level + 1), query.SchemaName, query.TableName, query.TableName + level);
-            
-                if((query.AddForeignTables?.Count ?? 0) > 0)
+                IQueryHelper queryHelper = ServiceManager.Instance.GetService<DatabaseService>().GetQueryHelper();
+                queryString += "\n" + GetTabsByLevel(level) + "WHERE";
+                queryString += "\n" + GetTabsByLevel(level + 1) + string.Join(" AND" + "\n" + GetTabsByLevel(level + 1),
+                    query.Conditions.Select(x =>
+                        x.Value == null ?
+                            string.Format("\"{0}\" IS NULL", x.Name) :
+                            string.Format("\"{0}\" {1} (@{0}{2})", x.Name, queryHelper.GetConditionString(x.Condition), level)
+                    )
+                );
+
+                parameters ??= new Dictionary<string, object>();
+                query.Conditions.ForEach(condition =>
                 {
-                    if((query.ColumnsDefinitions?.Count ?? 0) > 0)
-                    {
-                        int joinCounter = 0;
-                        foreach(AddForeignTables foreignTableinfo in query.AddForeignTables)
-                        {
-                            if((foreignTableinfo.ForeignColumns?.Count ?? 0) > 0)
-                            {
-                                ColumnInfo columnInfo = query.ColumnsDefinitions.Where( x => x.Name.ToLower().Equals(foreignTableinfo.Name.ToLower())).FirstOrDefault();
-                                if(columnInfo != null) 
-                                {
-                                    string foreignTable = columnInfo.ForeignTable;
-                                    string foreignKeyColumn = columnInfo.ForeignName;
+                    parameters.Add(condition.Name + level.ToString(), condition.Value);
+                });
 
-                                    queryString += "\n" + GetTabsByLevel(level) + "LEFT JOIN";
-                                    queryString += string.Format("{0}\"{1}\".\"{2}\" \"{3}\"", "\n" + GetTabsByLevel(level + 1), columnInfo.ForeignSchema, columnInfo.ForeignTable, columnInfo.ForeignTable + level + joinCounter);
-                                    queryString += "\n" + GetTabsByLevel(level) + "ON";
-                                    queryString += string.Format("{0}\"{1}\".\"{2}\" =  \"{3}\".\"{4}\"", "\n" + GetTabsByLevel(level + 1), columnInfo.ForeignTable + level + joinCounter, columnInfo.ForeignName, query.TableName + level, columnInfo.Name);
-                                    
-                                    joinCounter++;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Cannot add foreign tables because Columns definitions were not provided
-                        ServiceManager.Instance.GetService<LogService>().Print("Cannot add foreign tables because Columns definitions were not provided!", LoggingLevel.Errors);
-                    }
-                }
-            }
-            else if (query.Action == QueryAction.SelectCount || query.Action == QueryAction.DeleteRows)
-            {
-                queryString += "\n" + GetTabsByLevel(level) + "FROM";
-                queryString += string.Format("{0}\"{1}\".\"{2}\" \"{3}\"", "\n" + GetTabsByLevel(level + 1), query.SchemaName, query.TableName, query.TableName + level);
-            }
-
-            // List<ColumnInfo> columns = await GetTableColumns("information_schema", "tables");
-
-            if (query.Action == QueryAction.SelectRows ||
-            query.Action == QueryAction.SelectCount ||
-            query.Action == QueryAction.DeleteRows ||
-            query.Action == QueryAction.UpdateRows)
-            {
-
-                if ((query.Conditions?.Count ?? 0) > 0)
+                foreach(string key in query.Rows.First().Keys)
                 {
-                    IQueryHelper queryHelper = ServiceManager.Instance.GetService<DatabaseService>().GetQueryHelper();
-                    queryString += "\n" + GetTabsByLevel(level) + "WHERE";
-                    queryString += "\n" + GetTabsByLevel(level + 1) + string.Join(" AND" + "\n" + GetTabsByLevel(level + 1),
-                        query.Conditions.Select(x =>
-                            x.Value == null ?
-                                string.Format("\"{0}\" IS NULL", x.Name) :
-                                string.Format("\"{0}\" {1} (@{0}{2})", x.Name, queryHelper.GetConditionString(x.Condition), level)
-                        )
-                    );
-
-                    parameters ??= new Dictionary<string, object>();
-                    query.Conditions.ForEach(condition =>
-                    {
-                        parameters.Add(condition.Name + level.ToString(), condition.Value);
-                    });
-
-                    // foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(parameters))
-                    // {
-                    //     string obj = propertyDescriptor.GetValue(parameters);
-                    //     parameters.Add("@" + propertyDescriptor.Name, obj);
-                    // }
+                    parameters.Add(key + "Value", query.Rows.First()[key]);
                 }
-            }
-
-
-            if (query.Action == QueryAction.SelectRows || query.Action == QueryAction.SelectCount)
-            {
-                if ((query.OrderBy?.Length ?? 0) > 0)
-                {
-                    queryString += "\n" + GetTabsByLevel(level) + "ORDER BY";
-                    queryString += "\n" + GetTabsByLevel(level + 1) + "\"" + query.OrderBy + "\"";
-                    if (query.IsOrderDescending)
-                    {
-                        queryString += " DESC";
-                    }
-                }
-
-                if (query.Limit > 0)
-                {
-                    queryString += "\n" + GetTabsByLevel(level) + "LIMIT";
-                    queryString += "\n" + GetTabsByLevel(level + 1) + query.Limit;
-                }
-
-                if (query.Offset > 0)
-                {
-                    queryString += "\n" + GetTabsByLevel(level) + "OFFSET";
-                    queryString += "\n" + GetTabsByLevel(level + 1) + query.Offset;
-                }
-
-            }
+            }                
 
             return new QueryBuilderOutput(queryString, parameters);
         }
