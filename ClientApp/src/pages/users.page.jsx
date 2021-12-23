@@ -9,6 +9,7 @@ import { Loading, Page, User } from '../components';
 import { CreateEditModal } from '../modals';
 import { userService } from '../services';
 import { DialogModal } from '../modals'
+import { LevendrTable } from '../components';
 const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
 
     const [loadingSettingColumns, setLoadingSettingColumns] = React.useState(true);
@@ -27,14 +28,13 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
         { Name: 'Email', value: 'Email' },
         { Name: 'Fullname', value: 'Fullname' },
         //{ Name: 'Token', value: 'Token' },
-        //{ Name: 'Role', value: 'Role' },
         //{ Name: 'Permissions', value: 'Permissions' },
         { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' }
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
+        { Name: 'Role', value: 'Role' },
     ]
 
     const displayedColumns = columns.map( x => x.Name);
-    
     const showCreateModal = () => {
         setCreateSettingModalVisible(true);
     }
@@ -153,8 +153,36 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             {
                 (!loadingSettingColumns && users && users.length > 0) &&
                 <div>
+                    <LevendrTable headers={displayedColumns}>
+                    {users &&
+                                users.map((row, i) => (
+                                    <tr key={'row_' + (i + 1)}>
 
-                    <Table responsive bordered striped size="sm">
+                                        <td key={'data_' + i + '_#'} scope="row">
+                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                                <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)} />
+                                                <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)} />
+                                            </div>
+                                        </td>                                        
+                                        {
+                                            displayedColumns.map(key => {
+                                                let tableData
+                                                if(key=="Role"){
+                                                    tableData=row[key] != null ? '' + row[key]['Name'] : ''
+                                                }
+                                                else{
+                                                    tableData=row[key] != null ? '' + row[key] : ''
+                                                }
+                                                return(
+                                                <td key={'data_' + i + key} >{tableData}</td>
+                                                )
+                                            })                 
+                                        }
+                                    </tr>
+                                ))
+                            }
+                    </LevendrTable>
+                    {/* <Table responsive bordered striped size="sm">
                         <thead>
                             <tr key={'header'}>
                                 <th key={'header_#'} scope="col"></th>
@@ -171,7 +199,6 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                             {users &&
                                 users.map((row, i) => (
                                     <tr key={'row_' + (i + 1)}>
-
                                         <td key={'data_' + i + '_#'} scope="row">
                                             <div style={{ display: 'flex', flexDirection: 'row' }}>
                                                 <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)} />
@@ -190,7 +217,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                                 ))
                             }
                         </tbody>
-                    </Table>
+                    </Table> */}
                     {isEditModalVisible &&
                         <CreateEditModal
                             columns={columns}

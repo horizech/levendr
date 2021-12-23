@@ -9,6 +9,7 @@ import { Loading, Page, RolePermissions } from '../components';
 import { CreateEditModal } from '../modals';
 import { rolePermissionsService, permissionsService, rolesService } from '../services';
 import { DialogModal } from '../modals';
+import { LevendrTable } from '../components';
 const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
 
     const [rolePermissions, setRolePermissions] = React.useState(null);
@@ -220,7 +221,7 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             {
                 (!loadingRolePermissionColumns && rolePermissions && rolePermissions["length"] != 0) &&
                 <div>
-
+                   
                     <Table responsive bordered striped size="sm">
                         <thead>
                             <tr key={'header'}>
