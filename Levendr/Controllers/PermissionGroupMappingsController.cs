@@ -93,7 +93,7 @@ namespace Levendr.Controllers
         //[LevendrClaimAuthorized(ClaimTypes.Authentication, "CanUpdateTablesData")]
         [LevendrAuthorized]
         [HttpPut("UpdatePermissionGroupMapping")]
-        public async Task<APIResult> UpdatePermissionGroupMapping(string name, Dictionary<string, object> data)
+        public async Task<APIResult> UpdatePermissionGroupMapping(int Id, Dictionary<string, object> data)
         {
             try{
                 if (data == null || data.Count() == 0 || !data.ContainsKey("PermissionGroup") || !data.ContainsKey("Permission") || !data.ContainsKey("IsSystem"))
@@ -116,7 +116,7 @@ namespace Levendr.Controllers
 
                 try
                 {
-                    APIResult result = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().UpdatePermissionGroupMapping(name, data);
+                    APIResult result = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().UpdatePermissionGroupMapping(Id, data);
                     return result; 
                 }
                 catch (Exception e)
@@ -142,12 +142,12 @@ namespace Levendr.Controllers
 
         [LevendrAuthorized]
         [HttpDelete("DeletePermissionGroupMapping")]
-        public async Task<APIResult> DeletePermissionGroupMapping(string name)
+        public async Task<APIResult> DeletePermissionGroupMapping(int Id)
         {
             try{
                try
                 {
-                    APIResult result = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().DeletePermissionGroupMapping(name);
+                    APIResult result = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().DeletePermissionGroupMapping(Id);
                     return result; 
                 }
                 catch (Exception e)

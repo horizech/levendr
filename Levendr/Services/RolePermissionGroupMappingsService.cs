@@ -49,11 +49,11 @@ namespace Levendr.Services
             };
         }
 
-        public async Task<APIResult> UpdateRolePermissionGroupMapping(string key, Dictionary<string, object> data)
+        public async Task<APIResult> UpdateRolePermissionGroupMapping(int id, Dictionary<string, object> data)
         {
             bool result = await QueryDesigner
                 .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissionGroupMappings.ToString())
-                .WhereEquals("Key", key)
+                .WhereEquals("Id",  id)
                 .AddRow(data)
                 .RunUpdateQuery();
 
@@ -65,11 +65,11 @@ namespace Levendr.Services
             };
         }
 
-        public async Task<APIResult> DeleteRolePermissionGroupMapping(string key)
+        public async Task<APIResult> DeleteRolePermissionGroupMapping(int id)
         {
             bool result = await QueryDesigner
                 .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissionGroupMappings.ToString())
-                .WhereEquals("Key", key)
+                .WhereEquals("Id", id)
                 .RunDeleteQuery();
 
             return new APIResult()

@@ -21,8 +21,9 @@ class PermissionGroupMappingsApiProvider {
         let headers = authHeader();
         headers['Content-Type'] = 'application/json' ;
         let body = {
-            "Role": rows.Role,
-            "Permission": rows.Permission 
+            "Permission": rows.Permission,
+            "PermissionGroup": rows.PermissionGroup,
+            "IsSystem": rows.IsSystem 
             }
         const requestOptions = {
             method: 'POST',
@@ -38,8 +39,9 @@ class PermissionGroupMappingsApiProvider {
         headers['Content-Type'] = 'application/json' ;
 
         let body = {
-            "Role": rows.Role,
-            "Permission": rows.Permission 
+            "Permission": rows.Permission,
+            "PermissionGroup": rows.PermissionGroup,
+            "IsSystem": rows.IsSystem 
             }
 
         const requestOptions = {

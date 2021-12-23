@@ -5,9 +5,9 @@ import { tablesActions } from '../actions';
 import { Table } from 'reactstrap';
 import { ButtonIcon } from '../components/button-icon.component';
 import { history } from '../helpers';
-import { Loading, Page, PermissionGroupMappings } from '../components';
+import { Loading, Page, PermissionGroups } from '../components';
 import { CreateEditModal } from '../modals';
-import { permissionGroupMappingsService, rolesService } from '../services';
+import { permissionGroupMappingsService, permissionGroupsService, permissionsService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
 const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) => {
@@ -28,7 +28,7 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
 
     const columns = [
         { Name: 'Id', value: 'Id', Datatype: 'Integer' },
-        { Name: 'Permission', value: 'Permission', Datatype: 'ShortText' },
+        { Name: 'Permission', value: 'Permission', Datatype: 'LongText' },
         { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'LongText' },
         { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean' },
         { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime' },
@@ -50,6 +50,7 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
         if (values) {
             values.Permission = values.Permission.value;
             values.PermissionGroup = values.PermissionGroup.value;
+            console.log(values);
             permissionGroupMappingsService.addPermissionGroupMapping(values).then(response => {
                 console.log(response);
                 if (response.Success) {
@@ -139,24 +140,27 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
 
 
             if (column.Name === 'PermissionGroup') {
-                permissionGroupMappingsService.getPermissionGroupMappings().then(
+                permissionGroupsService.getPermissionGroups().then(
                     result => {
                         if (result.Success) {
-                            // console.log(result.Data);
-                            let selectOptionsListUpdate = selectOptionsList;                            
-                            selectOptionsListUpdate[column.Name] = (
-                                result.Data.map(x => {
-                                    return { label: x.Name, value: x.Id }
-                                }
-                                )
-                            );
+                            console.log(result.Data);
+                            let selectOptionsListUpdate = selectOptionsList; 
+                            if(result.Data){
+                                selectOptionsListUpdate[column.Name] = (
+                                    result.Data.map(x => {
+                                        return { label: x.Name, value: x.Id }
+                                    }
+                                    )
+                                );
+                            }                           
+                            
                             setSelectOptionsList(selectOptionsListUpdate);
                         }
                     }
                 );
             }
             else if (column.Name ===  'Permission') {
-                rolesService.getRoles().then(
+                permissionsService.getPermissions().then(
                     result => {
                         if (result.Success) {
                             // console.log(result.Data);
@@ -186,6 +190,7 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
         permissionGroupMappingsService.getPermissionGroupMappings().then(response => {
             if (response.Success) {
                 setPermissionGroupMappings(response.Data);
+                console.log(response.Data);
             }
             else {
                 setPermissionGroupMappings(null);

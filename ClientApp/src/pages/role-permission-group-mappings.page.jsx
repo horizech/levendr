@@ -7,7 +7,7 @@ import { ButtonIcon } from '../components/button-icon.component';
 import { history } from '../helpers';
 import { Loading, Page, RolePermissionGroupMappings } from '../components';
 import { CreateEditModal } from '../modals';
-import { rolePermissionGroupMappingsService, permissionsService, rolesService } from '../services';
+import { rolePermissionGroupMappingsService, permissionGroupsService, rolesService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
 const RolePermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) => {
@@ -29,7 +29,7 @@ const RolePermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }
     const columns = [
         { Name: 'Id', value: 'Id', Datatype: 'Integer' },
         { Name: 'Role', value: 'Role', Datatype: 'ShortText' },
-        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'ShortText' },
+        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'LongText' },
         { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean' },
         { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime' },
         { Name: 'CreatedBy', value: 'CreatedBy', Datatype: 'ShortText' },
@@ -139,7 +139,7 @@ const RolePermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }
 
 
             if (column.Name === 'PermissionGroup') {
-                permissionsService.getPermissions().then(
+                permissionGroupsService.getPermissionGroups().then(
                     result => {
                         if (result.Success) {
                             // console.log(result.Data);

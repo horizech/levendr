@@ -22,7 +22,8 @@ class RolePermissionGroupMappingsApiProvider {
         headers['Content-Type'] = 'application/json' ;
         let body = {
             "Role": rows.Role,
-            "Permission": rows.Permission 
+            "PermissionGroup": rows.PermissionGroup,
+            "IsSystem": rows.IsSystem 
             }
         const requestOptions = {
             method: 'POST',
@@ -39,7 +40,8 @@ class RolePermissionGroupMappingsApiProvider {
 
         let body = {
             "Role": rows.Role,
-            "Permission": rows.Permission 
+            "PermissionGroup": rows.PermissionGroup,
+            "IsSystem": rows.IsSystem  
             }
 
         const requestOptions = {
@@ -53,7 +55,7 @@ class RolePermissionGroupMappingsApiProvider {
 
     static async deleteRolePermissionGroupMapping(rows) {
         let headers = authHeader();
- 
+        console.log(rows.Id);
         const requestOptions = {
             method: 'DELETE',
             headers: headers
