@@ -84,43 +84,38 @@ namespace Levendr.Services
 
                 // Create User
                 Dictionary<string, object> userData = new Dictionary<string, object>
-            {
-                { "Username", user.Username },
-                { "Password", Hash.Create(user.Password) },
-                { "Email", user.Email ?? "" },
-                { "Fullname", user.Fullname ?? "" }
-            };
-                Columns.AppendCreatedInfo(userData);
+                {
+                    { "Username", user.Username },
+                    { "Password", Hash.Create(user.Password) },
+                    { "Email", user.Email ?? "" },
+                    { "Fullname", user.Fullname ?? "" },
+                    { "CreatedOn", DateTime.UtcNow }
+                };
 
                 List<int> ids = await QueryDesigner
                     .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Users.ToString())
                     .AddRow(userData)
                     .RunInsertQuery();
 
-                if ((ids?.Count ?? 0) > 0)
+                if((ids?.Count ?? 0) < 1)
                 {
-                    Dictionary<string, object> userRoleData = new Dictionary<string, object>{
+                    return APIResult.GetSimpleFailureResult("An error occured while signing up!");
+                }
+
+                Dictionary<string, object> userRoleData = new Dictionary<string, object>{
                     { "User", ids[0] },
                     { "Role", Int32.Parse(userDefaultRole["Value"].ToString()) }
                 };
-                    Columns.AppendCreatedInfo(userRoleData, 0);
 
-                    await QueryDesigner
-                        .CreateDesigner(schema: Schemas.Levendr, table: TableNames.UserRoles.ToString())
-                        .AddRow(userRoleData)
-                        .RunInsertQuery();
+                Columns.AppendCreatedInfo(userRoleData, ids[0]);
 
-                    return await Login(user.Username, null, user.Password);
-                }
-                else
-                {
-                    return new APIResult()
-                    {
-                        Success = false,
-                        Message = "User could not be created!",
-                        Data = null
-                    };
-                }
+                await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.UserRoles.ToString())
+                    .AddRow(userRoleData)
+                    .RunInsertQuery();
+
+                return await Login(user.Username, null, user.Password);
+                
             }
             catch (Exception e)
             {
