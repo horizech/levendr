@@ -7,11 +7,15 @@ import { ButtonIcon } from '../components/button-icon.component';
 import { history } from '../helpers';
 import { Loading, Page, User } from '../components';
 import { CreateEditModal } from '../modals';
-import { userService } from '../services';
+import { userService, rolesService} from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
 const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
-
+    console.log(user.Role);
+    if(user.Role.Name || user.Role.Id){
+        user.Role={ label: user.Role.Name, value: user.Role.Id };
+    }
+    
     const [loadingSettingColumns, setLoadingSettingColumns] = React.useState(true);
     const [isCreateSettingModalVisible, setCreateSettingModalVisible] = React.useState(false);
     const [currentRow, setCurrentRow] = React.useState(null);
@@ -21,20 +25,25 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     const [addSuccess, setAddSuccess] = React.useState(false);
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
     const [users, setUsers] = React.useState([user]);
+    const [selectOptionsList, setSelectOptionsList] = React.useState({
+        Role: []
+    });
+    
+    const isSelectList = {
+        Role: true
+    };
     
     const columns = [
         { Name: 'Id', value: 'Id' },
         { Name: 'Username', value: 'Username' },
         { Name: 'Email', value: 'Email' },
         { Name: 'Fullname', value: 'Fullname' },
-        //{ Name: 'Token', value: 'Token' },
-        //{ Name: 'Permissions', value: 'Permissions' },
         { Name: 'CreatedOn', value: 'CreatedOn' },
         { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
         { Name: 'Role', value: 'Role' },
     ]
 
-    const displayedColumns = columns.map( x => x.Name);
+    const displayedColumns = columns.map(x => x.Name);
     const showCreateModal = () => {
         setCreateSettingModalVisible(true);
     }
@@ -107,8 +116,26 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             closeOnClick: true
         },
     ];
-
-    
+    const loadSelectOptions = () => {
+        let rolesPromise = rolesService.getRoles();
+        Promise.all([rolesPromise]).then( data => {
+            console.log('Promise.all result: ', data);
+            let selectOptionsListUpdate = {};
+            selectOptionsListUpdate['Role'] = (
+                data[0].Data.map(x => {
+                    return { label: x.Name, value: x.Id }
+                })
+            );
+            setSelectOptionsList(selectOptionsListUpdate);
+        });
+    }
+    console.log(selectOptionsList);
+    React.useEffect(()=>{
+        if(!selectOptionsList.Role || !selectOptionsList.Role.length ){
+            loadSelectOptions();
+            console.log("selected");
+        }
+    });
     React.useEffect(() => {
 
         // userService.getAllUsers().then( response => {
@@ -154,33 +181,33 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                 (!loadingSettingColumns && users && users.length > 0) &&
                 <div>
                     <LevendrTable headers={displayedColumns}>
-                    {users &&
-                                users.map((row, i) => (
-                                    <tr key={'row_' + (i + 1)}>
+                        {users &&
+                            users.map((row, i) => (
+                                <tr key={'row_' + (i + 1)}>
 
-                                        <td key={'data_' + i + '_#'} scope="row">
-                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                                <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)} />
-                                                <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)} />
-                                            </div>
-                                        </td>                                        
-                                        {
-                                            displayedColumns.map(key => {
-                                                let tableData
-                                                if(key=="Role"){
-                                                    tableData=row[key] != null ? '' + row[key]['Name'] : ''
-                                                }
-                                                else{
-                                                    tableData=row[key] != null ? '' + row[key] : ''
-                                                }
-                                                return(
+                                    <td key={'data_' + i + '_#'} scope="row">
+                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                            <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)} />
+                                            <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)} />
+                                        </div>
+                                    </td>
+                                    {
+                                        displayedColumns.map(key => {
+                                            let tableData
+                                            if (key == "Role") {
+                                                tableData = row[key] != null ? '' + row[key]['label'] : ''
+                                            }
+                                            else {
+                                                tableData = row[key] != null ? '' + row[key] : ''
+                                            }
+                                            return (
                                                 <td key={'data_' + i + key} >{tableData}</td>
-                                                )
-                                            })                 
-                                        }
-                                    </tr>
-                                ))
-                            }
+                                            )
+                                        })
+                                    }
+                                </tr>
+                            ))
+                        }
                     </LevendrTable>
                     {/* <Table responsive bordered striped size="sm">
                         <thead>
@@ -220,6 +247,8 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                     </Table> */}
                     {isEditModalVisible &&
                         <CreateEditModal
+                            isSelectList={isSelectList}
+                            selectOptions={selectOptionsList}
                             columns={columns}
                             row={currentRow}
                             handleOnClose={handleOnEditComplete}
@@ -241,6 +270,8 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             {
                 isCreateSettingModalVisible &&
                 <CreateEditModal
+                    isSelectList={isSelectList}
+                    selectOptions={selectOptionsList}
                     columns={columns}
                     row={{}}
                     handleOnClose={handleOnCreateComplete}

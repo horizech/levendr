@@ -56,19 +56,31 @@ function logout() {
 function register(user) {
     return dispatch => {
         dispatch(request(user));
-
-        userService.register(user)
-            .then(
-                () => {
-                    dispatch(success());
-                    history.push('/login');
-                    dispatch(toastActions.success('Registration successful'));
-                },
-                error => {
-                    dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+        
+        userService.registerUser(user)
+        .then(
+            result => {
+                if (result.Success) {
+                    let user = result.Data;
+                    // login successful if there's a jwt token in the response
+                    if (user && user.Token) {
+                        // store user details and jwt token in local storage to keep user logged in between page refreshes
+                        localStorage.setItem('user', JSON.stringify(user));
+                    }
+                    dispatch(success(user));
+                    history.push('/');
+                    // dispatch(alertActions.success("Signed in!"));
                 }
-            );
+                else {
+                    dispatch(failure(result.Message));
+                    dispatch(alertActions.error(result.Message));
+                }
+            },
+            error => {
+                dispatch(failure(error));
+                dispatch(alertActions.error(error));
+            }
+        );
     };
 
     function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }

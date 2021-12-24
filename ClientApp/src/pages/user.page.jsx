@@ -40,7 +40,7 @@ const UserPage = ({ user, loggedIn }) => {
                     <ListGroupItem>
                     <div className="row">
                         <div className={"col-md-4"}>Email:</div>
-                        <div className={"col-md-8"}>{user.email}</div>
+                        <div className={"col-md-8"}>{user.Email}</div>
                     </div>
                 </ListGroupItem>
                

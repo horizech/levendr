@@ -135,54 +135,32 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
         },
     ];
     const loadSelectOptions = () => {
-        // const foreignSchema = (values.ForeignSchema.value);
-        columns.map(column => {
-
-
-            if (column.Name === 'PermissionGroup') {
-                permissionGroupsService.getPermissionGroups().then(
-                    result => {
-                        if (result.Success) {
-                            console.log(result.Data);
-                            let selectOptionsListUpdate = selectOptionsList; 
-                            if(result.Data){
-                                selectOptionsListUpdate[column.Name] = (
-                                    result.Data.map(x => {
-                                        return { label: x.Name, value: x.Id }
-                                    }
-                                    )
-                                );
-                            }                           
-                            
-                            setSelectOptionsList(selectOptionsListUpdate);
-                        }
-                    }
-                );
-            }
-            else if (column.Name ===  'Permission') {
-                permissionsService.getPermissions().then(
-                    result => {
-                        if (result.Success) {
-                            // console.log(result.Data);
-                            let selectOptionsListUpdate = selectOptionsList;                            
-                            selectOptionsListUpdate[column.Name] = (
-                                result.Data.map(x => {
-                                    return { label: x.Name, value: x.Id }
-                                }
-                                )
-                            );
-                            setSelectOptionsList(selectOptionsListUpdate);
-                        }
-                    }
-                );
-            }
-        });
-    }
-    if ((!selectOptionsList.PermissionGroup || (selectOptionsList.PermissionGroup && !selectOptionsList.PermissionGroup[0])) && (!selectOptionsList.Permission || (selectOptionsList.Permission && !selectOptionsList.Permission[0])) ) {
-
-        loadSelectOptions();
+        let permissionGroupsPromise = permissionGroupsService.getPermissionGroups();
+        let permissionsPromise = permissionsService.getPermissions();
+        Promise.all([permissionGroupsPromise, permissionsPromise]).then( data => {
+            console.log('Promise.all result: ', data);
+            let selectOptionsListUpdate = {};
+            selectOptionsListUpdate['PermissionGroup'] = (
+                data[0].Data.map(x => {
+                    return { label: x.Name, value: x.Id }
+                })
+            );
+            selectOptionsListUpdate['Permission'] = (
+                data[1].Data.map(x => {
+                    return { label: x.Name, value: x.Id }
+                })
+            );
+            setSelectOptionsList(selectOptionsListUpdate);
+        })        
+        // const foreignSchema = (values.ForeignSchema.value);        
     }
 
+
+    React.useEffect( () => {
+        if (!selectOptionsList.PermissionGroup || !selectOptionsList.PermissionGroup.length || !selectOptionsList.Permission || !selectOptionsList.Permission.length) {
+            loadSelectOptions();
+        }
+    }, []);
     React.useEffect(() => {
 
        console.log(selectOptionsList);

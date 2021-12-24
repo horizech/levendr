@@ -1,16 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { tablesActions } from '../actions';
-import { Table } from 'reactstrap';
 import { ButtonIcon } from '../components/button-icon.component';
 import { history } from '../helpers';
-import { Loading, Page, RolePermissionGroupMappings } from '../components';
+import { Loading } from '../components';
 import { CreateEditModal } from '../modals';
 import { rolePermissionGroupMappingsService, permissionGroupsService, rolesService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
-const RolePermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) => {
+const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
 
     const [rolePermissionGroupMappings, setRolePermissionGroupMappings] = React.useState(null);
     const [loadingRolePermissionGroupMappingColumns, setLoadingRolePermissionGroupMappingColumns] = React.useState(true);
@@ -134,50 +131,32 @@ const RolePermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }
         },
     ];
     const loadSelectOptions = () => {
-        // const foreignSchema = (values.ForeignSchema.value);
-        columns.map(column => {
-
-
-            if (column.Name === 'PermissionGroup') {
-                permissionGroupsService.getPermissionGroups().then(
-                    result => {
-                        if (result.Success) {
-                            // console.log(result.Data);
-                            let selectOptionsListUpdate = selectOptionsList;                            
-                            selectOptionsListUpdate[column.Name] = (
-                                result.Data.map(x => {
-                                    return { label: x.Name, value: x.Id }
-                                }
-                                )
-                            );
-                            setSelectOptionsList(selectOptionsListUpdate);
-                        }
-                    }
-                );
-            }
-            else if (column.Name ===  'Role') {
-                rolesService.getRoles().then(
-                    result => {
-                        if (result.Success) {
-                            // console.log(result.Data);
-                            let selectOptionsListUpdate = selectOptionsList;                            
-                            selectOptionsListUpdate[column.Name] = (
-                                result.Data.map(x => {
-                                    return { label: x.Name, value: x.Id }
-                                }
-                                )
-                            );
-                            setSelectOptionsList(selectOptionsListUpdate);
-                        }
-                    }
-                );
-            }
-        });
+        let permissionGroupsPromise = permissionGroupsService.getPermissionGroups();
+        let rolesPromise = rolesService.getRoles();
+        Promise.all([permissionGroupsPromise, rolesPromise]).then( data => {
+            console.log('Promise.all result: ', data);
+            let selectOptionsListUpdate = {};
+            selectOptionsListUpdate['PermissionGroup'] = (
+                data[0].Data.map(x => {
+                    return { label: x.Name, value: x.Id }
+                })
+            );
+            selectOptionsListUpdate['Role'] = (
+                data[1].Data.map(x => {
+                    return { label: x.Name, value: x.Id }
+                })
+            );
+            setSelectOptionsList(selectOptionsListUpdate);
+        })        
+        // const foreignSchema = (values.ForeignSchema.value);        
     }
-    if ((!selectOptionsList.PermissionGroup || (selectOptionsList.PermissionGroup && !selectOptionsList.PermissionGroup[0])) && (!selectOptionsList.Role || (selectOptionsList.Role && !selectOptionsList.Role[0])) ) {
 
-        loadSelectOptions();
-    }
+
+    React.useEffect( () => {
+        if (!selectOptionsList.PermissionGroup || !selectOptionsList.PermissionGroup.length || !selectOptionsList.Role || !selectOptionsList.Role.length) {
+            loadSelectOptions();
+        }
+    }, []);
 
     React.useEffect(() => {
 

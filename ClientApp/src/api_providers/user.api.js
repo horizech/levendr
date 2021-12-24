@@ -47,7 +47,7 @@ class UserApiProvider {
             body: JSON.stringify(user)
         };
 
-        return fetch(config.apiUrl + '/users/register', requestOptions).then(handleResponse, handleError);
+        return fetch(config.apiUrl + 'API/User/Signup', requestOptions).then(handleResponse, handleError);
     }
 
     static updateUser(user) {

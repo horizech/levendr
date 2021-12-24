@@ -20,3 +20,4 @@ export * from './user.page';
 export * from './permission-groups.page';
 export * from './role-permission-group-mappings.page';
 export * from './permission-group-mappings.page';
+export * from './register.page';
