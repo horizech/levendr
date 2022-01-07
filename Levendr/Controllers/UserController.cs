@@ -9,7 +9,12 @@ using Microsoft.AspNetCore.Authorization;
 
 using Levendr.Services;
 using Levendr.Models;
+using Levendr.Enums;
+using Levendr.Constants;
 using Levendr.Helpers;
+using Levendr.Interfaces;
+using Levendr.Exceptions;
+using Levendr.Filters;
 
 namespace Levendr.Controllers
 {
@@ -70,27 +75,6 @@ namespace Levendr.Controllers
         {
             return await ServiceManager.Instance.GetService<UserService>().AuthLogin(Users.GetUserId(User));
         }
-
-        [HttpGet("GetUserRole/{userId}")]
-        public async Task<APIResult> GetUserRole(int userId)
-        {
-            if (userId < 1)
-            {
-                return APIResult.GetSimpleFailureResult("User Id is not vaild!");
-            }
-
-            return await ServiceManager.Instance.GetService<UserService>().GetUserRole(userId);
-        }
-
-        [HttpGet("GetUserPermissions/{userId}")]
-        public async Task<APIResult> GetUserPermissions(int userId)
-        {
-            if (userId < 1)
-            {
-                return APIResult.GetSimpleFailureResult("User Id is not vaild!");
-            }
-
-            return await ServiceManager.Instance.GetService<UserService>().GetUserPermissions(userId);
-        }
+    
     }
 }
