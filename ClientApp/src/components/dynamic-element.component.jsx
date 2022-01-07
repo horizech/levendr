@@ -83,6 +83,7 @@ const DynamicElement = ({ user, input, column, isWorking, onChange, onFocus, onB
     switch (column.Datatype) {
       case "Integer": return ' col-md-4';
       default: case "ShortText": return ' col-md-4';
+      case "ExtraLongText": return ' col-md-12';
       case "LongText": return ' col-md-8';
       case "DateTime": return ' col-md-4';
       case "Boolean": return ' col-md-4';

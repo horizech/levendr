@@ -8,7 +8,7 @@ export const GetElementTypeFromDataType = (datatype) => {
         case "Integer":
             result = 'number';
             break;
-        default: case "LongText": case "ShortText":
+        default: case "LongText": case "ShortText": case "ExtraLongText":
             result = 'text';
             break;
         case "DateTime":
