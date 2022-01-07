@@ -28,7 +28,7 @@ class UserApiProvider {
             headers: authHeader()
         };
 
-        return fetch(config.apiUrl + '/users', requestOptions).then(handleResponse, handleError);
+        return fetch(config.apiUrl + '/API/Users/GetUsers', requestOptions).then(handleResponse, handleError);
     }
 
     static getUserById(id) {
@@ -50,24 +50,33 @@ class UserApiProvider {
         return fetch(config.apiUrl + 'API/User/Signup', requestOptions).then(handleResponse, handleError);
     }
 
-    static updateUser(user) {
+    static updateUser(Id, user) {
+        console.log(user);
         const requestOptions = {
             method: 'PUT',
             headers: { ...authHeader(), 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
         };
 
-        return fetch(config.apiUrl + '/users/' + user.id, requestOptions).then(handleResponse, handleError);
+        return fetch(config.apiUrl + `/API/Users/UpdateUser?Id=${Id}` , requestOptions).then(handleResponse, handleError);
     }
+    static addUser(user) {
+        const requestOptions = {
+            method: 'PUT',
+            headers: { ...authHeader(), 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        };
 
+        return fetch(config.apiUrl + `/API/Users/AddUser` , requestOptions).then(handleResponse, handleError);
+    }
     // prefixed function name with underscore because delete is a reserved word in javascript
-    static deleteUser(id) {
+    static deleteUser(Id) {
         const requestOptions = {
             method: 'DELETE',
             headers: authHeader()
         };
 
-        return fetch(config.apiUrl + '/users/' + id, requestOptions).then(handleResponse, handleError);
+        return fetch(config.apiUrl + `API/Users/DeleteUser?Id=${Id}`, requestOptions).then(handleResponse, handleError);
     }
 }
 

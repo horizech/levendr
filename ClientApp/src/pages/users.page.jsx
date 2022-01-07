@@ -11,10 +11,11 @@ import { userService, rolesService} from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
 const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
-    console.log(user.Role);
-    if(user.Role.Name || user.Role.Id){
-        user.Role={ label: user.Role.Name, value: user.Role.Id };
-    }
+    // console.log(user.Role);
+    // let currentUser= user;
+    // if(currentUser.Role.Name || currentUser.Role.Id){
+    //     currentUser.Role={ label: currentUser.Role.Name, value: currentUser.Role.Id };
+    // }
     
     const [loadingSettingColumns, setLoadingSettingColumns] = React.useState(true);
     const [isCreateSettingModalVisible, setCreateSettingModalVisible] = React.useState(false);
@@ -24,7 +25,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     const [deleteSuccess, setDeleteSuccess] = React.useState(false);
     const [addSuccess, setAddSuccess] = React.useState(false);
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
-    const [users, setUsers] = React.useState([user]);
+    const [users, setUsers] = React.useState([]);
     const [selectOptionsList, setSelectOptionsList] = React.useState({
         Role: []
     });
@@ -49,7 +50,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     }
     const handleOnCreateComplete = (values) => {
         if (values) {
-            userService.registerUser(values).then(response => {
+            userService.addUser(values).then(response => {
 
                 if (response.Success) {
                     setAddSuccess(true);
@@ -75,7 +76,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
 
     const handleOnEditComplete = (values) => {
         if (values) {
-            userService.updateUser(currentRow.Key, values).then(response => {
+            userService.updateUser(currentRow.Id, values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
                 }
@@ -89,7 +90,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
 
     const handleOnDeleteComplete = (result) => {
         if (result === true) {
-            userService.deleteUser(currentRow).then(response => {
+            userService.deleteUser(currentRow.Id).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
                 }
@@ -138,16 +139,16 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     });
     React.useEffect(() => {
 
-        // userService.getAllUsers().then( response => {
-        //     console.log(response);
-        //     if(response && response.Success) {
-        //         setUser(response.Data);        
-        //     }
-        //     else {
-        //         setUser(null);
-        //     }
-        // })       
-        // setUser(null);
+        userService.getAllUsers().then( response => {
+            console.log(response);
+            if(response && response.Success) {
+                setUsers(response.Data);        
+            }
+            else {
+                setUsers(null);
+            }
+        })       
+        // setUsers(null);
         setLoadingSettingColumns(false);
         if (!loggedIn) {
             history.push('/');
