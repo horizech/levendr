@@ -8,24 +8,34 @@
         {"Name": "IsSystem", "Datatype": "Boolean", "IsRequired": true}
     ],
     "DefaultRows": [
-        {"Id": 1, "Name": "LevendrReadWrite", "Description": "Levendr ReadWrite", "IsSystem": true},
-        {"Id": 2, "Name": "PermissionsReadWrite", "Description": "Permissions ReadWrite", "IsSystem": true},
-        {"Id": 3, "Name": "PermissionGroupsReadWrite", "Description": "PermissionGroups ReadWrite", "IsSystem": true},
-        {"Id": 4, "Name": "RolesReadWrite", "Description": "Roles ReadWrite", "IsSystem": true},
-        {"Id": 5, "Name": "PermissionGroupMappingsReadWrite", "Description": "PermissionGroupMappings ReadWrite", "IsSystem": true},
-        {"Id": 6, "Name": "RolePermissionGroupMappingsReadWrite", "Description": "RolePermissionGroupMappings ReadWrite", "IsSystem": true},        
-        {"Id": 7, "Name": "SettingsReadWrite", "Description": "Settings ReadWrite", "IsSystem": true},
-        {"Id": 8, "Name": "TableReadWrite", "Description": "Table ReadWrite", "IsSystem": true},
-        {"Id": 9, "Name": "APIReadWrite", "Description": "API ReadWrite", "IsSystem": true},
-
-        {"Id": 10, "Name": "LevendrReadOnly", "Description": "Levendr ReadOnly", "IsSystem": true},
-        {"Id": 11, "Name": "PermissionsReadOnly", "Description": "Permissions ReadOnly", "IsSystem": true},
-        {"Id": 12, "Name": "PermissionGroupsReadOnly", "Description": "PermissionGroups ReadOnly", "IsSystem": true},
-        {"Id": 13, "Name": "RolesReadOnly", "Description": "Roles ReadOnly", "IsSystem": true},
-        {"Id": 14, "Name": "PermissionGroupMappingsReadOnly", "Description": "PermissionGroupMappings ReadOnly", "IsSystem": true},
-        {"Id": 15, "Name": "RolePermissionGroupMappingsReadOnly", "Description": "RolePermissionGroupMappings ReadOnly", "IsSystem": true},        
-        {"Id": 16, "Name": "SettingsReadOnly", "Description": "Settings ReadOnly", "IsSystem": true},
-        {"Id": 17, "Name": "TableReadOnly", "Description": "Table ReadOnly", "IsSystem": true},
-        {"Id": 18, "Name": "APIReadOnly", "Description": "API ReadOnly", "IsSystem": true}
+        {"Name": "LevendrReadWrite", "Description": "Levendr ReadWrite", "IsSystem": true},
+        {"Name": "LevendrReadOnly", "Description": "Levendr ReadOnly", "IsSystem": true},
+        
+        {"Name": "PermissionsReadWrite", "Description": "Permissions ReadWrite", "IsSystem": true},
+        {"Name": "PermissionsReadOnly", "Description": "Permissions ReadOnly", "IsSystem": true},
+        
+        {"Name": "PermissionGroupsReadWrite", "Description": "PermissionGroups ReadWrite", "IsSystem": true},
+        {"Name": "PermissionGroupsReadOnly", "Description": "PermissionGroups ReadOnly", "IsSystem": true},
+        
+        {"Name": "RolesReadWrite", "Description": "Roles ReadWrite", "IsSystem": true},
+        {"Name": "RolesReadOnly", "Description": "Roles ReadOnly", "IsSystem": true},
+        
+        {"Name": "PermissionGroupMappingsReadWrite", "Description": "PermissionGroupMappings ReadWrite", "IsSystem": true},
+        {"Name": "PermissionGroupMappingsReadOnly", "Description": "PermissionGroupMappings ReadOnly", "IsSystem": true},
+        
+        {"Name": "RolePermissionGroupMappingsReadWrite", "Description": "RolePermissionGroupMappings ReadWrite", "IsSystem": true},        
+        {"Name": "RolePermissionGroupMappingsReadOnly", "Description": "RolePermissionGroupMappings ReadOnly", "IsSystem": true},        
+        
+        {"Name": "SettingsReadWrite", "Description": "Settings ReadWrite", "IsSystem": true},
+        {"Name": "SettingsReadOnly", "Description": "Settings ReadOnly", "IsSystem": true},
+        
+        {"Name": "TableReadWrite", "Description": "Table ReadWrite", "IsSystem": true},
+        {"Name": "TableReadOnly", "Description": "Table ReadOnly", "IsSystem": true},
+        
+        {"Name": "APIReadWrite", "Description": "API ReadWrite", "IsSystem": true},
+        {"Name": "APIReadOnly", "Description": "API ReadOnly", "IsSystem": true},
+        
+        {"Name": "UsersReadWrite", "Description": "Users ReadWrite", "IsSystem": true},
+        {"Name": "UsersReadOnly", "Description": "Users ReadOnly", "IsSystem": true}
     ]
 }

@@ -8,29 +8,29 @@
         {"Name": "IsSystem", "Datatype": "Boolean", "IsRequired": true}
     ],
     "DefaultRows": [
-        {"Id": 1, "Role": 1, "PermissionGroup": 1, "IsSystem": true},
-        {"Id": 2, "Role": 1, "PermissionGroup": 2, "IsSystem": true},
-        {"Id": 3, "Role": 1, "PermissionGroup": 3, "IsSystem": true},
-        {"Id": 4, "Role": 1, "PermissionGroup": 4, "IsSystem": true},
-        {"Id": 5, "Role": 1, "PermissionGroup": 5, "IsSystem": true},
-        {"Id": 6, "Role": 1, "PermissionGroup": 6, "IsSystem": true},
-        {"Id": 7, "Role": 1, "PermissionGroup": 7, "IsSystem": true},
-        {"Id": 8, "Role": 1, "PermissionGroup": 8, "IsSystem": true},
-        {"Id": 9, "Role": 1, "PermissionGroup": 9, "IsSystem": true},
-
-        {"Id": 10, "Role": 2, "PermissionGroup": 8, "IsSystem": true},
-        {"Id": 11, "Role": 2, "PermissionGroup": 9, "IsSystem": true},
-        {"Id": 12, "Role": 2, "PermissionGroup": 10, "IsSystem": true},
-        {"Id": 13, "Role": 2, "PermissionGroup": 11, "IsSystem": true},
-        {"Id": 14, "Role": 2, "PermissionGroup": 12, "IsSystem": true},
-        {"Id": 15, "Role": 2, "PermissionGroup": 13, "IsSystem": true},
-        {"Id": 16, "Role": 2, "PermissionGroup": 14, "IsSystem": true},
-        {"Id": 17, "Role": 2, "PermissionGroup": 15, "IsSystem": true},
-        {"Id": 18, "Role": 2, "PermissionGroup": 16, "IsSystem": true},        
-        {"Id": 19, "Role": 2, "PermissionGroup": 17, "IsSystem": true},
-        {"Id": 20, "Role": 2, "PermissionGroup": 18, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 1, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 3, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 5, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 7, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 9, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 11, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 13, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 15, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 17, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 19, "IsSystem": true},
         
-        {"Id": 21, "Role": 3, "PermissionGroup": 8, "IsSystem": true},
-        {"Id": 22, "Role": 3, "PermissionGroup": 9, "IsSystem": true}
+        {"Role": 2, "PermissionGroup": 2, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 4, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 6, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 8, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 10, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 12, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 14, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 15, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 17, "IsSystem": true},        
+        {"Role": 2, "PermissionGroup": 20, "IsSystem": true},
+        
+        {"Role": 3, "PermissionGroup": 16, "IsSystem": true},
+        {"Role": 3, "PermissionGroup": 18, "IsSystem": true}
     ]
 }

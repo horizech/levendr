@@ -7,7 +7,7 @@
         {"Name": "Value", "Datatype": "ShortText", "IsRequired": false}
     ],
     "DefaultRows": [
-        {"Id": 1, "Key": "DefaultRoleOnSignup", "Value": "3"},
-        {"Id": 2, "Key": "DefaultMediaSource", "Value": "1"}
+        {"Key": "DefaultRoleOnSignup", "Value": "3"},
+        {"Key": "DefaultMediaSource", "Value": "1"}
     ]
 }

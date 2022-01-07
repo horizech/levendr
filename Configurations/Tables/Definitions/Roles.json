@@ -8,10 +8,10 @@
         {"Name": "Level", "Datatype": "Integer", "IsRequired": true}
     ],
     "DefaultRows": [
-        {"Id": 1, "Name": "SuperAdmin", "Description": "Super Admin", "Level": 0},
-        {"Id": 2, "Name": "Admin", "Description": "Admin", "Level": 10},
-        {"Id": 3, "Name": "User", "Description": "User", "Level": 50},
-        {"Id": 4, "Name": "Public", "Description": "Public","Level": 100}
+        {"Name": "SuperAdmin", "Description": "Super Admin", "Level": 0},
+        {"Name": "Admin", "Description": "Admin", "Level": 10},
+        {"Name": "User", "Description": "User", "Level": 50},
+        {"Name": "Public", "Description": "Public","Level": 100}
     ],
     "AddForeignTables": [
         {
