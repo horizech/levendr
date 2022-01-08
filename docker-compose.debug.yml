@@ -1,0 +1,27 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: '3.4'
+
+services:
+  levendr:
+    image: levendr
+    container_name: levendr
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000:5000
+      - 5001:5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - LEVENDR_DATABASE_HOST=${LEVENDR_DATABASE_HOST}
+      - LEVENDR_DATABASE_NAME=${LEVENDR_DATABASE_NAME}
+      - LEVENDR_DATABASE_PASSWORD=${LEVENDR_DATABASE_PASSWORD}
+      - LEVENDR_DATABASE_PORT=${LEVENDR_DATABASE_PORT}
+      - LEVENDR_DATABASE_TYPE=${LEVENDR_DATABASE_TYPE}
+      - LEVENDR_DATABASE_USERNAME=${LEVENDR_DATABASE_USERNAME}
+      - LEVENDR_JWT_TOKEN_ISSUER=${LEVENDR_JWT_TOKEN_ISSUER}
+      - LEVENDR_JWT_TOKEN_SECRET_KEY=${LEVENDR_JWT_TOKEN_SECRET_KEY}
+      - LEVENDR_LOGGING_LEVEL=${LEVENDR_LOGGING_LEVEL}
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
