@@ -4,7 +4,7 @@ version: '3.4'
 
 services:
   levendr:
-    image: levendr
+    image: horizech/levendr:0.1.0
     container_name: levendr
     build:
       context: .
