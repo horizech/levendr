@@ -96,6 +96,116 @@ namespace Levendr.Services
             }
         }
 
+        public async Task<APIResult> GetRolePermissionGroupMappings(int RoleId)
+        {
+            try
+            {                
+                List<Dictionary<string, object>> rolePermissionGroupMappings = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissionGroupMappings.ToString())
+                    .WhereEquals("Role", RoleId)
+                    .RunSelectQuery();
+                
+                List<int> permissionGroupIds = rolePermissionGroupMappings.Select( x => Int32.Parse(x["PermissionGroup"].ToString())).ToList();
+
+                List<Dictionary<string, object>> rolePermissionsGroups = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.PermissionGroupMappings.ToString())
+                    .WhereIncludes("PermissionGroup", permissionGroupIds)
+                    .RunSelectQuery();
+
+                if ((rolePermissionsGroups?.Count ?? 0) > 0)
+                {
+                        return new APIResult()
+                        {
+                            Success = true,
+                            Message = "Permission Groups found successfully!",
+                            Data = rolePermissionsGroups
+                        };
+                }
+                else
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "Permission Groups not found!",
+                        Data = null
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                return APIResult.GetExceptionResult(e);
+            }
+        }
+    
+        public async Task<APIResult> GetPermissionGroupsByIds(List<int> Ids)
+        {
+            try
+            {
+
+                List<Dictionary<string, object>> rolePermissionsGroups = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.PermissionGroups.ToString())
+                    .WhereIncludes("Id", Ids)
+                    .RunSelectQuery();
+
+                if ((rolePermissionsGroups?.Count ?? 0) > 0)
+                {
+                        return new APIResult()
+                        {
+                            Success = true,
+                            Message = "Permission Groups found successfully!",
+                            Data = rolePermissionsGroups
+                        };
+                }
+                else
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "Permission Groups not found!",
+                        Data = null
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                return APIResult.GetExceptionResult(e);
+            }
+        }
+    
+        public async Task<APIResult> GetPermissionsByIds(List<int> Ids)
+        {
+            try
+            {
+                List<Dictionary<string, object>> permissions = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Permissions.ToString())
+                    .WhereIncludes("Id", Ids)
+                    .RunSelectQuery();
+
+                if ((permissions?.Count ?? 0) > 0)
+                {
+                    return new APIResult()
+                    {
+                        Success = true,
+                        Message = "Permissions found successfully!",
+                        Data = permissions
+                    };
+                }
+                else
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "Permissions not found!",
+                        Data = null
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                return APIResult.GetExceptionResult(e);
+            }
+        }
+    
         public async Task<APIResult> GetUserPermissions(int Id)
         {
             try

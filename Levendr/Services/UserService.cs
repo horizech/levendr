@@ -239,12 +239,34 @@ namespace Levendr.Services
                     jwtTokenData.Add("Roles", (Dictionary<string, object>)(role.Data));
                 }
 
-                APIResult permissions = await ServiceManager.Instance.GetService<UsersService>().GetUserPermissions(Id);
-                if (permissions.Success == true && permissions.Data is not null)
+                int roleId = Int32.Parse(((Dictionary<string, object>)(role.Data))["Id"].ToString());
+
+
+
+                APIResult rolePermissionGroupMappings = await ServiceManager.Instance.GetService<UsersService>().GetRolePermissionGroupMappings(roleId);
+                if (rolePermissionGroupMappings.Success == true && rolePermissionGroupMappings.Data is not null)
                 {
-                    result.Add("Permissions", (List<Dictionary<string, object>>)(permissions.Data));
-                    jwtTokenData.Add("Permissions", (List<Dictionary<string, object>>)(permissions.Data));
+                    List<int> permissionGroupIds = ((List<Dictionary<string, object>>)(rolePermissionGroupMappings.Data)).Select( x => Int32.Parse(x["PermissionGroup"].ToString())).Distinct().ToList();
+
+                    APIResult rolePermissionGroups = await ServiceManager.Instance.GetService<UsersService>().GetPermissionGroupsByIds(permissionGroupIds);
+                    if (rolePermissionGroups.Success == true && rolePermissionGroups.Data is not null)
+                    {
+                        result.Add("PermissionGroups", (List<Dictionary<string, object>>)(rolePermissionGroups.Data));
+                    }
+
+                    List<int> permissionIds = ((List<Dictionary<string, object>>)(rolePermissionGroupMappings.Data))
+                        .Select( x => Int32.Parse(x["Permission"].ToString()))
+                        .ToList();
+                                
+                    APIResult permissions = await ServiceManager.Instance.GetService<UsersService>().GetPermissionsByIds(permissionIds);
+                    if (permissions.Success == true && permissions.Data is not null)
+                    {
+                        result.Add("Permissions", (List<Dictionary<string, object>>)(permissions.Data));
+                        jwtTokenData.Add("Permissions", (List<Dictionary<string, object>>)(permissions.Data));
+                    }
                 }
+
+                
 
                 result.Add("Token", JWT.GenerateJSONWebToken(_configuration, jwtTokenData));
 
