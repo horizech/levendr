@@ -10,17 +10,38 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
-
+// import { NavSubMenu } from 'components';
 import "../styles/NavMenu.scss";
+import { LevendrDropdown } from ".";
+import { history } from '../helpers';
 
-const NavMenu = ({loggedIn}) => {
-  const displayName = NavMenu.name;
-  const [ collapsed, setCollapsed ] = React.useState(true);
+const NavMenu = ({ loggedIn, user }) => {
+  // const displayName = NavMenu.name;
+  const [collapsed, setCollapsed] = React.useState(true);
   const toggleNavbar = () => {
     setCollapsed(!collapsed);
   }
+  let permissionGroupsNames = [];
+  if (user !== null && user.PermissionGroups) {
+    permissionGroupsNames = user.PermissionGroups.map((x) => {
+      return (x.Name);
+    })
 
-  return  (
+  }
+  console.log(permissionGroupsNames.includes("UsersReadWrite"));
+  console.log(permissionGroupsNames);
+  let permissionItems = [
+    { name: "Permissions", path: "/permissions", permissionGroup: "PermissionsReadWrite" },
+    { name: "Permission Groups", path: "/permission-groups", permissionGroup: "PermissionGroupsReadWrite" },
+    { name: "Permission Group Mappings", path: "/permission-group-mappings", permissionGroup: "PermissionGroupMappingsReadWrite" },
+    { name: "Role Permission Group Mappings", path: "/role-permission-group-mappings", permissionGroup: "RolePermissionGroupMappingsReadWrite" },
+  ]
+  let filteredPermissionItems = [];
+  filteredPermissionItems = permissionItems.filter((item) => {
+    return permissionGroupsNames.includes(item.permissionGroup);
+  });
+  console.log(filteredPermissionItems);
+  return (
     <header>
       {
         loggedIn &&
@@ -50,6 +71,39 @@ const NavMenu = ({loggedIn}) => {
                   </NavLink>
                 </NavItem>
                 <NavItem>
+                  <NavLink tag={Link} className="text-dark" to="/user">
+                    Current User
+                  </NavLink>
+                </NavItem>
+                {
+                  permissionGroupsNames.includes("UsersReadWrite") &&
+                  <NavItem>
+                    <NavLink tag={Link} className="text-dark" to="/users">
+                      Users
+                    </NavLink>
+                  </NavItem>
+                }
+                {
+                  permissionGroupsNames.includes("SettingsReadWrite") &&
+                  <NavItem>
+                    <NavLink tag={Link} className="text-dark" to="/settings">
+                      Preferences
+                    </NavLink>
+                  </NavItem>
+                }
+                {
+                  filteredPermissionItems.length > 0 &&
+                  <LevendrDropdown title= "Permissions" items={filteredPermissionItems} onClick={ (path) => history.push(path)}/>
+                }
+                {
+                  permissionGroupsNames.includes("RolesReadWrite") &&
+                  <NavItem>
+                    <NavLink tag={Link} className="text-dark" to="/roles">
+                      Roles
+                    </NavLink>
+                  </NavItem>
+                }
+                <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/counter">
                     Counter
                   </NavLink>
@@ -75,10 +129,11 @@ const NavMenu = ({loggedIn}) => {
 }
 
 function mapStateToProps(state) {
-    const { loggedIn } = state.authentication;
-    return {
-        loggedIn
-    };
+  const { loggedIn, user } = state.authentication;
+  return {
+    loggedIn,
+    user
+  };
 }
 
 const connectedNavMenu = connect(mapStateToProps)(NavMenu);
