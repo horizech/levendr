@@ -74,44 +74,73 @@ namespace Levendr.Controllers
         public async Task<APIResult> AddUser(Dictionary<string, object> data)
         {
             try{
-                if (data == null || data.Count() == 0 || !data.ContainsKey("Username") || !data.ContainsKey("Password"))
+                if (data == null || data.Count() == 0 || !data.ContainsKey("Username") || !data.ContainsKey("Password") || !data.ContainsKey("Role"))
                 {
-                    return APIResult.GetSimpleFailureResult("User must contain Username and Password!");
+                    return APIResult.GetSimpleFailureResult("User must contain Username, Password and Role!");
                 }
 
-                List<string> predefinedColumns = Columns.PredefinedColumns.Descriptions.Select(x => x["Name"].ToLower()).ToList();
-
-                for (int i = 0; i < data.Count; i++)
+                int role = 0;
+                if(data.ContainsKey("Role"))
                 {
-                    data.Keys.ToList().ForEach(key =>
-                    {
-                        if (predefinedColumns.Contains(key.ToLower()))
-                        {
-                            ServiceManager.Instance.GetService<LogService>().Print(string.Format("Removing key: {0}", key), LoggingLevel.Info);
-                            data.Remove(key);
-                        }
-                    });
+                    role = Int32.Parse(data["Role"].ToString());
+                }
+                else
+                {
+                    APIResult userDefaultRoleUser = await ServiceManager
+                        .Instance
+                        .GetService<SettingsService>()
+                        .GetSetting(Constants.Settings.DefaultRoleOnSignup);
+
+                    Dictionary<string, object> userDefaultRole = (Dictionary<string, object>)(userDefaultRoleUser.Data);
+                    role = Int32.Parse(userDefaultRole["Value"].ToString());
                 }
 
-                Columns.AppendCreatedInfo(data, Users.GetUserId(User));
+                SignupRequest user = new SignupRequest()
+                {
+                    Username = (string)data["Username"],
+                    Email = data.ContainsKey("Email")? (string)data["Email"]: null,
+                    Fullname = data.ContainsKey("Fullname")? (string)data["Fullname"]: null,
+                    Password = data.ContainsKey("Password")? (string)data["Password"]: null
+                };
 
-                try
+                // Create User
+                Dictionary<string, object> userData = new Dictionary<string, object>
                 {
-                    APIResult result = await ServiceManager.Instance.GetService<UsersService>().AddUser(data);
-                    return result; 
+                    { "Username", user.Username },
+                    { "Password", Hash.Create(user.Password) },
+                    { "Email", user.Email ?? "" },
+                    { "Fullname", user.Fullname ?? "" },
+                    { "CreatedOn", DateTime.UtcNow }
+                };
+
+                List<int> ids = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Users.ToString())
+                    .AddRow(userData)
+                    .RunInsertQuery();
+
+                if((ids?.Count ?? 0) < 1)
+                {
+                    return APIResult.GetSimpleFailureResult("An error occured while signing up!");
                 }
-                catch (Exception e)
+
+                Dictionary<string, object> userRoleData = new Dictionary<string, object>{
+                    { "User", ids[0] },
+                    { "Role", role }
+                };
+
+                Columns.AppendCreatedInfo(userRoleData, ids[0]);
+
+                await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.UserRoles.ToString())
+                    .AddRow(userRoleData)
+                    .RunInsertQuery();
+
+                return new APIResult
                 {
-                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                    if(errorCode == ErrorCode.DB520) {
-                        // It's a null value column constraint violation
-                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                    }
-                    else {
-                        return APIResult.GetSimpleFailureResult(e.Message);
-                    }
-                }  
+                    Data = null,
+                    Success = true,
+                    Message = "User added successfully"
+                };
             }
             catch(LevendrErrorCodeException e) {
                 return APIResult.GetSimpleFailureResult(e.Message);
