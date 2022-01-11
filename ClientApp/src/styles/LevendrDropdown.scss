@@ -1,0 +1,18 @@
+@import "../themes/levendr-variables.scss";
+
+.levendr-dropdown div div {
+    background-color: white;   
+}
+
+.levendr-dropdown div div button {
+    overflow: hidden;
+    transition: .3s all ease;
+    padding: 0.4rem;
+    // margin-left: 32px;
+}
+
+.levendr-dropdown div div button:hover, .levendr-dropdown div div button:focus {
+    border-color: $primary;
+    background-color: $primary;
+    color: white;
+}

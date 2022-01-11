@@ -13,3 +13,5 @@ export * from './add-table-column.component';
 export * from './loading.component';
 export * from './collapsible.component';
 export * from './levendr-table.component';
+export * from './levendr-dropdown.component';
+
