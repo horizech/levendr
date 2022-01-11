@@ -340,19 +340,117 @@ namespace Levendr.Services
             };
         }
 
-        public async Task<APIResult> AddUser(Dictionary<string, object> data)
+        public async Task<APIResult> AddUser(SignupRequest user)
         {
-            List<int> result = await QueryDesigner
-                .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Users.ToString())
-                .AddRow(data)
-                .RunInsertQuery();
+            if (user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password))
+                {
+                    return APIResult.GetSimpleFailureResult("User must contain Username and Password!");
+                }
 
-            return new APIResult()
-            {
-                Success = true,
-                Message = "User added successfully!",
-                Data = result
-            };
+                if (user.Username == null || user.Username.Length < 6)
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "Username should be at least 6 characters!",
+                        Data = null
+                    };
+                }
+
+                if (user.Email == null || user.Email.Length < 6 || !Validations.IsValidEmail(user.Email))
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "Email address is not valid!",
+                        Data = null
+                    };
+                }
+
+                List<Dictionary<string, object>> usernameCheckResult = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Users.ToString())
+                    .WhereEquals("Username", user.Username)
+                    .RunSelectQuery();
+
+                if ((usernameCheckResult?.Count ?? 0) > 0 && (usernameCheckResult[0]?["Username"]?.ToString().Length ?? 0) > 0)
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "User already exists!",
+                        Data = null
+                    };
+                }
+
+                List<Dictionary<string, object>> emailCheckResult = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Users.ToString())
+                    .WhereEquals("Email", user.Email)
+                    .RunSelectQuery();
+
+                if ((emailCheckResult?.Count ?? 0) > 0 && (emailCheckResult[0]?["Email"]?.ToString().Length ?? 0) > 0)
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "User already exists!",
+                        Data = null
+                    };
+                }
+
+                int role = 0;
+                if((user.Role ?? 0) > 0)
+                {
+                    role = user.Role.Value;
+                }
+                else
+                {
+                    APIResult userDefaultRoleUser = await ServiceManager
+                        .Instance
+                        .GetService<SettingsService>()
+                        .GetSetting(Constants.Settings.DefaultRoleOnSignup);
+
+                    Dictionary<string, object> userDefaultRole = (Dictionary<string, object>)(userDefaultRoleUser.Data);
+                    role = Int32.Parse(userDefaultRole["Value"].ToString());
+                }                
+
+                // Create User
+                Dictionary<string, object> userData = new Dictionary<string, object>
+                {
+                    { "Username", user.Username },
+                    { "Password", Hash.Create(user.Password) },
+                    { "Email", user.Email ?? "" },
+                    { "Fullname", user.Fullname ?? "" },
+                    { "CreatedOn", DateTime.UtcNow }
+                };
+
+                List<int> ids = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Users.ToString())
+                    .AddRow(userData)
+                    .RunInsertQuery();
+
+                if((ids?.Count ?? 0) < 1)
+                {
+                    return APIResult.GetSimpleFailureResult("An error occured while signing up!");
+                }
+
+                Dictionary<string, object> userRoleData = new Dictionary<string, object>{
+                    { "User", ids[0] },
+                    { "Role", role }
+                };
+
+                Columns.AppendCreatedInfo(userRoleData, ids[0]);
+
+                await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.UserRoles.ToString())
+                    .AddRow(userRoleData)
+                    .RunInsertQuery();
+
+                return new APIResult
+                {
+                    Data = null,
+                    Success = true,
+                    Message = "User added successfully"
+                };
         }
 
         public async Task<APIResult> UpdateUser(int Id, Dictionary<string, object> data)

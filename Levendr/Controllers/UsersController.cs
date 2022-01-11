@@ -71,76 +71,10 @@ namespace Levendr.Controllers
 
         [LevendrAuthorized]
         [HttpPost("AddUser")]
-        public async Task<APIResult> AddUser(Dictionary<string, object> data)
+        public async Task<APIResult> AddUser(SignupRequest user)
         {
             try{
-                if (data == null || data.Count() == 0 || !data.ContainsKey("Username") || !data.ContainsKey("Password") || !data.ContainsKey("Role"))
-                {
-                    return APIResult.GetSimpleFailureResult("User must contain Username, Password and Role!");
-                }
-
-                int role = 0;
-                if(data.ContainsKey("Role"))
-                {
-                    role = Int32.Parse(data["Role"].ToString());
-                }
-                else
-                {
-                    APIResult userDefaultRoleUser = await ServiceManager
-                        .Instance
-                        .GetService<SettingsService>()
-                        .GetSetting(Constants.Settings.DefaultRoleOnSignup);
-
-                    Dictionary<string, object> userDefaultRole = (Dictionary<string, object>)(userDefaultRoleUser.Data);
-                    role = Int32.Parse(userDefaultRole["Value"].ToString());
-                }
-
-                SignupRequest user = new SignupRequest()
-                {
-                    Username = (string)data["Username"],
-                    Email = data.ContainsKey("Email")? (string)data["Email"]: null,
-                    Fullname = data.ContainsKey("Fullname")? (string)data["Fullname"]: null,
-                    Password = data.ContainsKey("Password")? (string)data["Password"]: null
-                };
-
-                // Create User
-                Dictionary<string, object> userData = new Dictionary<string, object>
-                {
-                    { "Username", user.Username },
-                    { "Password", Hash.Create(user.Password) },
-                    { "Email", user.Email ?? "" },
-                    { "Fullname", user.Fullname ?? "" },
-                    { "CreatedOn", DateTime.UtcNow }
-                };
-
-                List<int> ids = await QueryDesigner
-                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Users.ToString())
-                    .AddRow(userData)
-                    .RunInsertQuery();
-
-                if((ids?.Count ?? 0) < 1)
-                {
-                    return APIResult.GetSimpleFailureResult("An error occured while signing up!");
-                }
-
-                Dictionary<string, object> userRoleData = new Dictionary<string, object>{
-                    { "User", ids[0] },
-                    { "Role", role }
-                };
-
-                Columns.AppendCreatedInfo(userRoleData, ids[0]);
-
-                await QueryDesigner
-                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.UserRoles.ToString())
-                    .AddRow(userRoleData)
-                    .RunInsertQuery();
-
-                return new APIResult
-                {
-                    Data = null,
-                    Success = true,
-                    Message = "User added successfully"
-                };
+                return await ServiceManager.Instance.GetService<UsersService>().AddUser(user);
             }
             catch(LevendrErrorCodeException e) {
                 return APIResult.GetSimpleFailureResult(e.Message);
