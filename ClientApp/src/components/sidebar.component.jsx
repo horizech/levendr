@@ -147,10 +147,9 @@ return (
             {/* {renderMenu()} */}
             <MenuItem onClick={() => gotoPath('/user')}>Current User</MenuItem>
             <MenuItem onClick={() => gotoPath('/users')}>Users</MenuItem>
-            <MenuItem onClick={() => gotoPath('/settings')}>{'Settings'}</MenuItem>
+            <MenuItem onClick={() => gotoPath('/settings')}>Settings</MenuItem>
             <MenuItem onClick={() => gotoPath('/permissions')}>Permissions</MenuItem>
             <MenuItem onClick={() => gotoPath('/roles')}>Roles</MenuItem>
-            {/* <MenuItem onClick={() => gotoPath('/role-permissions')}>Role Permissions</MenuItem> */}
             <MenuItem onClick={() => gotoPath('/permission-groups')}>Permission Groups</MenuItem>
             <MenuItem onClick={() => gotoPath('/permission-group-mappings')}>Permission Group Mappings</MenuItem>
             <MenuItem onClick={() => gotoPath('/role-permission-group-mappings')}>Role Permission Group Mappings</MenuItem>

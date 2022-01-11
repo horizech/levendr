@@ -210,42 +210,6 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                             ))
                         }
                     </LevendrTable>
-                    {/* <Table responsive bordered striped size="sm">
-                        <thead>
-                            <tr key={'header'}>
-                                <th key={'header_#'} scope="col"></th>
-                                {displayedColumns &&
-                                    displayedColumns.map(key => (
-                                        <th key={'header_' + key} scope="col">{key}</th>
-                                    ))                                    
-                                }
-                                <th key={'header_Role'} scope="col">Role</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users &&
-                                users.map((row, i) => (
-                                    <tr key={'row_' + (i + 1)}>
-                                        <td key={'data_' + i + '_#'} scope="row">
-                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                                <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)} />
-                                                <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)} />
-                                            </div>
-                                        </td>                                        
-                                        {
-                                            displayedColumns.map(key => (
-                                                <td key={'data_' + i + key} >{row[key] != null ? '' + row[key] : ''}</td>
-                                            ))                                            
-                                        }
-                                        <td key={'data_' + i + 'Role'} >{row['Role'] != null ? row['Role']['Name'] : ''}</td>
-
-                                        
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </Table> */}
                     {isEditModalVisible &&
                         <CreateEditModal
                             isSelectList={isSelectList}
