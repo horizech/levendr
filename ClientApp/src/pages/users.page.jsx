@@ -35,23 +35,30 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     };
     
     const columns = [
-        { Name: 'Id', value: 'Id' },
-        { Name: 'Username', value: 'Username' },
-        { Name: 'Email', value: 'Email' },
-        { Name: 'Fullname', value: 'Fullname' },
-        { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
-        { Name: 'Role', value: 'Role' },
+        { Name: 'Id', value: 'Id', hidden: false },
+        { Name: 'Username', value: 'Username', hidden: false },
+        { Name: 'Email', value: 'Email', hidden: false },
+        { Name: 'Fullname', value: 'Fullname', hidden: false },
+        { Name: 'Password', value: 'Password', hidden: true },
+        { Name: 'CreatedOn', value: 'CreatedOn', hidden: false },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', hidden: false },
+        { Name: 'Role', value: 'Role', hidden: false },
     ]
 
-    const displayedColumns = columns.map(x => x.Name);
+    // const columnNames = columns.map(x => x.Name);
+    let filteredHiddenColumns = columns.filter((item) => {
+      return !item.hidden;
+    });
+    const displayedColumns = filteredHiddenColumns.map(x => x.Name);
+    console.log(displayedColumns);
     const showCreateModal = () => {
         setCreateSettingModalVisible(true);
     }
     const handleOnCreateComplete = (values) => {
         if (values) {
+            values.Role= parseInt(values.Role.value);
             userService.addUser(values).then(response => {
-
+                console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
 
@@ -195,6 +202,9 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                                     {
                                         displayedColumns.map(key => {
                                             let tableData
+                                            if(!key.hidden){
+
+                                            }
                                             if (key == "Role") {
                                                 tableData = row[key] != null ? '' + row[key]['label'] : ''
                                             }
@@ -214,7 +224,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                         <CreateEditModal
                             isSelectList={isSelectList}
                             selectOptions={selectOptionsList}
-                            columns={columns}
+                            columns={filteredHiddenColumns}
                             row={currentRow}
                             handleOnClose={handleOnEditComplete}
                             mode="edit"
