@@ -27,14 +27,14 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
     });
 
     const columns = [
-        { Name: 'Id', value: 'Id', Datatype: 'Integer' },
-        { Name: 'Permission', value: 'Permission', Datatype: 'LongText' },
-        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'LongText' },
-        { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean' },
-        { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime' },
-        { Name: 'CreatedBy', value: 'CreatedBy', Datatype: 'ShortText' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', Datatype: 'DateTime' },
-        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', Datatype: 'ShortText' }
+        { Name: 'Id', value: 'Id', Datatype: 'Integer', needParse: false, IsSelectList: false },
+        { Name: 'Permission', value: 'Permission', Datatype: 'LongText', needParse: true, IsSelectList: true },
+        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'LongText', needParse: true, IsSelectList: true },
+        { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean', needParse: false, IsSelectList: false },
+        { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime', needParse: false, IsSelectList: false },
+        { Name: 'CreatedBy', value: 'CreatedBy', Datatype: 'ShortText', needParse: false, IsSelectList: false },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', Datatype: 'DateTime', needParse: false, IsSelectList: false },
+        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', Datatype: 'ShortText', needParse: false, IsSelectList: false }
     ]
 
     const isSelectList =  {
@@ -48,8 +48,8 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
 
     const handleOnCreateComplete = (values) => {
         if (values) {
-            values.Permission = values.Permission.value;
-            values.PermissionGroup = values.PermissionGroup.value;
+            // values.Permission = values.Permission.value;
+            // values.PermissionGroup = values.PermissionGroup.value;
             console.log(values);
             permissionGroupMappingsService.addPermissionGroupMapping(values).then(response => {
                 console.log(response);
@@ -90,8 +90,8 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
     console.log(currentRow);
     const handleOnEditComplete = (values) => {
         if (values) {
-            values.Permission = values.Permission.value;
-            values.PermissionGroup = values.PermissionGroup.value;
+            // values.Permission = values.Permission.value;
+            // values.PermissionGroup = values.PermissionGroup.value;
             console.log(values);
             permissionGroupMappingsService.updatePermissionGroupMapping(values).then(response => {
                 if (response.Success) {

@@ -23,14 +23,14 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
     
     const columns = [
-        { Name: 'Id', value: 'Id' },
-        { Name: 'Name', value: 'Name' },
-        { Name: 'Description', value: 'Description' },
-        { Name: 'Level', value: 'Level' },
-        { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'CreatedBy', value: 'CreatedBy' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
-        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy' }
+        { Name: 'Id', value: 'Id', valueDataType: 'Integer', needParse: false  },
+        { Name: 'Name', value: 'Name', valueDataType: 'Integer'  },
+        { Name: 'Description', value: 'Description', valueDataType: 'Integer', needParse: false  },
+        { Name: 'Level', value: 'Level', valueDataType: 'Integer', needParse: true  },
+        { Name: 'CreatedOn', value: 'CreatedOn', valueDataType: 'Integer', needParse: false  },
+        { Name: 'CreatedBy', value: 'CreatedBy', valueDataType: 'Integer', needParse: false  },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', valueDataType: 'Integer', needParse: false  },
+        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', valueDataType: 'Integer', needParse: false  }
     ]
 
     const showCreateModal = () => {
@@ -39,7 +39,6 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
 
     const handleOnCreateComplete = (values) => {
         if(values) {
-            values.Level= parseInt(values.Level);
             rolesService.addRoles(values).then( response => {
                 console.log(response);
                 if(response.Success) {
@@ -64,7 +63,6 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     
     const handleOnEditComplete = (values) => {        
         if(values) {
-            values.Level= parseInt(values.Level);
             rolesService.updateRoles(currentRow.Name, values).then( response => {
                 if(response.Success) {
                     setUpdateSuccess(true);
@@ -204,6 +202,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
                     {isEditModalVisible &&
                         <CreateEditModal
                             columns={columns}
+                            isSelectList={[]}
                             row={currentRow}
                             handleOnClose={handleOnEditComplete}
                             mode="edit"
@@ -226,6 +225,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
 
             <CreateEditModal
                 columns={columns}
+                isSelectList={[]}
                 row={{}}
                 handleOnClose={handleOnCreateComplete}
                 mode="create"

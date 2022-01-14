@@ -35,14 +35,14 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     };
     
     const columns = [
-        { Name: 'Id', value: 'Id', hidden: false },
-        { Name: 'Username', value: 'Username', hidden: false },
-        { Name: 'Email', value: 'Email', hidden: false },
-        { Name: 'Fullname', value: 'Fullname', hidden: false },
-        { Name: 'Password', value: 'Password', hidden: true },
-        { Name: 'CreatedOn', value: 'CreatedOn', hidden: false },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', hidden: false },
-        { Name: 'Role', value: 'Role', hidden: false },
+        { Name: 'Id', value: 'Id', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Username', value: 'Username', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Email', value: 'Email', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Fullname', value: 'Fullname', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Password', value: 'Password', hidden: true, needParse: false, IsSelectList: false },
+        { Name: 'CreatedOn', value: 'CreatedOn', hidden: false, needParse: false, IsSelectList: false },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', hidden: false, needParse: false, IsSelectList: false },
+        { Name: 'Role', value: 'Role', hidden: false, needParse: true, IsSelectList: true },
     ]
 
     // const columnNames = columns.map(x => x.Name);
@@ -56,7 +56,7 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     }
     const handleOnCreateComplete = (values) => {
         if (values) {
-            values.Role= parseInt(values.Role.value);
+            // values.Role= parseInt(values.Role.value);
             userService.addUser(values).then(response => {
                 console.log(response);
                 if (response.Success) {

@@ -23,13 +23,13 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
     
     const columns = [
-        { Name: 'Id', value: 'Id' },
-        { Name: 'Key', value: 'Key' },
-        { Name: 'Value', value: 'Value' },
-        { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'CreatedBy', value: 'CreatedBy' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
-        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy' }
+        { Name: 'Id', value: 'Id', needParse: false},
+        { Name: 'Key', value: 'Key', needParse: false },
+        { Name: 'Value', value: 'Value', needParse: false },
+        { Name: 'CreatedOn', value: 'CreatedOn', needParse: false },
+        { Name: 'CreatedBy', value: 'CreatedBy', needParse: false },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', needParse: false },
+        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', needParse: false }
     ]
 
     const showCreateModal = () => {
