@@ -59,9 +59,9 @@ class App extends React.Component {
                 }
               }).then(() => {
                 return MySwal.fire({
-                    title: <strong>Good job!</strong>,
+                    title: <strong>{alert.title || ""}</strong>,
                     html: <i>{alert.message}</i>,
-                    icon: alert.type
+                    icon: alert.type || 'success'
                 })
               })
         }
