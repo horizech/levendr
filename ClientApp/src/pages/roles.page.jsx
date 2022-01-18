@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import { tablesActions } from '../actions';
 import { Table } from 'reactstrap';
 import { ButtonIcon } from '../components/button-icon.component';
-import { history } from '../helpers';
+import { history, SwalAlert } from '../helpers';
 import { Loading, Page, Roles } from '../components';
 import { CreateEditModal } from '../modals';
 import { rolesService } from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const RolesPage = ({match, location, dispatch, loggedIn}) => {
  
     const [roles, setRoles] = React.useState(null);
@@ -43,9 +45,11 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
                 console.log(response);
                 if(response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -66,6 +70,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
             rolesService.updateRoles(currentRow.Name, values).then( response => {
                 if(response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(alertActions.success("Success", response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
