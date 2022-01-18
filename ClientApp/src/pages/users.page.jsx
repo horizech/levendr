@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { userService, rolesService} from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     // console.log(user.Role);
     // let currentUser= user;
@@ -61,11 +63,12 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                 console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
-
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
 
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -86,9 +89,11 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             userService.updateUser(currentRow.Id, values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -100,9 +105,11 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             userService.deleteUser(currentRow.Id).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }

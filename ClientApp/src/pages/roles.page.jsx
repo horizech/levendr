@@ -70,10 +70,11 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
             rolesService.updateRoles(currentRow.Name, values).then( response => {
                 if(response.Success) {
                     setUpdateSuccess(true);
-                    dispatch(alertActions.success("Success", response.Message));
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -85,9 +86,11 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
             rolesService.deleteRoles(currentRow).then( response => {
                 if(response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -114,9 +117,11 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
        
         rolesService.getRoles().then( response => {
             if(response.Success) {
-                setRoles(response.Data);        
+                setRoles(response.Data);   
+                   
             }
             else {
+               
                 setRoles(null);
             }
         })       

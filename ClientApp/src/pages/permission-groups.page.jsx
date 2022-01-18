@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { permissionGroupsService } from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const PermissionGroupsPage = ({ match, location, dispatch, loggedIn }) => {
 
     const [permissionGroups, setPermissionGroups] = React.useState(null);
@@ -42,9 +44,12 @@ const PermissionGroupsPage = ({ match, location, dispatch, loggedIn }) => {
             permissionGroupsService.addPermissionGroup(values).then(response => {
                 if (response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
+
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -65,9 +70,13 @@ const PermissionGroupsPage = ({ match, location, dispatch, loggedIn }) => {
             permissionGroupsService.updatePermissionGroup(currentRow.Name, values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
+
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
+                    
                 }
             });
         }
@@ -79,9 +88,12 @@ const PermissionGroupsPage = ({ match, location, dispatch, loggedIn }) => {
             permissionGroupsService.deletePermissionGroup(currentRow).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
+
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }

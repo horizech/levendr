@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { permissionGroupMappingsService, permissionGroupsService, permissionsService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) => {
 
     const [permissionGroupMappings, setPermissionGroupMappings] = React.useState(null);
@@ -55,9 +57,11 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
                 console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -96,9 +100,11 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
             permissionGroupMappingsService.updatePermissionGroupMapping(values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
-                }
+                    dispatch(toastActions.success(response.Message));
+                }   
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -110,9 +116,11 @@ const PermissionGroupMappingsPage = ({ match, location, dispatch, loggedIn }) =>
             permissionGroupMappingsService.deletePermissionGroupMapping(currentRow).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }

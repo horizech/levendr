@@ -33,12 +33,12 @@ function login(username, password) {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                     }
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    dispatch(alertActions.error("Error", error));
                 }
             );
     };

@@ -5,6 +5,8 @@ import { userActions } from '../actions';
 import { GetElementTypeFromDataType } from '../helpers';
 import { Form, Field } from 'react-final-form';
 import { DynamicElementAdapter } from '../adapters';
+import { alertActions, toastActions } from '../actions';
+
 const RegisterPage = ({ dispatch, checkingStatus, isInitialized, loggedIn, location, history }) => {
     const [submitted, setSubmitted] = React.useState(false);
     const columns = [

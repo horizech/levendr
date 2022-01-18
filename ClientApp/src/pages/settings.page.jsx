@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { settingsService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const SettingsPage = ({match, location, dispatch, loggedIn}) => {
  
     const [settings, setSettings] = React.useState(null);
@@ -42,11 +44,13 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
  
                 if(response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                     
                 }
                 else {
                     
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -67,9 +71,11 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
             settingsService.updateSettings(currentRow.Key, values).then( response => {
                 if(response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -81,9 +87,11 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
             settingsService.deleteSettings(currentRow).then( response => {
                 if(response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }

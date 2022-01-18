@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { permissionsService } from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const PermissionsPage = ({ match, location, dispatch, loggedIn }) => {
 
     const [permissions, setPermissions] = React.useState(null);
@@ -41,9 +43,12 @@ const PermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             permissionsService.addPermissions(values).then(response => {
                 if (response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
+
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -64,9 +69,12 @@ const PermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             permissionsService.updatePermissions(currentRow.Name, values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
+
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -78,9 +86,12 @@ const PermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             permissionsService.deletePermissions(currentRow).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
+
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }

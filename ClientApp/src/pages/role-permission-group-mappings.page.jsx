@@ -7,7 +7,9 @@ import { CreateEditModal } from '../modals';
 import { rolePermissionGroupMappingsService, permissionGroupsService, rolesService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
-const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
+import { alertActions, toastActions } from '../actions';
+
+const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
 
     const [rolePermissionGroupMappings, setRolePermissionGroupMappings] = React.useState(null);
     const [loadingRolePermissionGroupMappingColumns, setLoadingRolePermissionGroupMappingColumns] = React.useState(true);
@@ -51,9 +53,11 @@ const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
                 console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -92,9 +96,11 @@ const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
             rolePermissionGroupMappingsService.updateRolePermissionGroupMapping(values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -106,9 +112,11 @@ const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
             rolePermissionGroupMappingsService.deleteRolePermissionGroupMapping(currentRow).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
