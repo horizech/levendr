@@ -103,6 +103,14 @@ const NavMenu = ({ loggedIn, user }) => {
                     </NavLink>
                   </NavItem>
                 }
+                {
+                  permissionGroupsNames.includes("RolesReadWrite") &&
+                  <NavItem>
+                    <NavLink tag={Link} className="text-dark" to="/configuration">
+                      Configuration
+                    </NavLink>
+                  </NavItem>
+                }
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/counter">
                     Counter
