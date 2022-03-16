@@ -12,10 +12,10 @@ import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 // import { NavSubMenu } from 'components';
 import "../styles/NavMenu.scss";
-import { LevendrDropdown } from ".";
+import { LevendrDropdown, TableDropdown } from ".";
 import { history } from '../helpers';
 
-const NavMenu = ({ loggedIn, user }) => {
+const NavMenu = ({ loggedIn, user, tableslist, loadingTablesList }) => {
   // const displayName = NavMenu.name;
   const [collapsed, setCollapsed] = React.useState(true);
   const toggleNavbar = () => {
@@ -41,6 +41,14 @@ const NavMenu = ({ loggedIn, user }) => {
     return permissionGroupsNames.includes(item.permissionGroup);
   });
   console.log(filteredPermissionItems);
+
+  
+const renderLoading = () =>  {
+  return (
+    <NavItem>Loading...</NavItem>
+  );
+}
+
   return (
     <header>
       {
@@ -65,11 +73,11 @@ const NavMenu = ({ loggedIn, user }) => {
                     Home
                   </NavLink>
                 </NavItem>
-                <NavItem>
+                {/* <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/admin">
                     Admin
                   </NavLink>
-                </NavItem>
+                </NavItem> */}
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/user">
                     Current User
@@ -96,6 +104,11 @@ const NavMenu = ({ loggedIn, user }) => {
                   <LevendrDropdown title= "Permissions" items={filteredPermissionItems} onClick={ (path) => history.push(path)}/>
                 }
                 {
+                    (loadingTablesList === false && tableslist !== null)?
+                    <TableDropdown title= "Tables" items={tableslist} onClick={ (path) => history.push(path)}/>
+                    :renderLoading()
+                }
+                {
                   permissionGroupsNames.includes("RolesReadWrite") &&
                   <NavItem>
                     <NavLink tag={Link} className="text-dark" to="/roles">
@@ -111,16 +124,16 @@ const NavMenu = ({ loggedIn, user }) => {
                     </NavLink>
                   </NavItem>
                 }
-                <NavItem>
+                {/* <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/counter">
                     Counter
                   </NavLink>
-                </NavItem>
-                <NavItem>
+                </NavItem>  */}
+                {/* <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/fetch-data">
                     Fetch data
                   </NavLink>
-                </NavItem>
+                </NavItem> */}
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/logout">
                     Logout
@@ -137,10 +150,14 @@ const NavMenu = ({ loggedIn, user }) => {
 }
 
 function mapStateToProps(state) {
-  const { loggedIn, user } = state.authentication;
+  const { user, loggedIn } = state.authentication;
+  const { tableslist, loadingTablesList} = state.tables
+
   return {
+    user,
     loggedIn,
-    user
+    tableslist, 
+    loadingTablesList
   };
 }
 
