@@ -105,8 +105,35 @@ namespace Levendr.Services
                     .WhereEquals("Role", RoleId)
                     .RunSelectQuery();
                 
-                List<int> permissionGroupIds = rolePermissionGroupMappings.Select( x => Int32.Parse(x["PermissionGroup"].ToString())).ToList();
-
+                if ((rolePermissionGroupMappings?.Count ?? 0) > 0)
+                {
+                        return new APIResult()
+                        {
+                            Success = true,
+                            Message = "Role Permission Groups found successfully!",
+                            Data = rolePermissionGroupMappings
+                        };
+                }
+                else
+                {
+                    return new APIResult()
+                    {
+                        Success = false,
+                        Message = "Permission Groups not found!",
+                        Data = null
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                return APIResult.GetExceptionResult(e);
+            }
+        }
+    
+        public async Task<APIResult> GetPermissionGroups(List<int> permissionGroupIds)
+        {
+            try
+            {                
                 List<Dictionary<string, object>> rolePermissionsGroups = await QueryDesigner
                     .CreateDesigner(schema: Schemas.Levendr, table: TableNames.PermissionGroupMappings.ToString())
                     .WhereIncludes("PermissionGroup", permissionGroupIds)
