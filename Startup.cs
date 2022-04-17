@@ -19,6 +19,7 @@ using System.Collections.Generic;
 
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Caching.Memory;
 
 using Levendr.Services;
 using Levendr.Enums;
@@ -30,12 +31,14 @@ namespace Levendr
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        
+        public IMemoryCache MemoryCache {get; set;}
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -131,6 +134,9 @@ namespace Levendr
                 x.MultipartHeadersLengthLimit = int.MaxValue;
             });
 
+            services.AddMemoryCache(cacheOptions => {
+            });
+
             // To add Policies which can be used used in Controllers like this:
             // [Authorize(Policy = "CanCreateTablesData")]
             // services.AddAuthorization(options =>
@@ -157,8 +163,9 @@ namespace Levendr
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMemoryCache cache)
         {
+            this.MemoryCache = cache;
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -257,7 +264,14 @@ namespace Levendr
                 if (type.FullName.Contains("Levendr.Services.") && !type.FullName.Contains("+<"))
                 {
                     Console.WriteLine("Registering: " + type.FullName);
-                    Activator.CreateInstance(type, Configuration);
+                    if(type.FullName == "Levendr.Services.MemoryCacheService")
+                    {
+                        Activator.CreateInstance(type, Configuration, MemoryCache);
+                    }
+                    else
+                    {
+                        Activator.CreateInstance(type, Configuration);
+                    }
                 }
             }
         }
