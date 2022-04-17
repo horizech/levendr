@@ -22,16 +22,29 @@ namespace Levendr.Services
 
         public async Task<APIResult> GetPermissions()
         {
-            List<Dictionary<string, object>> result = await QueryDesigner
-                .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Permissions.ToString())
-                .RunSelectQuery();
+            APIResult cacheResult = await ServiceManager.Instance.GetService<MemoryCacheService>().Get("Permissions");
 
-            return new APIResult()
+            if (cacheResult != null)
             {
-                Success = true,
-                Message = "Permissions loaded successfully!",
-                Data = result
-            };
+                return cacheResult;
+            }
+            else
+            {
+                List<Dictionary<string, object>> result = await QueryDesigner
+                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Permissions.ToString())
+                    .RunSelectQuery();
+
+                APIResult newCacheResult = new APIResult()
+                {
+                    Success = true,
+                    Message = "Permissions loaded successfully!",
+                    Data = result
+                };
+
+                ServiceManager.Instance.GetService<MemoryCacheService>().Set("Permissions", newCacheResult);
+
+                return newCacheResult;
+            }
         }
 
         public async Task<APIResult> AddPermission(Dictionary<string, object> data)
