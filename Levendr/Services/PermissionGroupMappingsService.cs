@@ -23,6 +23,12 @@ namespace Levendr.Services
 
         public async Task<APIResult> GetPermissionGroupMappings()
         {
+            APIResult cacheResult = await ServiceManager.Instance.GetService<MemoryCacheService>().Get("PermissionGroupMappings");
+            if (cacheResult != null)
+            {
+                return cacheResult;
+            }
+            
             string tablePath = FileSystem.GetPathInConfigurations("Tables/Definitions/" + TableNames.PermissionGroupMappings.ToString() + ".json");
             string tableJson = FileSystem.ReadFile(tablePath);
             TableDefinition table = FileSystem.ReadJsonString<TableDefinition>(tableJson);
@@ -36,12 +42,16 @@ namespace Levendr.Services
                 .AddForeignTables(table.ForeignTables)
                 .RunSelectQuery();
 
-            return new APIResult()
+            APIResult newCacheResult = new APIResult()
             {
                 Success = true,
                 Message = "PermissionGroupMappings loaded successfully!",
                 Data = result
             };
+
+            ServiceManager.Instance.GetService<MemoryCacheService>().Set("PermissionGroupMappings", newCacheResult);
+
+            return newCacheResult;
         }
 
         public async Task<APIResult> AddPermissionGroupMapping(Dictionary<string, object> data)
