@@ -30,15 +30,15 @@ namespace Levendr.Filters
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            APIResult permissions = await ServiceManager.Instance.GetService<PermissionsService>().GetPermissions();
-            APIResult permissionGroupMapping = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().GetPermissionGroupMappings();
-            
             string permissionGroupString = context.HttpContext.User.Claims.FirstOrDefault( x => x.Type == ClaimTypes.Authentication)?.Value;
             if(string.IsNullOrEmpty(permissionGroupString)) {
                 context.Result = new ForbidResult();
             }
             else
             {
+                APIResult permissions = await ServiceManager.Instance.GetService<PermissionsService>().GetPermissions();
+                APIResult permissionGroupMapping = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().GetPermissionGroupMappings();
+                
                 List<int> permissionGroupIds = permissionGroupString.Split(',').Select(x => Int32.Parse(x)).ToList();
                 List<Dictionary<string, object>> userPermissionGroupMappings = ((List<Dictionary<string, object>>)permissionGroupMapping.Data).Where(x => permissionGroupIds.Contains(Int32.Parse(x["PermissionGroup"].ToString()))).ToList();
                 if(userPermissionGroupMappings.Count == 0) {
