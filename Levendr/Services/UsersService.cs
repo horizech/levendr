@@ -34,11 +34,10 @@ namespace Levendr.Services
                 {
                     if ((userRoles[0]["Role"]?.ToString().Length ?? 0) > 0)
                     {
-                        List<Dictionary<string, object>> roles = await QueryDesigner
-                            .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Roles.ToString())
-                            .WhereEquals("Id", userRoles[0]["Role"])
-                            .RunSelectQuery();
+                        APIResult rolesResult = await ServiceManager.Instance.GetService<RolesService>().GetRoles();
 
+                        List<Dictionary<string, object>> roles = ((List<Dictionary<string, object>>)rolesResult.Data).Where(x => (int)x["Id"] == (int)userRoles[0]["Role"]).ToList();
+         
                         if ((roles?.Count ?? 0) > 0)
                         {
                             if ((roles[0]["Name"]?.ToString().Length ?? 0) > 0)
@@ -99,18 +98,17 @@ namespace Levendr.Services
         public async Task<APIResult> GetRolePermissionGroupMappings(int RoleId)
         {
             try
-            {                
-                List<Dictionary<string, object>> rolePermissionGroupMappings = await QueryDesigner
-                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissionGroupMappings.ToString())
-                    .WhereEquals("Role", RoleId)
-                    .RunSelectQuery();
+            {             
+                APIResult result = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().GetRolePermissionGroupMappings();
+
+                List<Dictionary<string, object>> rolePermissionGroupMappings = ((List<Dictionary<string, object>>)result.Data).Where(x => (int)x["Role"] == RoleId).ToList();
                 
                 if ((rolePermissionGroupMappings?.Count ?? 0) > 0)
                 {
                         return new APIResult()
                         {
                             Success = true,
-                            Message = "Role Permission Groups found successfully!",
+                            Message = "Role Permission Group mappings found successfully!",
                             Data = rolePermissionGroupMappings
                         };
                 }
@@ -119,7 +117,7 @@ namespace Levendr.Services
                     return new APIResult()
                     {
                         Success = false,
-                        Message = "Permission Groups not found!",
+                        Message = "Role Permission Group mappings not found!",
                         Data = null
                     };
                 }
@@ -130,15 +128,14 @@ namespace Levendr.Services
             }
         }
     
-        public async Task<APIResult> GetPermissionGroups(List<int> permissionGroupIds)
+        public async Task<APIResult> GetPermissionGroupMappings(List<int> permissionGroupIds)
         {
             try
             {                
-                List<Dictionary<string, object>> rolePermissionsGroups = await QueryDesigner
-                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.PermissionGroupMappings.ToString())
-                    .WhereIncludes("PermissionGroup", permissionGroupIds)
-                    .RunSelectQuery();
+                APIResult result = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().GetPermissionGroupMappings();
 
+                List<Dictionary<string, object>> rolePermissionsGroups = ((List<Dictionary<string, object>>)result.Data).Where(x => permissionGroupIds.Contains((int)x["PermissionGroup"])).ToList();
+                
                 if ((rolePermissionsGroups?.Count ?? 0) > 0)
                 {
                         return new APIResult()
@@ -168,12 +165,10 @@ namespace Levendr.Services
         {
             try
             {
+                APIResult result = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().GetPermissionGroupMappings();
 
-                List<Dictionary<string, object>> rolePermissionsGroups = await QueryDesigner
-                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.PermissionGroups.ToString())
-                    .WhereIncludes("Id", Ids)
-                    .RunSelectQuery();
-
+                List<Dictionary<string, object>> rolePermissionsGroups = ((List<Dictionary<string, object>>)result.Data).Where(x => Ids.Contains((int)x["Id"])).ToList();
+                
                 if ((rolePermissionsGroups?.Count ?? 0) > 0)
                 {
                         return new APIResult()
@@ -203,11 +198,10 @@ namespace Levendr.Services
         {
             try
             {
-                List<Dictionary<string, object>> permissions = await QueryDesigner
-                    .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Permissions.ToString())
-                    .WhereIncludes("Id", Ids)
-                    .RunSelectQuery();
+                APIResult result = await ServiceManager.Instance.GetService<PermissionsService>().GetPermissions();
 
+                List<Dictionary<string, object>> permissions = ((List<Dictionary<string, object>>)result.Data).Where(x => Ids.Contains((int)x["Id"])).ToList();
+                                
                 if ((permissions?.Count ?? 0) > 0)
                 {
                     return new APIResult()
@@ -246,18 +240,16 @@ namespace Levendr.Services
                 {
                     if ((userRoles[0]["Role"]?.ToString().Length ?? 0) > 0)
                     {
-                        List<Dictionary<string, object>> permissionGroups = await QueryDesigner
-                            .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissionGroupMappings.ToString())
-                            .WhereEquals("Role", userRoles[0]["Role"])
-                            .RunSelectQuery();
+                        APIResult permissionGroupsResult = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().GetRolePermissionGroupMappings();
+
+                        List<Dictionary<string, object>> permissionGroups = ((List<Dictionary<string, object>>)permissionGroupsResult.Data).Where(x => (int)x["Role"] == (int)userRoles[0]["Role"]).ToList();
                         
                         List<int> permissionGroupIds = permissionGroups.Select( x => Int32.Parse(x["PermissionGroup"].ToString())).ToList();
 
-                        List<Dictionary<string, object>> rolePermissions = await QueryDesigner
-                            .CreateDesigner(schema: Schemas.Levendr, table: TableNames.PermissionGroupMappings.ToString())
-                            .WhereIncludes("PermissionGroup", permissionGroupIds)
-                            .RunSelectQuery();
+                        APIResult rolePermissionsResult = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().GetPermissionGroupMappings();
 
+                        List<Dictionary<string, object>> rolePermissions = ((List<Dictionary<string, object>>)rolePermissionsResult.Data).Where(x => permissionGroupIds.Contains((int)x["PermissionGroup"])).ToList();
+                                        
                         if ((rolePermissions?.Count ?? 0) > 0)
                         {
                             int[] permissionIds = new int[rolePermissions.Count];
@@ -266,10 +258,10 @@ namespace Levendr.Services
                                 permissionIds[i] = Int32.Parse(rolePermissions[i]["Permission"].ToString());
                             }
 
-                            List<Dictionary<string, object>> permissions = await QueryDesigner
-                                .CreateDesigner(schema: Schemas.Levendr, table: TableNames.Permissions.ToString())
-                                .WhereIncludes("Id", permissionIds)
-                                .RunSelectQuery();
+                            
+                            APIResult permissionsResult = await ServiceManager.Instance.GetService<PermissionsService>().GetPermissions();
+
+                            List<Dictionary<string, object>> permissions = ((List<Dictionary<string, object>>)permissionsResult.Data).Where(x => permissionIds.Contains((int)x["Id"])).ToList();
 
                             if ((permissions?.Count ?? 0) > 0)
                             {

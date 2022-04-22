@@ -23,6 +23,12 @@ namespace Levendr.Services
 
         public async Task<APIResult> GetRoles()
         {
+            APIResult cacheResult = await ServiceManager.Instance.GetService<MemoryCacheService>().Get("Roles");
+            if (cacheResult != null)
+            {
+                return cacheResult;
+            }
+
             string tablePath = FileSystem.GetPathInConfigurations("Tables/Definitions/" + TableNames.Roles.ToString() + ".json");
             string tableJson = FileSystem.ReadFile(tablePath);
             TableDefinition table = FileSystem.ReadJsonString<TableDefinition>(tableJson);
@@ -36,12 +42,16 @@ namespace Levendr.Services
                 .AddForeignTables(table.ForeignTables)
                 .RunSelectQuery();
 
-            return new APIResult()
+            APIResult newCacheResult = new APIResult()
             {
                 Success = true,
                 Message = "Roles loaded successfully!",
                 Data = result
             };
+
+            ServiceManager.Instance.GetService<MemoryCacheService>().Set("Roles", newCacheResult);
+
+            return newCacheResult;
         }
 
         public async Task<APIResult> AddRole(Dictionary<string, object> data)

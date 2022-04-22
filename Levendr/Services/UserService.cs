@@ -251,14 +251,14 @@ namespace Levendr.Services
                     
                     List<int> permissionGroupIds = ((List<Dictionary<string, object>>)(rolePermissionGroupMappings.Data)).Select( x => Int32.Parse(x["PermissionGroup"].ToString())).Distinct().ToList();
 
-                    APIResult rolePermissionGroups = await ServiceManager.Instance.GetService<UsersService>().GetPermissionGroups(permissionGroupIds);
+                    APIResult permissionGroupMappings = await ServiceManager.Instance.GetService<UsersService>().GetPermissionGroupMappings(permissionGroupIds);
                 
-                    if (rolePermissionGroups.Success == true && rolePermissionGroups.Data is not null)
+                    if (permissionGroupMappings.Success == true && permissionGroupMappings.Data is not null)
                     {
-                        result.Add("PermissionGroups", (List<Dictionary<string, object>>)(rolePermissionGroups.Data));
+                        result.Add("PermissionGroupMappings", (List<Dictionary<string, object>>)(permissionGroupMappings.Data));
                     }
 
-                    List<int> permissionIds = ((List<Dictionary<string, object>>)(rolePermissionGroups.Data))
+                    List<int> permissionIds = ((List<Dictionary<string, object>>)(permissionGroupMappings.Data))
                         .Select( x => Int32.Parse(x["Permission"].ToString()))
                         .ToList();
                                 
