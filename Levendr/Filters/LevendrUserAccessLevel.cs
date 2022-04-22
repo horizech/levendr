@@ -14,86 +14,102 @@ using System.Collections.Generic;
 
 namespace Levendr.Filters
 {
+    
     public class LevendrUserAccessLevelAttribute : TypeFilterAttribute
     {
-        public LevendrUserAccessLevelAttribute() : base(typeof(LevendrUserAccessLevelFilter))
-        {            
+        public LevendrUserAccessLevelAttribute(string propertyName) : base(typeof(LevendrUserAccessLevelFilter))
+        {
+            Arguments = new object[] {propertyName};
         }
     }
 
-    public class LevendrUserAccessLevelFilter : IAsyncAuthorizationFilter
+    public class LevendrUserAccessLevelFilter : IAsyncActionFilter
     {
+        string propertyName;
 
-        public LevendrUserAccessLevelFilter()
+        public LevendrUserAccessLevelFilter(string propertyName)
         {
+            this.propertyName = propertyName;
         }
 
-        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            string userIdString = context.HttpContext.User.Claims.FirstOrDefault( x => x.Type == ClaimTypes.SerialNumber)?.Value;
+            if(string.IsNullOrEmpty(userIdString)) {
+                context.Result = new ForbidResult(); return;
+            }
+            int userId = Int32.Parse(userIdString);
+
+            string roleIdString = context.HttpContext.User.Claims.FirstOrDefault( x => x.Type == ClaimTypes.Role)?.Value;
+            if(string.IsNullOrEmpty(roleIdString)) {
+                context.Result = new ForbidResult(); return;
+            }
+            int roleId = Int32.Parse(roleIdString);
+            
             string permissionGroupString = context.HttpContext.User.Claims.FirstOrDefault( x => x.Type == ClaimTypes.Authentication)?.Value;
             if(string.IsNullOrEmpty(permissionGroupString)) {
-                context.Result = new ForbidResult();
+                context.Result = new ForbidResult(); return;
             }
-            else
+            List<int> permissionGroupIds = permissionGroupString.Split(',').Select(x => Int32.Parse(x)).ToList();
+
+            APIResult rolePermissionGroupMappings = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().GetRolePermissionGroupMappings();
+            List<Dictionary<string, object>> userRolePermissionGroupMapping = ((List<Dictionary<string, object>>)rolePermissionGroupMappings.Data).Where(x => (int)x["Role"] == roleId).ToList();
+            if(userRolePermissionGroupMapping.Count == 0) {
+                context.Result = new ForbidResult(); return;
+            }
+            
+            APIResult permissionGroupMappings = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().GetPermissionGroupMappings();
+            List<Dictionary<string, object>> userPermissionGroupMappings = ((List<Dictionary<string, object>>)permissionGroupMappings.Data).Where(x => permissionGroupIds.Contains((int)x["PermissionGroup"])).ToList();
+            if(userPermissionGroupMappings.Count == 0) {
+                context.Result = new ForbidResult(); return;
+            }
+            List<int> userPermissionIds = userPermissionGroupMappings.Select(x => Int32.Parse(x["Permission"].ToString())).ToList();
+
+            APIResult permissions = await ServiceManager.Instance.GetService<PermissionsService>().GetPermissions();
+            List<Dictionary<string, object>> userPermissions = ((List<Dictionary<string, object>>)permissions.Data).Where(x => userPermissionIds.Contains(Int32.Parse(x["Id"].ToString()))).ToList();
+            if(userPermissions.Count == 0) {
+                context.Result = new ForbidResult(); return;
+            }
+
+            var action = context.HttpContext.Request.RouteValues["action"];
+            var controller = context.HttpContext.Request.RouteValues["controller"];
+            var method = context.HttpContext.Request.Method;
+            
+            string permission = string.Format("{0}.{1}.{2}", controller, action, method);
+            if(!userPermissions.Any(x => x["Name"].ToString() == permission))
             {
-                APIResult permissions = await ServiceManager.Instance.GetService<PermissionsService>().GetPermissions();
-                APIResult permissionGroupMapping = await ServiceManager.Instance.GetService<PermissionGroupMappingsService>().GetPermissionGroupMappings();
-                APIResult rolePermissionGroupMapping = await ServiceManager.Instance.GetService<RolePermissionGroupMappingsService>().GetRolePermissionGroupMappings();            
-            
-                List<int> permissionGroupIds = permissionGroupString.Split(',').Select(x => Int32.Parse(x)).ToList();
-                List<Dictionary<string, object>> userPermissionGroupMappings = ((List<Dictionary<string, object>>)permissionGroupMapping.Data).Where(x => permissionGroupIds.Contains(Int32.Parse(x["PermissionGroup"].ToString()))).ToList();
-                if(userPermissionGroupMappings.Count == 0) {
-                    context.Result = new ForbidResult();
-                }
-                else
+                context.Result = new ForbidResult(); return;
+            }
+
+            Dictionary<string, object> actionPermission = userPermissions.First(x => x["Name"].ToString() == permission);
+            Dictionary<string, object> actionPermissionGroupMapping = userPermissionGroupMappings.First(x => (int)x["Permission"] == (int)actionPermission["Id"]);
+            Dictionary<string, object> actionRolePermissionGroupMapping = userRolePermissionGroupMapping.First(x => (int)x["PermissionGroup"] == (int)actionPermissionGroupMapping["PermissionGroup"]);
+            if(((int)actionRolePermissionGroupMapping["UserLevelAccess"]) != 1)
+            {
+                List<QuerySearchItem> parameters = null;
+                if(context.ActionArguments.ContainsKey("parameters"))
                 {
-                    List<int> userPermissionIds = userPermissionGroupMappings.Select(x => Int32.Parse(x["Permission"].ToString())).ToList();
-                    List<Dictionary<string, object>> userPermissions = ((List<Dictionary<string, object>>)permissions.Data).Where(x => userPermissionIds.Contains(Int32.Parse(x["Id"].ToString()))).ToList();
-                    if(userPermissions.Count == 0) {
-                        context.Result = new ForbidResult();
-                    }
-                    else
+                    if(context.ActionArguments["parameters"] is List<QuerySearchItem>)
                     {
-                        var action = context.HttpContext.Request.RouteValues["action"];
-                        var controller = context.HttpContext.Request.RouteValues["controller"];
-                        var method = context.HttpContext.Request.Method;
-                        
-                        string permission = string.Format("{0}.{1}.{2}", controller, action, method);
-                        if(!userPermissions.Any(x => x["Name"].ToString() == permission))
-                        {
-                            context.Result = new ForbidResult();
-                        }
+                        parameters = (List<QuerySearchItem>)context.ActionArguments["parameters"];                    
                     }
+                }
+                if(parameters != null)
+                {
+                    parameters.Add(
+                        new QuerySearchItem()
+                        {
+                            Name = propertyName,
+                            Value = userId,
+                            Condition = Enums.ColumnCondition.Equal,
+                            CaseSensitive = false
+                        }
+                    );
                 }
             }
-         
-            // var action = context.HttpContext.Request.RouteValues["action"];
-            // var controller = context.HttpContext.Request.RouteValues["controller"];
-            // var method = context.HttpContext.Request.Method;
             
-            // string permission = string.Format("{0}.{1}.{2}",controller, action, method);
-
-            // var hasClaim = context.HttpContext.User.Claims.Any(c => 
-            //     c.Type == ClaimTypes.Authentication &&
-            //     c.Value.Contains(permission));
-            // if (!hasClaim)
-            // {
-            //     context.Result = new ForbidResult();
-                
-            //     // context.Result = new RedirectToRouteResult(
-            //     //     new RouteValueDictionary {
-            //     //         {"controller", "Errors"}, {"action", "Error"}, { "errorCode", "AUTH001"}, {"errorMessage", "Unauthorized! " }
-            //     //     }
-            //     // );
-
-            //     // context.Result = new JsonResult( new 
-            //     // {
-            //     //     Success = false,
-            //     //     Data = (string)null,
-            //     //     ErrorCode = "AUTH001",
-            //     //     Message = "Unauthorized: " + permission
-            //     // });
-            // }
+            await next();
         }
     }
+
 }
