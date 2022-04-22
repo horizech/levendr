@@ -283,6 +283,8 @@ namespace Levendr.Controllers
         }
 
         [LevendrAuthorized]
+        [LevendrUserAccessLevel("CreatedBy")]
+        [Authorize]
         [HttpPost("GetRowsByConditions")]
         public async Task<APIResult> GetRowsByConditions(string table, List<QuerySearchItem> parameters)
         {
