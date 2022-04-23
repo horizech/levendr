@@ -900,13 +900,13 @@ namespace Levendr.Databases.Postgresql
                 });
             });
             
-            List<int> rowIds = (await QueryDesigner.CreateDesigner(schema, table, QueryAction.UpdateRows)
+            List<bool> rowsUpdated = (await QueryDesigner.CreateDesigner(schema, table, QueryAction.UpdateRows)
             .AddRow(data)
             .AddColumnDefinitions(columns)
             .SetConditions(parameters)
-            .ExecuteQuery<int>()).ToList();
+            .ExecuteQuery<bool>()).ToList();
 
-            return rowIds.Count > 0;            
+            return rowsUpdated.Count > 0;            
         }
 
         public async Task<bool> DeleteRows(string schema, string table, List<QuerySearchItem> parameters)
