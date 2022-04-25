@@ -5,11 +5,13 @@ export function alertReducer(state = {}, action) {
         case alertConstants.SUCCESS:
             return {
                 type: 'success',
+                title: action.title,
                 message: action.message
             };
         case alertConstants.ERROR:
             return {
                 type: 'error',
+                title: action.title,
                 message: action.message
             };
         case alertConstants.CLEAR:

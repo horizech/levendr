@@ -2,6 +2,7 @@
     "Info":
     {
         "Users": "Users",
+        "UserLevelAccess": "UserLevelAccess",
         "Roles": "Roles",
         "UserRoles": "UserRoles",
         "Permissions": "Permissions",

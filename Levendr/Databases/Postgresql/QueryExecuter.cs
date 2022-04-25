@@ -33,8 +33,8 @@ namespace Levendr.Databases.Postgresql
                 {
                     if ((queryBuilderOutput.Parameters?.Count ?? 0) > 0)
                     {
-
-                        if (typeof(T) == typeof(Dictionary<string, object>))
+                        Type outputType = typeof(T);
+                        if (outputType == typeof(Dictionary<string, object>))
                         {
                             IEnumerable<dynamic> data = await conn.QueryAsync<dynamic>(queryBuilderOutput.Script, queryBuilderOutput.Parameters); //.ToDictionary<string, object>(kvp => kvp.Key, kvp => kvp.Value).ToList(); //.ToList();
                             // List<Dictionary<string, object>> dict = data
@@ -42,6 +42,14 @@ namespace Levendr.Databases.Postgresql
                             //         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value)).ToList();
                             // return Castings.CastObject<IEnumerable<T>>(dict);
                             return Castings.GetDictionaryFromDapperDynamicIEnumerable<T>(data);
+                        }
+                        else if(outputType == typeof(System.Boolean))
+                        {
+                            // IEnumerable<T> data = await conn.QueryAsync<T>(queryBuilderOutput.Script, queryBuilderOutput.Parameters); //.ToDictionary<string, object>(kvp => kvp.Key, kvp => kvp.Value).ToList(); //.ToList();
+                            // return data;
+                            int rowsAffected = await conn.ExecuteAsync(queryBuilderOutput.Script, queryBuilderOutput.Parameters); //.ToDictionary<string, object>(kvp => kvp.Key, kvp => kvp.Value).ToList(); //.ToList();
+                            IEnumerable<T> data = new List<T> { (T)Convert.ChangeType((rowsAffected > 0), typeof(T)) };
+                            return data;
                         }
                         else
                         {

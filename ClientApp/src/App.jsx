@@ -16,6 +16,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 import './styles/App.scss';
+import { ConfigurationPage } from './pages/configuration.page';
 
 
 const MySwal = withReactContent(Swal)
@@ -59,9 +60,9 @@ class App extends React.Component {
                 }
               }).then(() => {
                 return MySwal.fire({
-                    title: <strong>Good job!</strong>,
+                    title: <strong>{alert.title || ""}</strong>,
                     html: <i>{alert.message}</i>,
-                    icon: alert.type
+                    icon: alert.type || 'success'
                 })
               })
         }
@@ -85,6 +86,7 @@ class App extends React.Component {
                         <Route path='/login' component={LoginPage} />
                         <Route path='/register' component={RegisterPage} />
                         <Route path='/initialize' component={InitializePage} />
+                        
                         <UserGuardedRoute path='/logout' component={LogoutPage} />
                         <UserGuardedRoute path='/counter' component={CounterPage} />
                         <UserGuardedRoute path='/admin' component={AdminPage} />
@@ -103,6 +105,7 @@ class App extends React.Component {
                         <UserGuardedRoute path='/permission-groups' component={PermissionGroupsPage} />
                         <UserGuardedRoute path='/role-permission-group-mappings' component={RolePermissionGroupMappingsPage} />
                         <UserGuardedRoute path='/permission-group-mappings' component={PermissionGroupMappingsPage} />
+                        <UserGuardedRoute path='/configuration' component={ConfigurationPage} />
                         
                         
                     </Layout>

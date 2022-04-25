@@ -7,7 +7,9 @@ import { CreateEditModal } from '../modals';
 import { rolePermissionGroupMappingsService, permissionGroupsService, rolesService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
-const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
+import { alertActions, toastActions } from '../actions';
+
+const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
 
     const [rolePermissionGroupMappings, setRolePermissionGroupMappings] = React.useState(null);
     const [loadingRolePermissionGroupMappingColumns, setLoadingRolePermissionGroupMappingColumns] = React.useState(true);
@@ -24,14 +26,14 @@ const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
     });
 
     const columns = [
-        { Name: 'Id', value: 'Id', Datatype: 'Integer' },
-        { Name: 'Role', value: 'Role', Datatype: 'ShortText' },
-        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'LongText' },
-        { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean' },
-        { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime' },
-        { Name: 'CreatedBy', value: 'CreatedBy', Datatype: 'ShortText' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', Datatype: 'DateTime' },
-        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', Datatype: 'ShortText' }
+        { Name: 'Id', value: 'Id', Datatype: 'Integer', needParse: false, IsSelectList: false},
+        { Name: 'Role', value: 'Role', Datatype: 'ShortText', needParse: true, IsSelectList: true  },
+        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'LongText', needParse: true, IsSelectList: true },
+        { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean', needParse: false, IsSelectList: false  },
+        { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime', needParse: false, IsSelectList: false },
+        { Name: 'CreatedBy', value: 'CreatedBy', Datatype: 'ShortText', needParse: false, IsSelectList: false },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', Datatype: 'DateTime', needParse: false, IsSelectList: false },
+        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', Datatype: 'ShortText', needParse: false, IsSelectList: false }
     ]
 
     const isSelectList =  {
@@ -45,15 +47,17 @@ const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
 
     const handleOnCreateComplete = (values) => {
         if (values) {
-            values.Role = values.Role.value;
-            values.PermissionGroup = values.PermissionGroup.value;
+            // values.Role = values.Role.value;
+            // values.PermissionGroup = values.PermissionGroup.value;
             rolePermissionGroupMappingsService.addRolePermissionGroupMapping(values).then(response => {
                 console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -86,15 +90,17 @@ const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
     console.log(currentRow);
     const handleOnEditComplete = (values) => {
         if (values) {
-            values.Role = values.Role.value;
-            values.PermissionGroup = values.PermissionGroup.value;
+            // values.Role = values.Role.value;
+            // values.PermissionGroup = values.PermissionGroup.value;
             console.log(values);
             rolePermissionGroupMappingsService.updateRolePermissionGroupMapping(values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -106,9 +112,11 @@ const RolePermissionGroupMappingsPage = ({ match, loggedIn }) => {
             rolePermissionGroupMappingsService.deleteRolePermissionGroupMapping(currentRow).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }

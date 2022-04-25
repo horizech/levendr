@@ -32,13 +32,13 @@
             },
             {
                 "Table": "Roles",
-                "Column": "Name",
+                "Column": "Id",
                 "ClaimType": "Role",
                 "IncludeAs": "SingleValue"
             },
             {
-                "Table": "Permissions",
-                "Column": "Name",
+                "Table": "RolePermissionGroupMappings",
+                "Column": "PermissionGroup",
                 "ClaimType": "Authentication",
                 "IncludeAs": "MultipleValues"
             }

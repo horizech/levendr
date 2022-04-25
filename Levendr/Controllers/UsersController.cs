@@ -71,47 +71,10 @@ namespace Levendr.Controllers
 
         [LevendrAuthorized]
         [HttpPost("AddUser")]
-        public async Task<APIResult> AddUser(Dictionary<string, object> data)
+        public async Task<APIResult> AddUser(SignupRequest user)
         {
             try{
-                if (data == null || data.Count() == 0 || !data.ContainsKey("Username") || !data.ContainsKey("Password"))
-                {
-                    return APIResult.GetSimpleFailureResult("User must contain Username and Password!");
-                }
-
-                List<string> predefinedColumns = Columns.PredefinedColumns.Descriptions.Select(x => x["Name"].ToLower()).ToList();
-
-                for (int i = 0; i < data.Count; i++)
-                {
-                    data.Keys.ToList().ForEach(key =>
-                    {
-                        if (predefinedColumns.Contains(key.ToLower()))
-                        {
-                            ServiceManager.Instance.GetService<LogService>().Print(string.Format("Removing key: {0}", key), LoggingLevel.Info);
-                            data.Remove(key);
-                        }
-                    });
-                }
-
-                Columns.AppendCreatedInfo(data, Users.GetUserId(User));
-
-                try
-                {
-                    APIResult result = await ServiceManager.Instance.GetService<UsersService>().AddUser(data);
-                    return result; 
-                }
-                catch (Exception e)
-                {
-                    IDatabaseErrorHandler handler = ServiceManager.Instance.GetService<DatabaseService>().GetDatabaseErrorHandler();
-                    ErrorCode errorCode = handler.GetErrorCode(e.Message);
-                    if(errorCode == ErrorCode.DB520) {
-                        // It's a null value column constraint violation
-                        return APIResult.GetSimpleFailureResult(errorCode.GetMessage() + ": " + e.Message.Split('\"')[1]);
-                    }
-                    else {
-                        return APIResult.GetSimpleFailureResult(e.Message);
-                    }
-                }  
+                return await ServiceManager.Instance.GetService<UsersService>().AddUser(user);
             }
             catch(LevendrErrorCodeException e) {
                 return APIResult.GetSimpleFailureResult(e.Message);

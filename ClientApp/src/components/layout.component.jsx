@@ -12,15 +12,15 @@ export const Layout = ({children}) => {
 
   return (
     <div>
-      <div className="layout">
-        <Sidebar />
+      {/* <div className="layout"> */}
+        {/* <Sidebar /> */}
         <div style={{width: "100%"}}>
           <NavMenu />
           <Container className='layout-container' style={{height: screenHeight - navbarOffset}}>
             {children}
           </Container>        
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 }

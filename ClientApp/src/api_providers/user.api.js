@@ -62,11 +62,12 @@ class UserApiProvider {
     }
     static addUser(user) {
         const requestOptions = {
-            method: 'PUT',
+            method: 'POST',
             headers: { ...authHeader(), 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
+            
         };
-
+        console.log(user);
         return fetch(config.apiUrl + `/API/Users/AddUser` , requestOptions).then(handleResponse, handleError);
     }
     // prefixed function name with underscore because delete is a reserved word in javascript

@@ -20,6 +20,10 @@ const CreateEditTableRecord = ({mode, table, dispatch, insertedRowSuccess, inser
     }
 
     const handleOnSubmit = (data, event) => {
+        tableColumns.filter((column)=> column.Datatype== "Integer").map((column)=>{
+            data[column.Name]= parseInt(data[column.Name]);
+        });
+        console.log(data);
         if(event && event.preventDefault) {
             event.preventDefault();
         }

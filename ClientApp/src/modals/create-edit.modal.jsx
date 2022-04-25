@@ -18,10 +18,20 @@ const CreateEditModal = ({ columns, row, label, mode, handleOnClose, isSelectLis
         }
     }
   
- 
+ console.log(columns);
     const handleOnSubmit = (values) => {
-        console.log(values);
+        columns.filter((column)=> column.IsSelectList).map((column)=>{
+            values[column.Name]= values[column.Name].value;
+        });
+        columns.filter((column)=> column.needParse).map((column)=>{
+            values[column.Name]= parseInt(values[column.Name]);
+        });
+        columns.filter((column)=> column.Datatype== "Boolean" && values[column.Name]== null).map((column)=>{
+            values[column.Name]= false;
+        });
+        console.log("values",values);
         const newIsVisible = !isVisible;
+        
         setIsVisible(newIsVisible);
         handleOnClose(values);
     }

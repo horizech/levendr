@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import { tablesActions } from '../actions';
 import { Table } from 'reactstrap';
 import { ButtonIcon } from '../components/button-icon.component';
-import { history } from '../helpers';
+import { history, SwalAlert } from '../helpers';
 import { Loading, Page, Roles } from '../components';
 import { CreateEditModal } from '../modals';
 import { rolesService } from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const RolesPage = ({match, location, dispatch, loggedIn}) => {
  
     const [roles, setRoles] = React.useState(null);
@@ -23,14 +25,14 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
     
     const columns = [
-        { Name: 'Id', value: 'Id' },
-        { Name: 'Name', value: 'Name' },
-        { Name: 'Description', value: 'Description' },
-        { Name: 'Level', value: 'Level' },
-        { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'CreatedBy', value: 'CreatedBy' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
-        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy' }
+        { Name: 'Id', value: 'Id', valueDataType: 'Integer', needParse: false  },
+        { Name: 'Name', value: 'Name', valueDataType: 'Integer'  },
+        { Name: 'Description', value: 'Description', valueDataType: 'Integer', needParse: false  },
+        { Name: 'Level', value: 'Level', valueDataType: 'Integer', needParse: true  },
+        { Name: 'CreatedOn', value: 'CreatedOn', valueDataType: 'Integer', needParse: false  },
+        { Name: 'CreatedBy', value: 'CreatedBy', valueDataType: 'Integer', needParse: false  },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', valueDataType: 'Integer', needParse: false  },
+        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', valueDataType: 'Integer', needParse: false  }
     ]
 
     const showCreateModal = () => {
@@ -39,14 +41,15 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
 
     const handleOnCreateComplete = (values) => {
         if(values) {
-            values.Level= parseInt(values.Level);
             rolesService.addRoles(values).then( response => {
                 console.log(response);
                 if(response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -64,13 +67,14 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     
     const handleOnEditComplete = (values) => {        
         if(values) {
-            values.Level= parseInt(values.Level);
             rolesService.updateRoles(currentRow.Name, values).then( response => {
                 if(response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -82,9 +86,11 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
             rolesService.deleteRoles(currentRow).then( response => {
                 if(response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -111,9 +117,11 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
        
         rolesService.getRoles().then( response => {
             if(response.Success) {
-                setRoles(response.Data);        
+                setRoles(response.Data);   
+                   
             }
             else {
+               
                 setRoles(null);
             }
         })       
@@ -204,6 +212,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
                     {isEditModalVisible &&
                         <CreateEditModal
                             columns={columns}
+                            isSelectList={[]}
                             row={currentRow}
                             handleOnClose={handleOnEditComplete}
                             mode="edit"
@@ -226,6 +235,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
 
             <CreateEditModal
                 columns={columns}
+                isSelectList={[]}
                 row={{}}
                 handleOnClose={handleOnCreateComplete}
                 mode="create"

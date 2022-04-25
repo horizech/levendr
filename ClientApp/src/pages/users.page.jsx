@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { userService, rolesService} from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     // console.log(user.Role);
     // let currentUser= user;
@@ -35,30 +37,38 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     };
     
     const columns = [
-        { Name: 'Id', value: 'Id' },
-        { Name: 'Username', value: 'Username' },
-        { Name: 'Email', value: 'Email' },
-        { Name: 'Fullname', value: 'Fullname' },
-        { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
-        { Name: 'Role', value: 'Role' },
+        { Name: 'Id', value: 'Id', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Username', value: 'Username', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Email', value: 'Email', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Fullname', value: 'Fullname', hidden: false, needParse: false, IsSelectList: false},
+        { Name: 'Password', value: 'Password', hidden: true, needParse: false, IsSelectList: false },
+        { Name: 'CreatedOn', value: 'CreatedOn', hidden: false, needParse: false, IsSelectList: false },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', hidden: false, needParse: false, IsSelectList: false },
+        { Name: 'Role', value: 'Role', hidden: false, needParse: true, IsSelectList: true },
     ]
 
-    const displayedColumns = columns.map(x => x.Name);
+    // const columnNames = columns.map(x => x.Name);
+    let filteredHiddenColumns = columns.filter((item) => {
+      return !item.hidden;
+    });
+    const displayedColumns = filteredHiddenColumns.map(x => x.Name);
+    console.log(displayedColumns);
     const showCreateModal = () => {
         setCreateSettingModalVisible(true);
     }
     const handleOnCreateComplete = (values) => {
         if (values) {
+            // values.Role= parseInt(values.Role.value);
             userService.addUser(values).then(response => {
-
+                console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
-
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
 
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -79,9 +89,11 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             userService.updateUser(currentRow.Id, values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -93,9 +105,11 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             userService.deleteUser(currentRow.Id).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -195,6 +209,9 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                                     {
                                         displayedColumns.map(key => {
                                             let tableData
+                                            if(!key.hidden){
+
+                                            }
                                             if (key == "Role") {
                                                 tableData = row[key] != null ? '' + row[key]['label'] : ''
                                             }
@@ -210,47 +227,11 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
                             ))
                         }
                     </LevendrTable>
-                    {/* <Table responsive bordered striped size="sm">
-                        <thead>
-                            <tr key={'header'}>
-                                <th key={'header_#'} scope="col"></th>
-                                {displayedColumns &&
-                                    displayedColumns.map(key => (
-                                        <th key={'header_' + key} scope="col">{key}</th>
-                                    ))                                    
-                                }
-                                <th key={'header_Role'} scope="col">Role</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users &&
-                                users.map((row, i) => (
-                                    <tr key={'row_' + (i + 1)}>
-                                        <td key={'data_' + i + '_#'} scope="row">
-                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                                <ButtonIcon icon="edit" color="#007bff" onClick={() => showEditModal(row)} />
-                                                <ButtonIcon icon="trash" color="#dc3545" onClick={() => showDeleteConfirmationModal(row)} />
-                                            </div>
-                                        </td>                                        
-                                        {
-                                            displayedColumns.map(key => (
-                                                <td key={'data_' + i + key} >{row[key] != null ? '' + row[key] : ''}</td>
-                                            ))                                            
-                                        }
-                                        <td key={'data_' + i + 'Role'} >{row['Role'] != null ? row['Role']['Name'] : ''}</td>
-
-                                        
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </Table> */}
                     {isEditModalVisible &&
                         <CreateEditModal
                             isSelectList={isSelectList}
                             selectOptions={selectOptionsList}
-                            columns={columns}
+                            columns={filteredHiddenColumns}
                             row={currentRow}
                             handleOnClose={handleOnEditComplete}
                             mode="edit"

@@ -22,16 +22,26 @@ namespace Levendr.Services
 
         public async Task<APIResult> GetRolePermissionGroupMappings()
         {
+            APIResult cacheResult = await ServiceManager.Instance.GetService<MemoryCacheService>().Get("RolePermissionGroupMappings");
+            if (cacheResult != null)
+            {
+                return cacheResult;
+            }
+
             List<Dictionary<string, object>> result = await QueryDesigner
                 .CreateDesigner(schema: Schemas.Levendr, table: TableNames.RolePermissionGroupMappings.ToString())
                 .RunSelectQuery();
 
-            return new APIResult()
+            APIResult newCacheResult = new APIResult()
             {
                 Success = true,
                 Message = "RolePermissionGroupMappings loaded successfully!",
                 Data = result
             };
+
+            ServiceManager.Instance.GetService<MemoryCacheService>().Set("RolePermissionGroupMappings", newCacheResult);
+
+            return newCacheResult;
         }
 
         public async Task<APIResult> AddRolePermissionGroupMapping(Dictionary<string, object> data)

@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { settingsService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const SettingsPage = ({match, location, dispatch, loggedIn}) => {
  
     const [settings, setSettings] = React.useState(null);
@@ -23,13 +25,13 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
     
     const columns = [
-        { Name: 'Id', value: 'Id' },
-        { Name: 'Key', value: 'Key' },
-        { Name: 'Value', value: 'Value' },
-        { Name: 'CreatedOn', value: 'CreatedOn' },
-        { Name: 'CreatedBy', value: 'CreatedBy' },
-        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn' },
-        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy' }
+        { Name: 'Id', value: 'Id', needParse: false},
+        { Name: 'Key', value: 'Key', needParse: false },
+        { Name: 'Value', value: 'Value', needParse: false },
+        { Name: 'CreatedOn', value: 'CreatedOn', needParse: false },
+        { Name: 'CreatedBy', value: 'CreatedBy', needParse: false },
+        { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', needParse: false },
+        { Name: 'LastUpdatedBy', value: 'LastUpdatedBy', needParse: false }
     ]
 
     const showCreateModal = () => {
@@ -42,11 +44,13 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
  
                 if(response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                     
                 }
                 else {
                     
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -67,9 +71,11 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
             settingsService.updateSettings(currentRow.Key, values).then( response => {
                 if(response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }
@@ -81,9 +87,11 @@ const SettingsPage = ({match, location, dispatch, loggedIn}) => {
             settingsService.deleteSettings(currentRow).then( response => {
                 if(response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });  
         }

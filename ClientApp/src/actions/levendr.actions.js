@@ -21,7 +21,7 @@ function checkInitialized() {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error",result.Message));
                     }
                     localStorage.setItem('levendrStatus', JSON.stringify({
                         checkingStatus: false,
@@ -74,7 +74,7 @@ function initialize(username, email, password) {
               },
               error => {
                   dispatch(failure(error.toString()));
-                  dispatch(alertActions.error(error.toString()));
+                  dispatch(alertActions.error("Error",error.toString()));
               }
           );
         dispatch(success({ Success: true, Message: "Success!" }));

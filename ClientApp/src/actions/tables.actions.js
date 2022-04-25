@@ -32,12 +32,12 @@ function getTables() {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                     }
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    dispatch(alertActions.error("Error", error));
                 }
             );
     };
@@ -78,12 +78,12 @@ function getTableColumns(tablename) {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                     }
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    dispatch(alertActions.error("Error", error));
                 }
             );
     };
@@ -120,12 +120,12 @@ function getTableRows(tablename) {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                     }
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    dispatch(alertActions.error("Error", error));
                 }
             );
     };
@@ -163,12 +163,12 @@ function getPredefinedColumns() {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                     }
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    dispatch(alertActions.error("Error", error));
                 }
             );
     };
@@ -203,13 +203,13 @@ function insertRows(table,row) {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                         return result.Message;                        
                     }
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    dispatch(alertActions.error("Error", error.toString()));
                 }
             );
     };
@@ -242,7 +242,7 @@ function updateRows(table,row) {
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    dispatch(alertActions.error("Error", error.toString()));
                 }
             );
     };
@@ -301,13 +301,13 @@ function createTable(table, ColumnsInfo) {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                         return result.Message;                        
                     }
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    dispatch(alertActions.error("Error", error.toString()));
                 }
             );
     };
@@ -342,13 +342,13 @@ function deleteColumn(table, Column) {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                         return result.Message;                        
                     }
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    dispatch(alertActions.error("Error", error.toString()));
                 }
             );
     };
@@ -381,13 +381,13 @@ function addColumn(table, ColumnsInfo) {
                     }
                     else {
                         dispatch(failure(result.Message));
-                        dispatch(alertActions.error(result.Message));
+                        dispatch(alertActions.error("Error", result.Message));
                         return result.Message;                        
                     }
                 },
                 error => {
                     dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    dispatch(alertActions.error("Error", error.toString()));
                 }
             );
     };

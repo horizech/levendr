@@ -42,7 +42,7 @@
         {"Name": "Table.AddColumn.POST", "Description": "Table.AddColumn.POST", "IsSystem": true},
         {"Name": "Table.DeleteColumn.DELETE", "Description": "Table.DeleteColumn.DELETE", "IsSystem": true},
         {"Name": "Table.GetRows.GET", "Description": "Table.GetRows.GET", "IsSystem": true},
-        {"Name": "Table.GetRowsByConditions.GET", "Description": "Table.GetRowsByConditions.GET", "IsSystem": true},
+        {"Name": "Table.GetRowsByConditions.POST", "Description": "Table.GetRowsByConditions.POST", "IsSystem": true},
         {"Name": "Table.InsertRows.POST", "Description": "Table.InsertRows.POST", "IsSystem": true},
         {"Name": "Table.UpdateRows.PUT", "Description": "Table.UpdateRows.PUT", "IsSystem": true},
         {"Name": "Table.DeleteRows.DELETE", "Description": "Table.DeleteRows.DELETE", "IsSystem": true},

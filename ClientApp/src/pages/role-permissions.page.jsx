@@ -10,6 +10,8 @@ import { CreateEditModal } from '../modals';
 import { rolePermissionsService, permissionsService, rolesService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
+import { alertActions, toastActions } from '../actions';
+
 const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
 
     const [rolePermissions, setRolePermissions] = React.useState(null);
@@ -53,9 +55,11 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
                 console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setAddSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -94,9 +98,11 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             rolePermissionsService.updateRolePermissions(values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setUpdateSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
@@ -108,9 +114,11 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             rolePermissionsService.deleteRolePermissions(currentRow).then(response => {
                 if (response.Success) {
                     setDeleteSuccess(true);
+                    dispatch(toastActions.success(response.Message));
                 }
                 else {
                     setDeleteSuccess(false);
+                    dispatch(alertActions.error("Error", response.Message));
                 }
             });
         }
