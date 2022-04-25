@@ -14,40 +14,60 @@ import { connect } from 'react-redux';
 import "../styles/NavMenu.scss";
 import { LevendrDropdown, TableDropdown } from ".";
 import { history } from '../helpers';
+import { tablesActions } from "../actions";
 
-const NavMenu = ({ loggedIn, user, tableslist, loadingTablesList }) => {
+const NavMenu = ({ loggedIn, user, tableslist, dispatch, loadingTablesList }) => {
   // const displayName = NavMenu.name;
   const [collapsed, setCollapsed] = React.useState(true);
-  const toggleNavbar = () => {
-    setCollapsed(!collapsed);
-  }
-  let permissionGroupsNames = [];
-  if (user !== null && user.PermissionGroups) {
-    permissionGroupsNames = user.PermissionGroups.map((x) => {
-      return (x.Name);
-    })
+  const [permissionGroupsNames, setPermissionGroupsNames] = React.useState([]);
+  const [filteredPermissionItems, setFilteredPermissionItems] = React.useState([]);
 
-  }
-  console.log(permissionGroupsNames.includes("UsersReadWrite"));
-  console.log(permissionGroupsNames);
-  let permissionItems = [
+  const permissionItems = [
     { name: "Permissions", path: "/permissions", permissionGroup: "PermissionsReadWrite" },
     { name: "Permission Groups", path: "/permission-groups", permissionGroup: "PermissionGroupsReadWrite" },
     { name: "Permission Group Mappings", path: "/permission-group-mappings", permissionGroup: "PermissionGroupMappingsReadWrite" },
     { name: "Role Permission Group Mappings", path: "/role-permission-group-mappings", permissionGroup: "RolePermissionGroupMappingsReadWrite" },
   ]
-  let filteredPermissionItems = [];
-  filteredPermissionItems = permissionItems.filter((item) => {
-    return permissionGroupsNames.includes(item.permissionGroup);
-  });
-  console.log(filteredPermissionItems);
+  
+  const toggleNavbar = () => {
+    setCollapsed(!collapsed);
+  }
+  
+  React.useEffect(() => {
+    if (user !== null) {
+      dispatch(tablesActions.getTables());
+      
+      if(user.PermissionGroups) {
+        const updatedPermissionGroupsNames = user.PermissionGroups.map((x) => {
+          return (x.Name);
+        })
+        // console.log(updatedPermissionGroupsNames);
+        // console.log(updatedPermissionGroupsNames.includes("UsersReadWrite"));
+        setPermissionGroupsNames(updatedPermissionGroupsNames);
+      }
+    }
+
+  }, [user]);
+
+  React.useEffect(() => {
+    if (permissionGroupsNames && permissionItems) {
+      const updatedFilteredPermissionItems = permissionItems.filter((item) => {
+        return permissionGroupsNames.includes(item.permissionGroup);
+      });
+      // console.log(updatedFilteredPermissionItems);
+      setFilteredPermissionItems(updatedFilteredPermissionItems);
+    }
+  }, [permissionGroupsNames])
 
   
-const renderLoading = () =>  {
-  return (
-    <NavItem>Loading...</NavItem>
-  );
-}
+  
+  
+  
+  const renderLoading = () =>  {
+    return (
+      <NavItem>Loading...</NavItem>
+    );
+  }
 
   return (
     <header>
