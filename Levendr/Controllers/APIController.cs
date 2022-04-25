@@ -40,9 +40,10 @@ namespace Levendr.Controllers
 
 #nullable enable
         [LevendrAuthorized]
+        [LevendrUserAccessLevel("CreatedBy")]
         [HttpGet("{table}")]
         [Authorize]
-        public async Task<APIResult> GetRows(string table, [FromQuery] int? limit, [FromQuery] int? offset, [FromQuery] string? orderBy, [FromQuery] string? orderDescendingBy, [FromQuery] string? groupBy)
+        public async Task<APIResult> GetRows(string table, [FromQuery] int? limit, [FromQuery] int? offset, [FromQuery] string? orderBy, [FromQuery] string? orderDescendingBy, [FromQuery] string? groupBy, int CreatedBy = 0, int LastUpdatedBy = 0)
         {
             if (table == null || table.Count() == 0)
             {
@@ -69,14 +70,45 @@ namespace Levendr.Controllers
             // };
             // return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters, selectSettings);
             
-            return await ServiceManager.Instance.GetService<APIService>().GetRows(Schemas.Application, table, selectSettings);            
+            if(CreatedBy == 0 && LastUpdatedBy == 0)
+            {
+                return await ServiceManager.Instance.GetService<APIService>().GetRows(Schemas.Application, table, selectSettings);
+            }
+            else
+            {
+                List<QuerySearchItem> parameters = new List<QuerySearchItem>();
+                if(CreatedBy > 0 )
+                {
+                    parameters.Add(new QuerySearchItem()
+                    {
+                        Name = "CreatedBy",
+                        Value = CreatedBy,
+                        Condition = ColumnCondition.Equal,
+                        CaseSensitive = false
+                    });
+                }
+
+                if(LastUpdatedBy > 0)
+                {
+                    parameters.Add(new QuerySearchItem()
+                    {
+                        Name = "LastUpdatedBy",
+                        Value = LastUpdatedBy,
+                        Condition = ColumnCondition.Equal,
+                        CaseSensitive = false
+                    });
+                }
+
+                return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, parameters, selectSettings);            
+            }
         }
 #nullable disable
 
         [LevendrAuthorized]
+        [LevendrUserAccessLevel("CreatedBy")]
         [HttpGet("{table}/{id}")]
         [Authorize]
-        public async Task<APIResult> GetRow(string table, int id)
+        public async Task<APIResult> GetRow(string table, int id, int CreatedBy = 0, int LastUpdatedBy = 0)
         {
             if (table == null || table.Count() == 0)
             {
@@ -105,7 +137,7 @@ namespace Levendr.Controllers
             // };
             // return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters);
             
-            List<QuerySearchItem> UserParameters = new List<QuerySearchItem>{
+            List<QuerySearchItem> parameters = new List<QuerySearchItem>{
                 new QuerySearchItem(){
                     Name = "Id",
                     CaseSensitive = false,
@@ -113,12 +145,34 @@ namespace Levendr.Controllers
                     Value = id
                 }
             };
+                        
+            if(CreatedBy > 0 )
+            {
+                parameters.Add(new QuerySearchItem()
+                {
+                    Name = "CreatedBy",
+                    Value = CreatedBy,
+                    Condition = ColumnCondition.Equal,
+                    CaseSensitive = false
+                });
+            }
+
+            if(LastUpdatedBy > 0)
+            {
+                parameters.Add(new QuerySearchItem()
+                {
+                    Name = "LastUpdatedBy",
+                    Value = LastUpdatedBy,
+                    Condition = ColumnCondition.Equal,
+                    CaseSensitive = false
+                });
+            }
             
-            
-            return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, UserParameters);            
+            return await ServiceManager.Instance.GetService<APIService>().GetRowsByConditions(Schemas.Application, table, parameters);            
         }
 
         [LevendrAuthorized]
+        [LevendrUserAccessLevel(insertPropertyName: "CreatedBy")]
         [HttpPost("{table}")]
         public async Task<APIResult> InsertRow(string table, Dictionary<string, object> data)
         {
@@ -148,8 +202,9 @@ namespace Levendr.Controllers
         }
 
         [LevendrAuthorized]
+        [LevendrUserAccessLevel("CreatedBy", "CreatedBy", "LastUpdatedBy")]
         [HttpPut("{table}/{id}")]
-        public async Task<APIResult> UpdateRow(string table, int id, Dictionary<string, object> data)
+        public async Task<APIResult> UpdateRow(string table, int id, Dictionary<string, object> data, int CreatedBy = 0, int LastUpdatedBy = 0)
         {
             if (table == null || table.Count() == 0)
             {
@@ -173,6 +228,28 @@ namespace Levendr.Controllers
                 },
                 Data = data
             };
+
+            if(CreatedBy > 0 )
+            {
+                request.Parameters.Add(new QuerySearchItem()
+                {
+                    Name = "CreatedBy",
+                    Value = CreatedBy,
+                    Condition = ColumnCondition.Equal,
+                    CaseSensitive = false
+                });
+            }
+
+            if(LastUpdatedBy > 0)
+            {
+                request.Parameters.Add(new QuerySearchItem()
+                {
+                    Name = "LastUpdatedBy",
+                    Value = LastUpdatedBy,
+                    Condition = ColumnCondition.Equal,
+                    CaseSensitive = false
+                });
+            }
 
             List<string> predefinedColumns = Columns.PredefinedColumns.Descriptions.Select(x => x["Name"].ToLower()).ToList();
 
@@ -205,8 +282,9 @@ namespace Levendr.Controllers
 
 
         [LevendrAuthorized]
+        [LevendrUserAccessLevel("CreatedBy")]
         [HttpDelete("{table}/{id}")]
-        public async Task<APIResult> DeleteRow(string table, int id)
+        public async Task<APIResult> DeleteRow(string table, int id, int CreatedBy = 0, int LastUpdatedBy = 0)
         {
             if (table == null || table.Count() == 0)
             {
@@ -227,6 +305,28 @@ namespace Levendr.Controllers
                         Value = id
                     }
             };
+
+            if(CreatedBy > 0 )
+            {
+                parameters.Add(new QuerySearchItem()
+                {
+                    Name = "CreatedBy",
+                    Value = CreatedBy,
+                    Condition = ColumnCondition.Equal,
+                    CaseSensitive = false
+                });
+            }
+
+            if(LastUpdatedBy > 0)
+            {
+                parameters.Add(new QuerySearchItem()
+                {
+                    Name = "LastUpdatedBy",
+                    Value = LastUpdatedBy,
+                    Condition = ColumnCondition.Equal,
+                    CaseSensitive = false
+                });
+            }
 
             // if user only data access
             // parameters.Add(
