@@ -25,7 +25,7 @@ class InitializePage extends Page {
 
     componentDidMount() {
         const { isInitialized, loggedIn } = this.props;
-        console.log(this.props);
+        // console.log(this.props);
 
         if(isInitialized === undefined){
             history.push('/start');

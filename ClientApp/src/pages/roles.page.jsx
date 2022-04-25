@@ -42,7 +42,6 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     const handleOnCreateComplete = (values) => {
         if(values) {
             rolesService.addRoles(values).then( response => {
-                console.log(response);
                 if(response.Success) {
                     setAddSuccess(true);
                     dispatch(toastActions.success(response.Message));

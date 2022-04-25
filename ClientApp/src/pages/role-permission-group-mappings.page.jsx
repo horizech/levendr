@@ -50,7 +50,6 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
             // values.Role = values.Role.value;
             // values.PermissionGroup = values.PermissionGroup.value;
             rolePermissionGroupMappingsService.addRolePermissionGroupMapping(values).then(response => {
-                console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
                     dispatch(toastActions.success(response.Message));
@@ -65,10 +64,6 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
     }
     const showEditModal = (row) => {
         setEditModalVisible(true);
-        console.log(selectOptionsList['Role']);
-        console.log(row['Role']);
-        console.log(selectOptionsList['PermissionGroup']);
-        console.log(row['PermissionGroup']);
         if(row) {
             let editRow = JSON.parse(JSON.stringify(row));
             if(selectOptionsList['Role'] && editRow['Role']) {
@@ -77,7 +72,6 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
             if(selectOptionsList['PermissionGroup'] && editRow['PermissionGroup']) {
                 editRow['PermissionGroup'] = selectOptionsList['PermissionGroup'].filter(x => x.value == editRow['PermissionGroup'])[0];                             
             }
-            console.log(editRow);
             setCurrentRow(editRow);
         }
     }
@@ -87,12 +81,10 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
         setCurrentRow(row);
     }
     
-    console.log(currentRow);
     const handleOnEditComplete = (values) => {
         if (values) {
             // values.Role = values.Role.value;
             // values.PermissionGroup = values.PermissionGroup.value;
-            console.log(values);
             rolePermissionGroupMappingsService.updateRolePermissionGroupMapping(values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
@@ -142,7 +134,6 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
         let permissionGroupsPromise = permissionGroupsService.getPermissionGroups();
         let rolesPromise = rolesService.getRoles();
         Promise.all([permissionGroupsPromise, rolesPromise]).then( data => {
-            console.log('Promise.all result: ', data);
             let selectOptionsListUpdate = {};
             selectOptionsListUpdate['PermissionGroup'] = (
                 data[0].Data.map(x => {
@@ -167,8 +158,6 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
     }, []);
 
     React.useEffect(() => {
-
-       console.log(selectOptionsList);
 
         rolePermissionGroupMappingsService.getRolePermissionGroupMappings().then(response => {
             if (response.Success) {
