@@ -258,6 +258,13 @@ namespace Levendr.Services
                         result.Add("PermissionGroupMappings", (List<Dictionary<string, object>>)(permissionGroupMappings.Data));
                     }
 
+                    APIResult permissionGroups = await ServiceManager.Instance.GetService<PermissionGroupsService>().GetPermissionGroups();
+                
+                    if (permissionGroups.Success == true && permissionGroups.Data is not null)
+                    {
+                        result.Add("PermissionGroups", ((List<Dictionary<string, object>>)(permissionGroups.Data)).Where(x => permissionGroupIds.Contains((int)x["Id"])).ToList());
+                    }
+
                     List<int> permissionIds = ((List<Dictionary<string, object>>)(permissionGroupMappings.Data))
                         .Select( x => Int32.Parse(x["Permission"].ToString()))
                         .ToList();
