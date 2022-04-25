@@ -18,7 +18,6 @@ const RegisterPage = ({ dispatch, checkingStatus, isInitialized, loggedIn, locat
 
     const handleOnSubmit = (values) => {
         // e.preventDefault();
-        console.log(values);
         setSubmitted(true);
         // const { dispatch } = props;/
         if (values.Username && values.Email && values.Password) {

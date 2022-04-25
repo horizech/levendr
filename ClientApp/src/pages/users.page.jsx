@@ -52,7 +52,6 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
       return !item.hidden;
     });
     const displayedColumns = filteredHiddenColumns.map(x => x.Name);
-    console.log(displayedColumns);
     const showCreateModal = () => {
         setCreateSettingModalVisible(true);
     }
@@ -60,7 +59,6 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
         if (values) {
             // values.Role= parseInt(values.Role.value);
             userService.addUser(values).then(response => {
-                console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
                     dispatch(toastActions.success(response.Message));
@@ -134,7 +132,6 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
     const loadSelectOptions = () => {
         let rolesPromise = rolesService.getRoles();
         Promise.all([rolesPromise]).then( data => {
-            console.log('Promise.all result: ', data);
             let selectOptionsListUpdate = {};
             selectOptionsListUpdate['Role'] = (
                 data[0].Data.map(x => {
@@ -144,17 +141,14 @@ const UsersPage = ({ match, location, dispatch, user, loggedIn }) => {
             setSelectOptionsList(selectOptionsListUpdate);
         });
     }
-    console.log(selectOptionsList);
     React.useEffect(()=>{
         if(!selectOptionsList.Role || !selectOptionsList.Role.length ){
             loadSelectOptions();
-            console.log("selected");
         }
     });
     React.useEffect(() => {
 
         userService.getAllUsers().then( response => {
-            console.log(response);
             if(response && response.Success) {
                 setUsers(response.Data);        
             }

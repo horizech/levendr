@@ -52,7 +52,6 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             values.Role = values.Role.value;
             values.Permission = values.Permission.value;
             rolePermissionsService.addRolePermissions(values).then(response => {
-                console.log(response);
                 if (response.Success) {
                     setAddSuccess(true);
                     dispatch(toastActions.success(response.Message));
@@ -67,10 +66,6 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
     }
     const showEditModal = (row) => {
         setEditModalVisible(true);
-        console.log(selectOptionsList['Role']);
-        console.log(row['Role']);
-        console.log(selectOptionsList['Permission']);
-        console.log(row['Permission']);
         if(row) {
             let editRow = JSON.parse(JSON.stringify(row));
             if(selectOptionsList['Role'] && editRow['Role']) {
@@ -79,7 +74,6 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
             if(selectOptionsList['Permission'] && editRow['Permission']) {
                 editRow['Permission'] = selectOptionsList['Permission'].filter(x => x.value == editRow['Permission'])[0];                             
             }
-            console.log(editRow);
             setCurrentRow(editRow);
         }
     }
@@ -89,12 +83,10 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
         setCurrentRow(row);
     }
     
-    console.log(currentRow);
     const handleOnEditComplete = (values) => {
         if (values) {
             values.Role = values.Role.value;
             values.Permission = values.Permission.value;
-            console.log(values);
             rolePermissionsService.updateRolePermissions(values).then(response => {
                 if (response.Success) {
                     setUpdateSuccess(true);
@@ -149,7 +141,6 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
                 permissionsService.getPermissions().then(
                     result => {
                         if (result.Success) {
-                            // console.log(result.Data);
                             let selectOptionsListUpdate = selectOptionsList;                            
                             selectOptionsListUpdate[column.Name] = (
                                 result.Data.map(x => {
@@ -166,7 +157,6 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
                 rolesService.getRoles().then(
                     result => {
                         if (result.Success) {
-                            // console.log(result.Data);
                             let selectOptionsListUpdate = selectOptionsList;                            
                             selectOptionsListUpdate[column.Name] = (
                                 result.Data.map(x => {
@@ -187,8 +177,6 @@ const RolePermissionsPage = ({ match, location, dispatch, loggedIn }) => {
     }
 
     React.useEffect(() => {
-
-       console.log(selectOptionsList);
 
         rolePermissionsService.getRolePermissions().then(response => {
             if (response.Success) {
