@@ -88,7 +88,7 @@ namespace Levendr.Filters
             Dictionary<string, object> actionPermission = userPermissions.First(x => x["Name"].ToString() == permission);
             Dictionary<string, object> actionPermissionGroupMapping = userPermissionGroupMappings.First(x => (int)x["Permission"] == (int)actionPermission["Id"]);
             Dictionary<string, object> actionRolePermissionGroupMapping = userRolePermissionGroupMapping.First(x => (int)x["PermissionGroup"] == (int)actionPermissionGroupMapping["PermissionGroup"]);
-            if(((int)actionRolePermissionGroupMapping["UserLevelAccess"]) != 1)
+            if(((int)actionRolePermissionGroupMapping["UserAccessLevel"]) != 1)
             {
                 if(method == "POST" || method == "PUT" || method == "DELETE")
                 {
