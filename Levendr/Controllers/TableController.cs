@@ -187,7 +187,7 @@ namespace Levendr.Controllers
         }
         
         [LevendrAuthorized]
-        [LevendrUserAccessLevel(insertPropertyName: "CreatedBy")]
+        [LevendrUserAccessLevel(insertPropertyName: "data.CreatedBy")]
         [Authorize]
         [HttpPost("InsertRows")]
         public async Task<APIResult> InsertRows(string table, List<Dictionary<string, object>> data)
@@ -313,7 +313,7 @@ namespace Levendr.Controllers
         }
 
         [LevendrAuthorized]
-        [LevendrUserAccessLevel(checkPropertyName: "CreatedBy")]
+        [LevendrUserAccessLevel("parameters.CreatedBy")]
         [Authorize]
         [HttpPost("GetRowsByConditions")]
         public async Task<APIResult> GetRowsByConditions(string table, List<QuerySearchItem> parameters)
@@ -356,7 +356,7 @@ namespace Levendr.Controllers
         }
 
         [LevendrAuthorized]
-        [LevendrUserAccessLevel("CreatedBy", "CreatedBy", "LastUpdatedBy")]
+        [LevendrUserAccessLevel("request.Parameters.CreatedBy", updatePropertyName: "request.Data.LastUpdatedBy")]
         [Authorize]
         [HttpPut("UpdateRows")]
         public async Task<APIResult> UpdateRows(string table, UpdateRequest request)
@@ -423,7 +423,7 @@ namespace Levendr.Controllers
 
 
         [LevendrAuthorized]
-        [LevendrUserAccessLevel("CreatedBy")]
+        [LevendrUserAccessLevel("parameters.CreatedBy")]
         [HttpDelete("DeleteRows")]
         public async Task<APIResult> DeleteRows(string table, List<QuerySearchItem> parameters)
         {
