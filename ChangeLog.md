@@ -2,15 +2,18 @@
 
 ## Unreleased
 ### Added:
+- Use LevendrUserAccessLevel filter in API controller functions.
 ### Changed:
 - Renamed UserLevelAccess table to UserAccessLevels.
+- Updated UserLevelAccess filter
+- Changed Table Controller UserLevelAccess filter
 ### Deprecated:
 ### Removed:
 ### Fixed:
 ### Security:
 
 
-## v0.1.1 - 2022-04-25
+## [v0.1.1] - 2022-04-25
 ### Added:
 - Added PermissionGroups in GetUserInfo result.
 - Use LevendrUserAccessLevel filter in Table controller functions.
@@ -46,5 +49,5 @@
 ### Security:
 
 
-## v0.1.0 - 2022-01-11
+## [v0.1.0] - 2022-01-11
 - First release
