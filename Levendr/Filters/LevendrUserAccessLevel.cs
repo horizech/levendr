@@ -90,126 +90,46 @@ namespace Levendr.Filters
             Dictionary<string, object> actionRolePermissionGroupMapping = userRolePermissionGroupMapping.First(x => (int)x["PermissionGroup"] == (int)actionPermissionGroupMapping["PermissionGroup"]);
             if(((int)actionRolePermissionGroupMapping["UserAccessLevel"]) != 1)
             {
-                if(method == "POST" || method == "PUT" || method == "DELETE")
+                if (!string.IsNullOrEmpty(checkPropertyName))
                 {
-                    List<QuerySearchItem> parameters = null;
-                    Dictionary<string, object> singleRowData = null;
-                    List<Dictionary<string, object>> MultipleRowsData = null;
-                    
-                    if(!string.IsNullOrEmpty(checkPropertyName) && context.ActionArguments.ContainsKey("parameters"))
+                    List<string> checkPropertyNameParts = checkPropertyName.Split('.').ToList();
+                    if (checkPropertyNameParts.Count > 1)
                     {
-                        if(context.ActionArguments["parameters"] is List<QuerySearchItem>)
+                        object checkPropertyNameParam = context.ActionArguments[checkPropertyNameParts[0]];
+                        for (int i =1; i < checkPropertyNameParts.Count; i++)
                         {
-                            parameters = (List<QuerySearchItem>)context.ActionArguments["parameters"];                    
-                        }
-                    }
-
-                    if(context.ActionArguments.ContainsKey("data"))
-                    {
-                        if(context.ActionArguments["data"] is List<Dictionary<string, object>>)
-                        {
-                            MultipleRowsData = (List<Dictionary<string, object>>)context.ActionArguments["data"];                    
-                        }
-                    }
-
-                    if(context.ActionArguments.ContainsKey("request"))
-                    {
-                        if(context.ActionArguments["request"] is UpdateRequest)
-                        {
-                            parameters = ((UpdateRequest)context.ActionArguments["request"]).Parameters;                    
-                            singleRowData = ((UpdateRequest)context.ActionArguments["request"]).Data;                    
-                        }
-                    }
-                    
-                    if(parameters != null)
-                    {
-                        if(parameters.Any( x => x.Name.ToLower() == checkPropertyName.ToLower()))
-                        {
-                            List<QuerySearchItem> parameterItemsToDelete = parameters.Where( x => x.Name.ToLower() == checkPropertyName.ToLower()).ToList();
-                            for(int i = 0; i < parameterItemsToDelete.Count; i++)
+                            if(checkPropertyNameParam is List<QuerySearchItem>)
                             {
-                                parameters.Remove(parameterItemsToDelete[i]);
-                            }
-                        }
-                        parameters.Add(
-                            new QuerySearchItem()
-                            {
-                                Name = checkPropertyName,
-                                Value = userId,
-                                Condition = Enums.ColumnCondition.Equal,
-                                CaseSensitive = false
-                            }
-                        );
-                    }
-
-                    if(singleRowData != null)
-                    {                        
-                        if(!string.IsNullOrEmpty(insertPropertyName) && singleRowData.Any( x => x.Key.ToLower() == insertPropertyName.ToLower()))
-                        {
-                            Dictionary<string, object> dataItemsToDelete = singleRowData.Where( x => x.Key.ToLower() == insertPropertyName.ToLower()).ToDictionary(x => x.Key, x => x.Value);
-                            foreach(string keyToRemove in dataItemsToDelete.Select(x => x.Key))
-                            {
-                                singleRowData.Remove(keyToRemove);
-                            }
-                        }
-
-                        if(!string.IsNullOrEmpty(updatePropertyName) && singleRowData.Any( x => x.Key.ToLower() == updatePropertyName.ToLower()))
-                        {
-                            Dictionary<string, object> dataItemsToDelete = singleRowData.Where( x => x.Key.ToLower() == updatePropertyName.ToLower()).ToDictionary(x => x.Key, x => x.Value);
-                            foreach(string keyToRemove in dataItemsToDelete.Select(x => x.Key))
-                            {
-                                singleRowData.Remove(keyToRemove);
-                            }
-                        }
-
-                        if(!string.IsNullOrEmpty(updatePropertyName))
-                        {
-                            singleRowData.Add(updatePropertyName, userId);
-                        }
-                        else
-                        {
-                            singleRowData.Add(insertPropertyName, userId);
-                        }
-
-                    }
-
-                    if(MultipleRowsData != null)
-                    {
-                        for(int i = 0; i < MultipleRowsData.Count; i++)
-                        {
-                            if(!string.IsNullOrEmpty(insertPropertyName) && MultipleRowsData[i].Any( x => x.Key.ToLower() == insertPropertyName.ToLower()))
-                            {
-                                Dictionary<string, object> dataItemsToDelete = MultipleRowsData[i].Where( x => x.Key.ToLower() == insertPropertyName.ToLower()).ToDictionary(x => x.Key, x => x.Value);
-                                foreach(string keyToRemove in dataItemsToDelete.Select(x => x.Key))
+                                if(((List<QuerySearchItem>)checkPropertyNameParam).Any( x => x.Name.ToLower() == checkPropertyNameParts[i].ToLower()))
                                 {
-                                    MultipleRowsData[i].Remove(keyToRemove);
+                                    List<QuerySearchItem> parameterItemsToDelete = ((List<QuerySearchItem>)checkPropertyNameParam).Where( x => x.Name.ToLower() == checkPropertyNameParts[i].ToLower()).ToList();
+                                    for(int j = 0; j < parameterItemsToDelete.Count; j++)
+                                    {
+                                        ((List<QuerySearchItem>)checkPropertyNameParam).Remove(parameterItemsToDelete[j]);
+                                    }
                                 }
+                                ((List<QuerySearchItem>)checkPropertyNameParam).Add(
+                                    new QuerySearchItem()
+                                    {
+                                        Name = checkPropertyNameParts[i],
+                                        Value = userId,
+                                        Condition = Enums.ColumnCondition.Equal,
+                                        CaseSensitive = false
+                                    }
+                                );
                             }
-
-                            if(!string.IsNullOrEmpty(updatePropertyName) && MultipleRowsData[i].Any( x => x.Key.ToLower() == updatePropertyName.ToLower()))
+                            else if(checkPropertyNameParam is UpdateRequest)
                             {
-                                Dictionary<string, object> dataItemsToDelete = MultipleRowsData[i].Where( x => x.Key.ToLower() == updatePropertyName.ToLower()).ToDictionary(x => x.Key, x => x.Value);
-                                foreach(string keyToRemove in dataItemsToDelete.Select(x => x.Key))
-                                {
-                                    MultipleRowsData[i].Remove(keyToRemove);
+                                if(checkPropertyNameParts[i].ToLower() == "parameters") {
+                                    checkPropertyNameParam = ((UpdateRequest)checkPropertyNameParam).Parameters;
                                 }
-                            }
-
-                            if(!string.IsNullOrEmpty(updatePropertyName))
-                            {
-                                MultipleRowsData[i].Add(updatePropertyName, userId);
-                            }
-                            else
-                            {
-                                MultipleRowsData[i].Add(insertPropertyName, userId);
-                            }
+                                else if(checkPropertyNameParts[i].ToLower() == "data") {
+                                    checkPropertyNameParam = ((UpdateRequest)checkPropertyNameParam).Data;
+                                }
+                            }                            
                         }
                     }
-                }
-                else if(method == "GET")
-                {
-                    var values = context.RouteData.Values;
-                    if(!string.IsNullOrEmpty(checkPropertyName))
+                    else
                     {
                         if(!string.IsNullOrEmpty(checkPropertyName) && context.ActionArguments.Any( x => x.Key.ToLower() == checkPropertyName.ToLower()))
                         {
@@ -221,31 +141,67 @@ namespace Levendr.Filters
                         }
                         context.ActionArguments.Add(checkPropertyName, userId);
                     }
+                }
+            
+                string insertUpdatePropertyName = !string.IsNullOrEmpty(updatePropertyName)? updatePropertyName: (!string.IsNullOrEmpty(insertPropertyName)? insertPropertyName: "");
 
-                    if(!string.IsNullOrEmpty(insertPropertyName))
+                if (!string.IsNullOrEmpty(insertUpdatePropertyName))
+                {
+                    List<string> updatePropertyNameParts = insertUpdatePropertyName.Split('.').ToList();
+                    if (updatePropertyNameParts.Count > 1)
                     {
-                        if(!string.IsNullOrEmpty(insertPropertyName) && context.ActionArguments.Any( x => x.Key.ToLower() == insertPropertyName.ToLower()))
+                        object updatePropertyNameParam = context.ActionArguments[updatePropertyNameParts[0]];
+                        for (int i =1; i < updatePropertyNameParts.Count; i++)
                         {
-                            Dictionary<string, object> argumentsToDelete = context.ActionArguments.Where( x => x.Key.ToLower() == insertPropertyName.ToLower()).ToDictionary(x => x.Key, x => x.Value);
-                            foreach(string keyToRemove in argumentsToDelete.Select(x => x.Key))
+                            if(updatePropertyNameParam is Dictionary<string, object>)
                             {
-                                context.ActionArguments.Remove(keyToRemove);
+                                if(((Dictionary<string, object>)updatePropertyNameParam).Any( x => x.Key.ToLower() == updatePropertyNameParts[i].ToLower()))
+                                {
+                                    Dictionary<string, object> dataItemsToDelete = ((Dictionary<string, object>)updatePropertyNameParam).Where( x => x.Key.ToLower() == updatePropertyNameParts[i].ToLower()).ToDictionary(x => x.Key, x => x.Value);
+                                    foreach(string keyToRemove in dataItemsToDelete.Select(x => x.Key))
+                                    {
+                                        ((Dictionary<string, object>)updatePropertyNameParam).Remove(keyToRemove);
+                                    }
+                                }
+                                ((Dictionary<string, object>)updatePropertyNameParam).Add(updatePropertyNameParts[i], userId);
                             }
+                            else if(updatePropertyNameParam is List<Dictionary<string, object>>)
+                            {
+                                for(int j = 0; j < ((List<Dictionary<string, object>>)updatePropertyNameParam).Count; j++)
+                                {
+                                    if(((List<Dictionary<string, object>>)updatePropertyNameParam)[j].Any( x => x.Key.ToLower() == updatePropertyNameParts[i].ToLower()))
+                                    {
+                                        Dictionary<string, object> dataItemsToDelete = ((List<Dictionary<string, object>>)updatePropertyNameParam)[j].Where( x => x.Key.ToLower() == updatePropertyNameParts[i].ToLower()).ToDictionary(x => x.Key, x => x.Value);
+                                        foreach(string keyToRemove in dataItemsToDelete.Select(x => x.Key))
+                                        {
+                                            ((List<Dictionary<string, object>>)updatePropertyNameParam)[j].Remove(keyToRemove);
+                                        }
+                                    }
+                                    ((List<Dictionary<string, object>>)updatePropertyNameParam)[j].Add(updatePropertyNameParts[i], userId);
+                                }
+                            }
+                            else if(updatePropertyNameParam is UpdateRequest)
+                            {
+                                if(updatePropertyNameParts[i].ToLower() == "parameters") {
+                                    updatePropertyNameParam = ((UpdateRequest)updatePropertyNameParam).Parameters;
+                                }
+                                else if(updatePropertyNameParts[i].ToLower() == "data") {
+                                    updatePropertyNameParam = ((UpdateRequest)updatePropertyNameParam).Data;
+                                }
+                            }                            
                         }
-                        context.ActionArguments.Add(insertPropertyName, userId);
                     }
-
-                    if(!string.IsNullOrEmpty(updatePropertyName))
+                    else
                     {
-                        if(!string.IsNullOrEmpty(updatePropertyName) && context.ActionArguments.Any( x => x.Key.ToLower() == updatePropertyName.ToLower()))
+                        if(!string.IsNullOrEmpty(insertUpdatePropertyName) && context.ActionArguments.Any( x => x.Key.ToLower() == insertUpdatePropertyName.ToLower()))
                         {
-                            Dictionary<string, object> argumentsToDelete = context.ActionArguments.Where( x => x.Key.ToLower() == updatePropertyName.ToLower()).ToDictionary(x => x.Key, x => x.Value);
+                            Dictionary<string, object> argumentsToDelete = context.ActionArguments.Where( x => x.Key.ToLower() == insertUpdatePropertyName.ToLower()).ToDictionary(x => x.Key, x => x.Value);
                             foreach(string keyToRemove in argumentsToDelete.Select(x => x.Key))
                             {
                                 context.ActionArguments.Remove(keyToRemove);
                             }
                         }
-                        context.ActionArguments.Add(updatePropertyName, userId);
+                        context.ActionArguments.Add(insertUpdatePropertyName, userId);
                     }
                 }
             }

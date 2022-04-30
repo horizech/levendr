@@ -172,7 +172,7 @@ namespace Levendr.Controllers
         }
 
         [LevendrAuthorized]
-        [LevendrUserAccessLevel(insertPropertyName: "CreatedBy")]
+        [LevendrUserAccessLevel(insertPropertyName: "data.CreatedBy")]
         [HttpPost("{table}")]
         public async Task<APIResult> InsertRow(string table, Dictionary<string, object> data)
         {
@@ -202,7 +202,7 @@ namespace Levendr.Controllers
         }
 
         [LevendrAuthorized]
-        [LevendrUserAccessLevel("CreatedBy", "CreatedBy", "LastUpdatedBy")]
+        [LevendrUserAccessLevel("CreatedBy", updatePropertyName: "data.LastUpdatedBy")]
         [HttpPut("{table}/{id}")]
         public async Task<APIResult> UpdateRow(string table, int id, Dictionary<string, object> data, int CreatedBy = 0, int LastUpdatedBy = 0)
         {
