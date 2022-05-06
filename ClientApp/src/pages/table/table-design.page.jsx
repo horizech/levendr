@@ -62,7 +62,6 @@ const TableDesignPage = ({match, location, dispatch, loggedIn}) => {
                 setLoadingTableColumns(false);
                 if(response.Success) {
                     setTableColumns(response.Data);
-                    console.log('columns loaded!', response.Data);
                 }
                 else {
                     setTableColumns(null);
@@ -72,7 +71,6 @@ const TableDesignPage = ({match, location, dispatch, loggedIn}) => {
                 setLoadingPredefinedColumns(false);
                 if(response.Success) {
                     setPredefinedColumns(response.Data);
-                    console.log('Predefined columns loaded!', response.Data);
                 }
                 else {
                     setPredefinedColumns(null);

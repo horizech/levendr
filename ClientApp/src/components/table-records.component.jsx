@@ -54,7 +54,7 @@ const TableRecords = ({table, tableColumns, loadingCurrentTableRows, currentTabl
         if(result === true) {
             console.log(currentRow);
             console.log(currentRow.Id);
-            dispatch(tablesActions.deleteRows(table, currentRow.Id));    
+            dispatch(tablesActions.deleteRow(table, currentRow.Id));    
         }
 
         setDeleteModalVisible(false);
@@ -62,13 +62,12 @@ const TableRecords = ({table, tableColumns, loadingCurrentTableRows, currentTabl
 
     React.useEffect(() => {
         if(table != currentTable) {
-            console.log('loading table stuff!')
             setCurrentTable(table);
             dispatch(tablesActions.getTableColumns(table));
             dispatch(tablesActions.getTableRows(table));
         }
         if(deletingRow === false) {
-            dispatch(tablesActions.acknowledgeDeleteRows());
+            dispatch(tablesActions.acknowledgeDeleteRow());
             if(deletedRowSuccess === true) {
                 dispatch(tablesActions.getTableRows(table));
             }

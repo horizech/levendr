@@ -1,6 +1,6 @@
 {
     "$schema": "../Schema.json",
-    "Name": "UserLevelAccess",
+    "Name": "UserAccessLevels",
     "AddAdditionalColumns": true,
     "Columns": [
         {"Name": "Name", "Datatype": "ShortText", "IsUnique": true, "IsRequired": true},

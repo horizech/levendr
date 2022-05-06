@@ -23,15 +23,14 @@ const CreateEditTableRecord = ({mode, table, dispatch, insertedRowSuccess, inser
         tableColumns.filter((column)=> column.Datatype== "Integer").map((column)=>{
             data[column.Name]= parseInt(data[column.Name]);
         });
-        console.log(data);
         if(event && event.preventDefault) {
             event.preventDefault();
         }
         if (mode === 'create') {
-            dispatch(tablesActions.insertRows(table, [data]));
+            dispatch(tablesActions.insertRow(table, data));
         }
         else if (mode === 'edit') {
-            dispatch(tablesActions.updateRows(table, [data]));
+            dispatch(tablesActions.updateRow(table, data));
         }
     }
 
@@ -41,12 +40,12 @@ const CreateEditTableRecord = ({mode, table, dispatch, insertedRowSuccess, inser
 
     React.useEffect(() => {
         if(insertingRow === false) {
-            dispatch(tablesActions.acknowledgeInsertRows());
+            dispatch(tablesActions.acknowledgeInsertRow());
             handleOnComplete(insertedRowSuccess);
         }
         
         if(updatingRow === false) {
-            dispatch(tablesActions.acknowledgeUpdateRows());
+            dispatch(tablesActions.acknowledgeUpdateRow());
             handleOnComplete(updatedRowSuccess);
         }
 
