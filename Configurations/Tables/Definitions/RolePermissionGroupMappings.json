@@ -32,6 +32,6 @@
         {"Role": 2, "PermissionGroup": 20, "UserAccessLevel": 1, "IsSystem": true},
         
         {"Role": 3, "PermissionGroup": 16, "UserAccessLevel": 2, "IsSystem": true},
-        {"Role": 3, "PermissionGroup": 18, "UserAccessLevel": 2, "IsSystem": true}
+        {"Role": 3, "PermissionGroup": 17, "UserAccessLevel": 2, "IsSystem": true}
     ]
 }
