@@ -1,7 +1,7 @@
 import { TablesApiProvider } from '../api_providers';
 
 export const tablesService = {
-    getLevendrTables, getLevendrTableColumns, getTables, getTableColumns, getPredefinedColumns, getTableRows, insertRows, updateRows, deleteRows, createTable, deleteColumn, addColumn
+    getLevendrTables, getLevendrTableColumns, getTables, getTableColumns, getPredefinedColumns, getTableRows, insertRow, updateRow, deleteRow, createTable, deleteColumn, addColumn
 };
 
 function getTables() {
@@ -23,16 +23,16 @@ function getPredefinedColumns() {
 function getTableRows(table) {
     return TablesApiProvider.getTableRows(table);
 }
-function insertRows(table, rows) {
-    return TablesApiProvider.insertRows(table, rows);
+function insertRow(table, rows) {
+    return TablesApiProvider.insertRow(table, rows);
 }
 
-function updateRows(table, rows) {
-    return TablesApiProvider.updateRows(table, rows);
+function updateRow(table, rows) {
+    return TablesApiProvider.updateRow(table, rows);
 }
 
-function deleteRows(table, id) {
-    return TablesApiProvider.deleteRows(table, id);
+function deleteRow(table, id) {
+    return TablesApiProvider.deleteRow(table, id);
 }
 
 function createTable(table, ColumnsInfo) {

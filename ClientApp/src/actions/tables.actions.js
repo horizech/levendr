@@ -6,9 +6,9 @@ import { toastActions } from './toast.actions';
 
 export const tablesActions = {
     getTables, acknowledgeGetTables, getTableColumns, getPredefinedColumns, 
-    acknowledgePredefinedColumns, getTableRows, insertRows, updateRows, deleteRows, 
-    acknowledgeGetTableColumns, acknowledgeGetRows, acknowledgeInsertRows, acknowledgeUpdateRows, 
-    acknowledgeDeleteRows, createTable, acknowledgeCreateTable, deleteColumn, acknowledgeDeleteColumn,
+    acknowledgePredefinedColumns, getTableRows, insertRow, updateRow, deleteRow, 
+    acknowledgeGetTableColumns, acknowledgeGetRows, acknowledgeInsertRow, acknowledgeUpdateRow, 
+    acknowledgeDeleteRow, createTable, acknowledgeCreateTable, deleteColumn, acknowledgeDeleteColumn,
     addColumn, acknowledgeAddColumn
 };
 
@@ -187,18 +187,17 @@ function acknowledgePredefinedColumns() {
 }
 
 
-function insertRows(table,row) {
+function insertRow(table, row) {
     return dispatch => {
         dispatch(request(row));
-
-        tablesService.insertRows(table,row)
+        tablesService.insertRow(table, row)
             .then(
                 result => {
                     if(result.Success) {
                         dispatch(success(row));
                         // history.push(link);
                         dispatch(toastActions.success('Row Inserted'));
-                        // dispatch(getTableRows(table));
+                        // dispatch(getTableRow(table));
                         return 'Row inserted';    
                     }
                     else {
@@ -219,7 +218,7 @@ function insertRows(table,row) {
     function failure(error) { return { type: tablesConstants.INSERT_TABLE_ROWS_FAILURE, error } }
 }
 
-function acknowledgeInsertRows() {
+function acknowledgeInsertRow() {
     return dispatch => {
         dispatch(acknowledge());
     };
@@ -227,17 +226,17 @@ function acknowledgeInsertRows() {
     function acknowledge() { return { type: tablesConstants.INSERT_TABLE_ROWS_ACKNOWLEDGE } }
 }
 
-function updateRows(table,row) {
+function updateRow(table, row) {
     return dispatch => {
         dispatch(request(row));
 
-        tablesService.updateRows(table,row)
+        tablesService.updateRow(table, row)
             .then(
                 row => { 
                     dispatch(success(row));
                     // history.push(link);
                     dispatch(toastActions.success('Row Updated'));
-                    // dispatch(getTableRows(table));
+                    // dispatch(getTableRow(table));
                     return 'Row inserted';
                 },
                 error => {
@@ -252,7 +251,7 @@ function updateRows(table,row) {
     function failure(error) { return { type: tablesConstants.UPDATE_TABLE_ROWS_FAILURE, error } }
 }
 
-function acknowledgeUpdateRows() {
+function acknowledgeUpdateRow() {
     return dispatch => {
         dispatch(acknowledge());
     };
@@ -260,11 +259,11 @@ function acknowledgeUpdateRows() {
     function acknowledge() { return { type: tablesConstants.UPDATE_TABLE_ROWS_ACKNOWLEDGE } }
 }
 
-function deleteRows(table, id) {
+function deleteRow(table, id) {
     return dispatch => {
         dispatch(request(id));
 
-        tablesService.deleteRows(table, id)
+        tablesService.deleteRow(table, id)
             .then(
                 user => dispatch(success(id)),
                 error => dispatch(failure(id, error.toString()))
@@ -276,7 +275,7 @@ function deleteRows(table, id) {
     function failure(id, error) { return { type: tablesConstants.DELETE_TABLE_ROWS_FAILURE, id, error } }
 }
 
-function acknowledgeDeleteRows() {
+function acknowledgeDeleteRow() {
     return dispatch => {
         dispatch(acknowledge());
     };

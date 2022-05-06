@@ -68,18 +68,6 @@ class TablesApiProvider {
             });
     }
 
-    static async insertRows(table,rows) {
-        let headers = authHeader();
-        headers['Content-Type'] = 'application/json' ;
-
-        const requestOptions = {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(rows)
-        };
-    
-        return fetch(`${config.apiUrl}/api/Table/InsertRows?table=${table}`, requestOptions).then(handleResponse);
-    }
     static async getTableRows(table) {
         const requestOptions = {
             method: 'get',
@@ -96,55 +84,49 @@ class TablesApiProvider {
                 return result;
             });
     }
-    static async updateRows(table, rows) {
+
+    static async insertRow(table, row) {
+        let headers = authHeader();
+        headers['Content-Type'] = 'application/json' ;
+
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(row)
+        };
+    
+        return fetch(`${config.apiUrl}/api/${table}`, requestOptions).then(handleResponse);
+    }
+
+    static async updateRow(table, row) {
         let headers = authHeader();
         headers['Content-Type'] = 'application/json' ;
         
-        // console.log(rows);
-        const params = {
-            
-            "Data": rows[0],
-            
-            "Parameters": [
-              {
-                "Name": "Id",
-                "Condition": 0,
-                "Value": rows[0].Id
-              }
-            ]
-          };
-        //   console.log(params);
+        const params = row;
+        
         const requestOptions = {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify(params)
         };
     
-        return fetch(`${config.apiUrl}/api/Table/UpdateRows?table=${table}`, requestOptions).then(handleResponse);
+        return fetch(`${config.apiUrl}/api/${table}/${row.Id}`, requestOptions).then(handleResponse);
     }
-    static async deleteRows(table, id) {
+
+    static async deleteRow(table, id) {
         let headers = authHeader();
         headers['Content-Type'] = 'application/json' ;
 
-        const params = [
-            {
-              "Name": "Id",
-              "Condition": 0,
-              "Value": id
-          
-            }
-        ];
-        console.log(params);
+        const params = {};
         const requestOptions = {
             method: 'DELETE',
             headers: headers,
             body: JSON.stringify(params)
         };
     
-        
-
-        return fetch(`${config.apiUrl}/api/Table/DeleteRows?table=${table}`, requestOptions).then(handleResponse);
+        return fetch(`${config.apiUrl}/api/${table}/${id}`, requestOptions).then(handleResponse);
     }
+
     static async createTable(table, ColumnsInfo) {
         let headers = authHeader();
         headers['Content-Type'] = 'application/json' ;
