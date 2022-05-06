@@ -38,7 +38,6 @@ const TableDataPage = ({match, location, dispatch, loggedIn}) => {
                 setLoadingTableColumns(false);
                 if(response.Success) {
                     setTableColumns(response.Data);
-                    console.log('columns loaded!', response.Data);
                 }
                 else {
                     setTableColumns(null);
