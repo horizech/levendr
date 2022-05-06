@@ -2,16 +2,24 @@
 
 ## Unreleased
 ### Added:
-- Use LevendrUserAccessLevel filter in API controller functions.
 ### Changed:
-- Renamed UserLevelAccess table to UserAccessLevels.
-- Updated UserLevelAccess filter
-- Changed Table Controller UserLevelAccess filter
 ### Deprecated:
 ### Removed:
 ### Fixed:
 ### Security:
 
+## [v0.1.2] - 2022-05-06
+### Added:
+- Use LevendrUserAccessLevel filter in API controller functions.
+### Changed:
+- Renamed UserLevelAccess table to UserAccessLevels.
+- Updated UserLevelAccess filter
+- Changed Table Controller UserLevelAccess filter parameters
+- Use API Controller for CRUD in FE
+### Deprecated:
+### Removed:
+### Fixed:
+### Security:
 
 ## [v0.1.1] - 2022-04-25
 ### Added:
