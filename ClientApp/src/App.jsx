@@ -17,6 +17,7 @@ import withReactContent from 'sweetalert2-react-content'
 
 import './styles/App.scss';
 import { ConfigurationPage } from './pages/configuration.page';
+import { UserAccessLevelsPage } from './pages/user-access-levels.page';
 
 
 const MySwal = withReactContent(Swal)
@@ -105,6 +106,7 @@ class App extends React.Component {
                         <UserGuardedRoute path='/permission-groups' component={PermissionGroupsPage} />
                         <UserGuardedRoute path='/role-permission-group-mappings' component={RolePermissionGroupMappingsPage} />
                         <UserGuardedRoute path='/permission-group-mappings' component={PermissionGroupMappingsPage} />
+                        <UserGuardedRoute path='/user-access-levels' component={UserAccessLevelsPage} />
                         <UserGuardedRoute path='/configuration' component={ConfigurationPage} />
                         
                         

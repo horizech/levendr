@@ -23,8 +23,9 @@ class RolePermissionGroupMappingsApiProvider {
         let body = {
             "Role": rows.Role,
             "PermissionGroup": rows.PermissionGroup,
+            "UserAccessLevel": rows.UserAccessLevel,
             "IsSystem": rows.IsSystem 
-            }
+        }
         const requestOptions = {
             method: 'POST',
             headers: headers,
@@ -41,8 +42,9 @@ class RolePermissionGroupMappingsApiProvider {
         let body = {
             "Role": rows.Role,
             "PermissionGroup": rows.PermissionGroup,
+            "UserAccessLevel": rows.UserAccessLevel,
             "IsSystem": rows.IsSystem  
-            }
+        }
 
         const requestOptions = {
             method: 'PUT',

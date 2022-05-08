@@ -5,18 +5,18 @@ import { tablesActions } from '../actions';
 import { Table } from 'reactstrap';
 import { ButtonIcon } from '../components/button-icon.component';
 import { history, SwalAlert } from '../helpers';
-import { Loading, Page, Roles } from '../components';
+import { Loading, Page, UserAccessLevels } from '../components';
 import { CreateEditModal } from '../modals';
-import { rolesService } from '../services';
+import { userAccessLevelsService } from '../services';
 import { DialogModal } from '../modals'
 import { LevendrTable } from '../components';
 import { alertActions, toastActions } from '../actions';
 
-const RolesPage = ({match, location, dispatch, loggedIn}) => {
+const UserAccessLevelsPage = ({match, location, dispatch, loggedIn}) => {
  
-    const [roles, setRoles] = React.useState(null);
-    const [loadingRoleColumns, setLoadingRoleColumns] = React.useState(true);
-    const [isCreateRoleModalVisible, setCreateRoleModalVisible] = React.useState(false);
+    const [userAccessLevels, setUserAccessLevels] = React.useState(null);
+    const [loadingUserAccessLevelColumns, setLoadingUserAccessLevelColumns] = React.useState(true);
+    const [isCreateUserAccessLevelModalVisible, setCreateUserAccessLevelModalVisible] = React.useState(false);
     const [currentRow, setCurrentRow] = React.useState(null);
     const [isDeleteModalVisible, setDeleteModalVisible] = React.useState(false);
     const [isEditModalVisible, setEditModalVisible] = React.useState(false);
@@ -28,7 +28,6 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
         { Name: 'Id', value: 'Id', valueDataType: 'Integer', needParse: false  },
         { Name: 'Name', value: 'Name', valueDataType: 'Integer'  },
         { Name: 'Description', value: 'Description', valueDataType: 'Integer', needParse: false  },
-        { Name: 'Level', value: 'Level', valueDataType: 'Integer', needParse: true  },
         { Name: 'CreatedOn', value: 'CreatedOn', valueDataType: 'Integer', needParse: false  },
         { Name: 'CreatedBy', value: 'CreatedBy', valueDataType: 'Integer', needParse: false  },
         { Name: 'LastUpdatedOn', value: 'LastUpdatedOn', valueDataType: 'Integer', needParse: false  },
@@ -36,12 +35,12 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     ]
 
     const showCreateModal = () => {
-        setCreateRoleModalVisible(true);
+        setCreateUserAccessLevelModalVisible(true);
     }
 
     const handleOnCreateComplete = (values) => {
         if(values) {
-            rolesService.addRoles(values).then( response => {
+            userAccessLevelsService.addUserAccessLevels(values).then( response => {
                 if(response.Success) {
                     setAddSuccess(true);
                     dispatch(toastActions.success(response.Message));
@@ -52,7 +51,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
                 }
             });  
         }
-        setCreateRoleModalVisible(false);
+        setCreateUserAccessLevelModalVisible(false);
     }
     const showEditModal = (row) => {
         setEditModalVisible(true);
@@ -66,7 +65,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     
     const handleOnEditComplete = (values) => {        
         if(values) {
-            rolesService.updateRoles(currentRow.Name, values).then( response => {
+            userAccessLevelsService.updateUserAccessLevels(currentRow.Name, values).then( response => {
                 if(response.Success) {
                     setUpdateSuccess(true);
                     dispatch(toastActions.success(response.Message));
@@ -82,7 +81,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
 
     const handleOnDeleteComplete = (result) => {
         if(result === true) {
-            rolesService.deleteRoles(currentRow).then( response => {
+            userAccessLevelsService.deleteUserAccessLevels(currentRow).then( response => {
                 if(response.Success) {
                     setDeleteSuccess(true);
                     dispatch(toastActions.success(response.Message));
@@ -114,18 +113,18 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
 
     React.useEffect(() => {
        
-        rolesService.getRoles().then( response => {
+        userAccessLevelsService.getUserAccessLevels().then( response => {
             if(response.Success) {
                 console.log(response.Data);
-                setRoles(response.Data);   
+                setUserAccessLevels(response.Data);   
                    
             }
             else {
                
-                setRoles(null);
+                setUserAccessLevels(null);
             }
         })       
-        setLoadingRoleColumns(false);
+        setLoadingUserAccessLevelColumns(false);
         if (!loggedIn) {
             history.push('/');
         }
@@ -137,14 +136,14 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
     return (
         <React.Fragment>
             <div align="right" style={{marginBottom: "16px"}}>
-                    <button className="btn btn-primary" onClick={showCreateModal}>Create a new role</button>
+                    <button className="btn btn-primary" onClick={showCreateModal}>Create a new user access level</button>
                 </div>
         {
-            (loadingRoleColumns) &&
+            (loadingUserAccessLevelColumns) &&
             <Loading></Loading>
         }
         {
-            (!loadingRoleColumns  && (!roles || roles["length"] == 0) ) &&
+            (!loadingUserAccessLevelColumns  && (!userAccessLevels || userAccessLevels["length"] == 0) ) &&
             <div className="row">
             <div className="col-sm-1 col-md-3"></div>
             <div align="center" className="col-sm-10 col-md-6 col-md-offset-3" style={{ "marginTop": "25vh" }}>
@@ -155,11 +154,11 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
         </div>
         }
         { 
-            (!loadingRoleColumns && roles && roles["length"] != 0) &&
+            (!loadingUserAccessLevelColumns && userAccessLevels && userAccessLevels["length"] != 0) &&
             <div>
-                <LevendrTable headers={Object.keys(roles[0])}>
-                {roles &&
-                                roles.map((row, i) => (
+                <LevendrTable headers={Object.keys(userAccessLevels[0])}>
+                {userAccessLevels &&
+                                userAccessLevels.map((row, i) => (
                                     <tr key={'row_' + (i + 1)}>
 
                                         <td key={'data_' + i + '_#'} scope="row">
@@ -169,7 +168,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
                                             </div>
                                         </td>
                                         {
-                                            Object.keys(roles[0]).map(key => (
+                                            Object.keys(userAccessLevels[0]).map(key => (
                                                 <td key={'data_' + i + key} >{row[key] != null ? '' + row[key]: ''}</td>
                                             ))
                                         }
@@ -181,16 +180,16 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
                         <thead>
                             <tr key={'header'}>
                                 <th key={'header_#'} scope="col"></th>
-                                {roles &&
-                                    Object.keys(roles[0]).map(key => (
+                                {userAccessLevels &&
+                                    Object.keys(userAccessLevels[0]).map(key => (
                                         <th key={'header_' + key} scope="col">{key}</th>
                                     ))
                                 }
                             </tr>
                         </thead>
                         <tbody>
-                            {roles &&
-                                roles.map((row, i) => (
+                            {userAccessLevels &&
+                                userAccessLevels.map((row, i) => (
                                     <tr key={'row_' + (i + 1)}>
 
                                         <td key={'data_' + i + '_#'} scope="row">
@@ -200,7 +199,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
                                             </div>
                                         </td>
                                         {
-                                            Object.keys(roles[0]).map(key => (
+                                            Object.keys(userAccessLevels[0]).map(key => (
                                                 <td key={'data_' + i + key} >{row[key] != null ? '' + row[key]: ''}</td>
                                             ))
                                         }
@@ -231,7 +230,7 @@ const RolesPage = ({match, location, dispatch, loggedIn}) => {
             </div>
         }
         {                
-            isCreateRoleModalVisible && roles &&
+            isCreateUserAccessLevelModalVisible && userAccessLevels &&
 
             <CreateEditModal
                 columns={columns}
@@ -253,5 +252,5 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedRoles = connect(mapStateToProps)(RolesPage);
-export { connectedRoles as RolesPage };
+const connectedUserAccessLevels = connect(mapStateToProps)(UserAccessLevelsPage);
+export { connectedUserAccessLevels as UserAccessLevelsPage };

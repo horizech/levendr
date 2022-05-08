@@ -3,64 +3,68 @@ import { connect } from 'react-redux';
 import { Card, Button, CardTitle, CardText, Row, Col,CardImg } from 'reactstrap';
 import { history } from '../helpers';
 
+import '../styles/ConfigurationPage.scss';
+
 const ConfigurationPage = (props) => {
   return (
-    <Row>
-      <Col sm="4">
-        <Card body inverse style={{ borderColor: '#7a77b9' }}  color="white">
-        <center>
-          {/* <CardTitle>Roles</CardTitle><br/> */}
-          <i class="fas fa-user-tag fa-10x center" style={{color: '#7a77b9'}}></i>
-        </center>
-        
-          <CardText></CardText>
-          <Button  onClick={ () => history.push("/roles")} color='primary'>Manage Roles</Button>
-        </Card>
-      </Col>
-      <Col sm="4">
-        <Card body inverse style={{ borderColor: '#7a77b9' }}  color="white">
-        <center>
-          <i class="fas fa-user-lock fa-10x center" style={{color: '#7a77b9'}}></i>
-        </center>
-        
-          <CardText></CardText>
-          <Button  onClick={ () => history.push("/permissions")} color='primary'>Permissions</Button>
-        </Card>
-      </Col>
-      <Col sm="4">
-        <Card body inverse style={{ borderColor: '#7a77b9' }} color="white">
-        <center>    
-          <i class="fas fa-layer-group fa-10x " style={{color: '#7a77b9'}}></i>
-        </center>
-     
-          <CardText></CardText>
-          <Button  onClick={ () => history.push("/permission-groups")} color='primary'>Permisssion Group </Button>
-        </Card>
-      </Col>
-      <Col sm="4">
-        <Card body inverse style={{borderColor: '#7a77b9',marginTop:"10px" }}  color="white">
+    <div className={'configuration-page'}>
+      <div className={"configuration-button"} onClick={ () => history.push("/roles")}>
+        <Card body>
           <center>    
-            <i class="fas fa-users-cog fa-10x center" style={{color: '#7a77b9'}}></i>
+            <i className={"fas fa-user-tag fa-3x"}></i>
+            <p>Roles</p>
           </center>
-          
           <CardText></CardText>
-          <Button  onClick={ () => history.push("/permission-group-mappings")} color='primary'>Permisssion Group Mappings</Button>
         </Card>
-      </Col>
-      <Col sm="4">
-        <Card body inverse style={{ borderColor: '#7a77b9',marginTop:"10px" }}  color="white">
+      </div>
+     <div className={"configuration-button"} onClick={ () => history.push("/permissions")}>
+        <Card body>
           <center>    
-            <i class="fas fa-sitemap fa-10x center" style={{color: '#7a77b9'}}></i>
+            <i className={"fas fa-user-lock fa-3x"}></i>
+            <p>Permisssions</p>
           </center>
-          {/* <CardTitle></CardTitle> */}
-         
           <CardText></CardText>
-          <Button  onClick={ () => history.push("/role-permission-group-mappings")} color='primary'>Role Permisssion Group Mappings</Button>
         </Card>
-      </Col>
-    </Row>
+      </div>
+      <div className={"configuration-button"} onClick={ () => history.push("/permission-groups")}>
+        <Card body>
+          <center>    
+            <i className={"fas fa-layer-group fa-3x"}></i>
+            <p>Permisssion Groups</p>
+          </center>
+          <CardText></CardText>
+        </Card>
+      </div>
+      <div className={"configuration-button"} onClick={ () => history.push("/permission-group-mappings")}>
+        <Card body>
+          <center>    
+            <i className={"fas fa-users-cog fa-3x"}></i>
+            <p>Permisssion Group Mappings</p>
+          </center>
+          <CardText></CardText>
+        </Card>
+      </div>
+      <div className={"configuration-button"} onClick={ () => history.push("/role-permission-group-mappings")}>
+        <Card body>
+          <center>    
+            <i className={"fas fa-sitemap fa-3x"}></i>
+            <p>Role Permisssion Group Mappings</p>
+          </center>
+          <CardText></CardText>
+        </Card>
+      </div>
+      <div className={"configuration-button"} onClick={ () => history.push("/user-access-levels")}>
+        <Card body>
+          <center>    
+            <i className={"fas fa-user-alt-slash fa-3x"}></i>
+            <p>User Access Levels</p>
+          </center>
+          <CardText></CardText>
+        </Card>
+      </div>
+    </div>
   );
-};
+};                        
 
 function mapStateToProps(state) {
   const { loggedIn } = state.authentication;

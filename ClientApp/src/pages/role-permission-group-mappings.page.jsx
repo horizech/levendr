@@ -4,7 +4,7 @@ import { ButtonIcon } from '../components/button-icon.component';
 import { history } from '../helpers';
 import { Loading } from '../components';
 import { CreateEditModal } from '../modals';
-import { rolePermissionGroupMappingsService, permissionGroupsService, rolesService } from '../services';
+import { rolePermissionGroupMappingsService, permissionGroupsService, rolesService, userAccessLevelsService } from '../services';
 import { DialogModal } from '../modals';
 import { LevendrTable } from '../components';
 import { alertActions, toastActions } from '../actions';
@@ -22,13 +22,15 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
     const [updateSuccess, setUpdateSuccess] = React.useState(false);
     const [selectOptionsList, setSelectOptionsList] = React.useState({
         Role: [],
-        PermissionGroup: []
+        PermissionGroup: [],
+        UserAccessLevel: []
     });
 
     const columns = [
         { Name: 'Id', value: 'Id', Datatype: 'Integer', needParse: false, IsSelectList: false},
-        { Name: 'Role', value: 'Role', Datatype: 'ShortText', needParse: true, IsSelectList: true  },
-        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'LongText', needParse: true, IsSelectList: true },
+        { Name: 'Role', value: 'Role', Datatype: 'Integer', needParse: true, IsSelectList: true  },
+        { Name: 'PermissionGroup', value: 'PermissionGroup', Datatype: 'Integer', needParse: true, IsSelectList: true },
+        { Name: 'UserAccessLevel', value: 'UserAccessLevel', Datatype: 'Integer', needParse: true, IsSelectList: true  },
         { Name: 'IsSystem', value: 'IsSystem', Datatype: 'Boolean', needParse: false, IsSelectList: false  },
         { Name: 'CreatedOn', value: 'CreatedOn', Datatype: 'DateTime', needParse: false, IsSelectList: false },
         { Name: 'CreatedBy', value: 'CreatedBy', Datatype: 'ShortText', needParse: false, IsSelectList: false },
@@ -38,7 +40,8 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
 
     const isSelectList =  {
         Role: true,
-        PermissionGroup: true
+        PermissionGroup: true,
+        UserAccessLevel: true
     };
     
     const showCreateModal = () => {
@@ -47,6 +50,7 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
 
     const handleOnCreateComplete = (values) => {
         if (values) {
+            console.log(values);
             // values.Role = values.Role.value;
             // values.PermissionGroup = values.PermissionGroup.value;
             rolePermissionGroupMappingsService.addRolePermissionGroupMapping(values).then(response => {
@@ -71,6 +75,9 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
             }
             if(selectOptionsList['PermissionGroup'] && editRow['PermissionGroup']) {
                 editRow['PermissionGroup'] = selectOptionsList['PermissionGroup'].filter(x => x.value == editRow['PermissionGroup'])[0];                             
+            }
+            if(selectOptionsList['UserAccessLevel'] && editRow['UserAccessLevel']) {
+                editRow['UserAccessLevel'] = selectOptionsList['UserAccessLevel'].filter(x => x.value == editRow['UserAccessLevel'])[0];                             
             }
             setCurrentRow(editRow);
         }
@@ -133,14 +140,20 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
     const loadSelectOptions = () => {
         let permissionGroupsPromise = permissionGroupsService.getPermissionGroups();
         let rolesPromise = rolesService.getRoles();
-        Promise.all([permissionGroupsPromise, rolesPromise]).then( data => {
+        let userAccessLevelPromise = userAccessLevelsService.getUserAccessLevels();
+        Promise.all([permissionGroupsPromise, userAccessLevelPromise, rolesPromise]).then( data => {
             let selectOptionsListUpdate = {};
+            selectOptionsListUpdate['Role'] = (
+                data[2].Data.map(x => {
+                    return { label: x.Name, value: x.Id }
+                })
+            );
             selectOptionsListUpdate['PermissionGroup'] = (
                 data[0].Data.map(x => {
                     return { label: x.Name, value: x.Id }
                 })
             );
-            selectOptionsListUpdate['Role'] = (
+            selectOptionsListUpdate['UserAccessLevel'] = (
                 data[1].Data.map(x => {
                     return { label: x.Name, value: x.Id }
                 })
@@ -152,7 +165,7 @@ const RolePermissionGroupMappingsPage = ({ dispatch,match, loggedIn }) => {
 
 
     React.useEffect( () => {
-        if (!selectOptionsList.PermissionGroup || !selectOptionsList.PermissionGroup.length || !selectOptionsList.Role || !selectOptionsList.Role.length) {
+        if (!selectOptionsList.PermissionGroup || !selectOptionsList.PermissionGroup.length || !selectOptionsList.Role || !selectOptionsList.Role.length || !selectOptionsList.UserAccessLevel || !selectOptionsList.UserAccessLevel.length) {
             loadSelectOptions();
         }
     }, []);
