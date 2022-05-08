@@ -57,7 +57,10 @@
         {"Name": "Users.GetUsers.GET", "Description": "Users.GetUsers.GET", "IsSystem": true},
         {"Name": "Users.AddUser.POST", "Description": "Users.AddUser.POST", "IsSystem": true},
         {"Name": "Users.UpdateUser.PUT", "Description": "Users.UpdateUser.PUT", "IsSystem": true},
-        {"Name": "Users.DeleteUser.DELETE", "Description": "Users.DeleteUser.DELETE", "IsSystem": true}
-        
+        {"Name": "Users.DeleteUser.DELETE", "Description": "Users.DeleteUser.DELETE", "IsSystem": true},
+        {"Name": "UserAccessLevels.GetUserAccessLevels.GET", "Description": "UserAccessLevels.GetUserAccessLevels.GET", "IsSystem": true},
+        {"Name": "UserAccessLevels.AddUserAccessLevel.POST", "Description": "UserAccessLevels.AddUserAccessLevel.POST", "IsSystem": true},
+        {"Name": "UserAccessLevels.UpdateUserAccessLevel.PUT", "Description": "UserAccessLevels.UpdateUserAccessLevel.PUT", "IsSystem": true},
+        {"Name": "UserAccessLevels.DeleteUserAccessLevel.DELETE", "Description": "UserAccessLevels.DeleteUserAccessLevel.DELETE", "IsSystem": true}        
     ]
 }
