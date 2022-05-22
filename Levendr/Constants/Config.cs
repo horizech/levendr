@@ -15,11 +15,13 @@ namespace Levendr.Constants
         public const string DatabasePassword = "LEVENDR_DATABASE_PASSWORD";
 
         // Plugins
+        public const string AWSSESRegion = "LEVENDR_AWS_SES_REGION";
+        public const string AWSSESSMPTPUsername = "LEVENDR_AWS_SES_SMTP_USERNAME";
+        public const string AWSSESSMPTPPassword = "LEVENDR_AWS_SES_SMTP_PASSWORD";
         public const string AWSSESS3Bucket = "LEVENDR_AWS_SES_S3_BUCKET";
         public const string AWSSESS3Region = "LEVENDR_AWS_SES_S3_REGION";
         public const string AWSSESS3AccessKeyId = "LEVENDR_AWS_SES_S3_ACCESS_KEY_ID";
         public const string AWSSESS3SecretAccessKey = "LEVENDR_AWS_SES_S3_SECRET_ACCESS_KEY";
-        public const string AWSSESS3SessionToken = "LEVENDR_AWS_SES_S3_SESSION_TOKEN";
         
         // JWT Token
         public const string JwtTokenIssuer = "LEVENDR_JWT_TOKEN_ISSUER";
