@@ -3,8 +3,10 @@
 ## Unreleased
 ### Added:
 - Added management of UserAccessLevels.
+- Added AWS S3 plugin.
+
 ### Changed:
-- Change the Configuration page.
+- Changed the Configuration page.
 ### Deprecated:
 ### Removed:
 ### Fixed:
