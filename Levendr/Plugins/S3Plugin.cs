@@ -138,6 +138,40 @@ namespace Levendr.Plugins
             return false;
         }
 
+        public async static Task<bool> UploadFileAsync(string accessKeyId, string secretAccessKey, string region, string bucket, string key, Stream stream, string contentType)
+        {
+            return await UploadFileAsync(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region), bucket, key, stream, contentType);
+        }
+
+        public async static Task<bool> UploadFileAsync(string accessKeyId, string secretAccessKey, RegionEndpoint region, string bucket, string key, Stream stream, string contentType)
+        {
+            try
+            {
+                AmazonS3Client client = new AmazonS3Client(accessKeyId, secretAccessKey, region);
+
+                var uploadRequest = new TransferUtilityUploadRequest
+                {
+                    InputStream = stream,
+                    Key = key,
+                    BucketName = bucket,
+                    ContentType = contentType
+                };
+
+                var fileTransferUtility = new TransferUtility(client);
+
+                await fileTransferUtility.UploadAsync(uploadRequest);
+
+                return true;
+            
+            }
+            catch (Exception e)
+            {
+                ServiceManager.Instance.GetService<LogService>().Print(e.Message, LoggingLevel.Errors);
+            }
+
+            return false;
+        }
+
         public async static Task<bool> DeleteFileAsync(string accessKeyId, string secretAccessKey, string region, string bucket, string key)
         {
             return await DeleteFileAsync(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region), bucket, key);
