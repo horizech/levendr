@@ -31,16 +31,13 @@ namespace Levendr.Plugins
             
         }
 
-        public async static Task<List<S3Bucket>> ListBuckets(string region)
+        public async static Task<List<S3Bucket>> ListBuckets(string accessKeyId, string secretAccessKey, string region)
         {
-            return await ListBuckets(RegionEndpoint.GetBySystemName(region));
+            return await ListBuckets(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region));
         }
 
-        public async static Task<List<S3Bucket>> ListBuckets(RegionEndpoint region)
+        public async static Task<List<S3Bucket>> ListBuckets(string accessKeyId, string secretAccessKey, RegionEndpoint region)
         {
-            string accessKeyId = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3AccessKeyId, null);
-            string secretAccessKey = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3SecretAccessKey, null);
-            
             try
             {
                 AmazonS3Client client = new AmazonS3Client(accessKeyId, secretAccessKey, region);
@@ -54,15 +51,13 @@ namespace Levendr.Plugins
             return null;
         }
 
-        public async static Task<byte[]> DownloadFileAsync(string region, string bucket, string key)
+        public async static Task<byte[]> DownloadFileAsync(string accessKeyId, string secretAccessKey, string region, string bucket, string key)
         {
-            return await DownloadFileAsync(RegionEndpoint.GetBySystemName(region), bucket, key);
+            return await DownloadFileAsync(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region), bucket, key);
         }
 
-        public async static Task<byte[]> DownloadFileAsync(RegionEndpoint region, string bucket, string key)
+        public async static Task<byte[]> DownloadFileAsync(string accessKeyId, string secretAccessKey, RegionEndpoint region, string bucket, string key)
         {
-            string accessKeyId = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3AccessKeyId, null);
-            string secretAccessKey = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3SecretAccessKey, null);
             
             try
             {
@@ -105,16 +100,13 @@ namespace Levendr.Plugins
             return null;            
         }
 
-        public async Task<bool> UploadFileAsync(string region, string bucket, string key, IFormFile file)
+        public async static Task<bool> UploadFileAsync(string accessKeyId, string secretAccessKey, string region, string bucket, string key, IFormFile file)
         {
-            return await UploadFileAsync(RegionEndpoint.GetBySystemName(region), bucket, key, file);
+            return await UploadFileAsync(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region), bucket, key, file);
         }
 
-        public async Task<bool> UploadFileAsync(RegionEndpoint region, string bucket, string key, IFormFile file)
+        public async static Task<bool> UploadFileAsync(string accessKeyId, string secretAccessKey, RegionEndpoint region, string bucket, string key, IFormFile file)
         {
-            string accessKeyId = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3AccessKeyId, null);
-            string secretAccessKey = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3SecretAccessKey, null);
-            
             try
             {
                 AmazonS3Client client = new AmazonS3Client(accessKeyId, secretAccessKey, region);
@@ -146,16 +138,13 @@ namespace Levendr.Plugins
             return false;
         }
 
-        public async Task<bool> DeleteFileAsync(string region, string bucket, string key)
+        public async static Task<bool> DeleteFileAsync(string accessKeyId, string secretAccessKey, string region, string bucket, string key)
         {
-            return await DeleteFileAsync(RegionEndpoint.GetBySystemName(region), bucket, key);
+            return await DeleteFileAsync(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region), bucket, key);
         }
 
-        public async Task<bool> DeleteFileAsync(RegionEndpoint region, string bucket, string key)
+        public async static Task<bool> DeleteFileAsync(string accessKeyId, string secretAccessKey, RegionEndpoint region, string bucket, string key)
         {
-            string accessKeyId = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3AccessKeyId, null);
-            string secretAccessKey = (string)ServiceManager.Instance.GetService<EnvironmentService>().GetEnvironmentVariable(Config.AWSSESS3SecretAccessKey, null);
-            
             try
             {
                 AmazonS3Client client = new AmazonS3Client(accessKeyId, secretAccessKey, region);
