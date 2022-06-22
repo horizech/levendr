@@ -2,7 +2,12 @@
 
 ## Unreleased
 ### Added:
+- Added management of UserAccessLevels.
+- Added AWS S3 plugin.
+- Clear Cache on Create, Edit and Delete.
+
 ### Changed:
+- Changed the Configuration page.
 ### Deprecated:
 ### Removed:
 ### Fixed:
@@ -15,7 +20,7 @@
 - Renamed UserLevelAccess table to UserAccessLevels.
 - Updated UserLevelAccess filter
 - Changed Table Controller UserLevelAccess filter parameters
-- Use API Controller for CRUD in FE
+- Use API Controller for Table records management in FE
 ### Deprecated:
 ### Removed:
 ### Fixed:

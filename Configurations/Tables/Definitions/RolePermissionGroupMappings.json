@@ -19,6 +19,7 @@
         {"Role": 1, "PermissionGroup": 15, "UserAccessLevel": 1, "IsSystem": true},
         {"Role": 1, "PermissionGroup": 17, "UserAccessLevel": 1, "IsSystem": true},
         {"Role": 1, "PermissionGroup": 19, "UserAccessLevel": 1, "IsSystem": true},
+        {"Role": 1, "PermissionGroup": 21, "UserAccessLevel": 1, "IsSystem": true},
         
         {"Role": 2, "PermissionGroup": 2, "UserAccessLevel": 1, "IsSystem": true},
         {"Role": 2, "PermissionGroup": 4, "UserAccessLevel": 1, "IsSystem": true},
@@ -30,6 +31,7 @@
         {"Role": 2, "PermissionGroup": 15, "UserAccessLevel": 1, "IsSystem": true},
         {"Role": 2, "PermissionGroup": 17, "UserAccessLevel": 1, "IsSystem": true},        
         {"Role": 2, "PermissionGroup": 20, "UserAccessLevel": 1, "IsSystem": true},
+        {"Role": 2, "PermissionGroup": 22, "UserAccessLevel": 1, "IsSystem": true},
         
         {"Role": 3, "PermissionGroup": 16, "UserAccessLevel": 2, "IsSystem": true},
         {"Role": 3, "PermissionGroup": 17, "UserAccessLevel": 2, "IsSystem": true}

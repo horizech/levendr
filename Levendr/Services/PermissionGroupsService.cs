@@ -62,6 +62,8 @@ namespace Levendr.Services
                 .AddRow(data)
                 .RunInsertQuery();
 
+            ServiceManager.Instance.GetService<MemoryCacheService>().Remove("PermissionGroups");
+            
             return new APIResult()
             {
                 Success = true,
@@ -78,6 +80,8 @@ namespace Levendr.Services
                 .AddRow(data)
                 .RunUpdateQuery();
 
+            ServiceManager.Instance.GetService<MemoryCacheService>().Remove("PermissionGroups");
+            
             return new APIResult()
             {
                 Success = true,
@@ -93,6 +97,8 @@ namespace Levendr.Services
                 .WhereEquals("Name", name)
                 .RunDeleteQuery();
 
+            ServiceManager.Instance.GetService<MemoryCacheService>().Remove("PermissionGroups");
+            
             return new APIResult()
             {
                 Success = true,

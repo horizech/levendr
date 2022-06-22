@@ -86,7 +86,13 @@
         {"PermissionGroup": 20, "Permission": 44, "IsSystem": true},
         {"PermissionGroup": 20, "Permission": 45, "IsSystem": true},
         {"PermissionGroup": 20, "Permission": 46, "IsSystem": true},
-        {"PermissionGroup": 20, "Permission": 47, "IsSystem": true}
+        {"PermissionGroup": 20, "Permission": 47, "IsSystem": true},
+
+        {"PermissionGroup": 21, "Permission": 51, "IsSystem": true},
+        {"PermissionGroup": 21, "Permission": 52, "IsSystem": true},
+        {"PermissionGroup": 21, "Permission": 53, "IsSystem": true},
+        {"PermissionGroup": 21, "Permission": 54, "IsSystem": true},
+        {"PermissionGroup": 22, "Permission": 51, "IsSystem": true}
 
     ]
 }

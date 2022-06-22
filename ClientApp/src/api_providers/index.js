@@ -9,3 +9,4 @@ export * from './permission-groups.api';
 export * from './role-permission-group-mappings.api';
 export * from './permission-group-mappings.api';
 export * from './role-permissions.api';
+export * from './user-access-levels.api';

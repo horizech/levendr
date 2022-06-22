@@ -36,6 +36,9 @@
         {"Name": "APIReadOnly", "Description": "API ReadOnly", "IsSystem": true},
         
         {"Name": "UsersReadWrite", "Description": "Users ReadWrite", "IsSystem": true},
-        {"Name": "UsersReadOnly", "Description": "Users ReadOnly", "IsSystem": true}
+        {"Name": "UsersReadOnly", "Description": "Users ReadOnly", "IsSystem": true},
+    
+        {"Name": "UserAccessLevelsReadWrite", "Description": "UserAccessLevels ReadWrite", "IsSystem": true},
+        {"Name": "UserAccessLevelsReadOnly", "Description": "UserAccessLevels ReadOnly", "IsSystem": true}
     ]
 }
