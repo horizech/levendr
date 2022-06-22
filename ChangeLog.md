@@ -4,6 +4,7 @@
 ### Added:
 - Added management of UserAccessLevels.
 - Added AWS S3 plugin.
+- Clear Cache on Create, Edit and Delete.
 
 ### Changed:
 - Changed the Configuration page.

@@ -52,7 +52,7 @@ namespace Levendr.Services
                 .AddRow(data)
                 .RunInsertQuery();
 
-            await ServiceManager.Instance.GetService<MemoryCacheService>().Remove("Permissions");
+            ServiceManager.Instance.GetService<MemoryCacheService>().Remove("Permissions");
             
             return new APIResult()
             {
@@ -70,7 +70,7 @@ namespace Levendr.Services
                 .AddRow(data)
                 .RunUpdateQuery();
 
-            await ServiceManager.Instance.GetService<MemoryCacheService>().Remove("Permissions");
+            ServiceManager.Instance.GetService<MemoryCacheService>().Remove("Permissions");
             
             return new APIResult()
             {
@@ -87,7 +87,7 @@ namespace Levendr.Services
                 .WhereEquals("Name", name)
                 .RunDeleteQuery();
 
-            await ServiceManager.Instance.GetService<MemoryCacheService>().Remove("Permissions");
+            ServiceManager.Instance.GetService<MemoryCacheService>().Remove("Permissions");
             
             return new APIResult()
             {
