@@ -58,7 +58,7 @@ namespace Levendr.Controllers
             }
             if ((loginDetails.Username == null || loginDetails.Username.Length < 6) && (loginDetails.Email == null || loginDetails.Email.Length < 6))
             {
-                return APIResult.GetSimpleFailureResult("Username or password should be at least 6 characters!");
+                return APIResult.GetSimpleFailureResult("You should provide Username or email!");
             }
 
             if (loginDetails.Password == null || loginDetails.Password.Length == 0)
