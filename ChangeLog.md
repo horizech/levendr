@@ -14,6 +14,23 @@
 
 ### Security:
 
+## [v0.1.4] - 2022-06-24
+
+### Added:
+
+- Added User Roles API.
+- Added Translations table and API.
+
+### Changed:
+
+### Deprecated:
+
+### Removed:
+
+### Fixed:
+
+### Security:
+
 ## [v0.1.3] - 2022-06-22
 
 ### Added:

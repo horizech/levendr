@@ -19,6 +19,7 @@ namespace Levendr.Enums
         Pages,
         PageRoles,
         Posts,
-        UserAccessLevels
+        UserAccessLevels,
+        Translations
     }
 }
