@@ -61,6 +61,14 @@
         {"Name": "UserAccessLevels.GetUserAccessLevels.GET", "Description": "UserAccessLevels.GetUserAccessLevels.GET", "IsSystem": true},
         {"Name": "UserAccessLevels.AddUserAccessLevel.POST", "Description": "UserAccessLevels.AddUserAccessLevel.POST", "IsSystem": true},
         {"Name": "UserAccessLevels.UpdateUserAccessLevel.PUT", "Description": "UserAccessLevels.UpdateUserAccessLevel.PUT", "IsSystem": true},
-        {"Name": "UserAccessLevels.DeleteUserAccessLevel.DELETE", "Description": "UserAccessLevels.DeleteUserAccessLevel.DELETE", "IsSystem": true}        
+        {"Name": "UserAccessLevels.DeleteUserAccessLevel.DELETE", "Description": "UserAccessLevels.DeleteUserAccessLevel.DELETE", "IsSystem": true},
+        {"Name": "UserRoles.GetUserRoles.GET", "Description": "UserRoles.GetUserRoles.GET", "IsSystem": true},
+        {"Name": "UserRoles.AddUserRole.POST", "Description": "UserRoles.AddUserRole.POST", "IsSystem": true},
+        {"Name": "UserRoles.UpdateUserRole.PUT", "Description": "UserRoles.UpdateUserRole.PUT", "IsSystem": true},
+        {"Name": "UserRoles.DeleteUserRole.DELETE", "Description": "UserRoles.DeleteUserRole.DELETE", "IsSystem": true},
+        {"Name": "Translations.GetTranslations.GET", "Description": "Translations.GetTranslations.GET", "IsSystem": true},
+        {"Name": "Translations.AddTranslation.POST", "Description": "Translations.AddTranslation.POST", "IsSystem": true},
+        {"Name": "Translations.UpdateTranslation.PUT", "Description": "Translations.UpdateTranslation.PUT", "IsSystem": true},
+        {"Name": "Translations.DeleteTranslation.DELETE", "Description": "Translations.DeleteTranslation.DELETE", "IsSystem": true}
     ]
 }
